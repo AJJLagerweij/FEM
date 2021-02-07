@@ -188,7 +188,7 @@ def Dx(dof, dx, bc='periodic'):
 
     Returns
     -------
-    D1 : matrix (sparse csr format)
+    matrix (sparse csr format)
         The central difference approximation of the first derivative.
     """
     shape = (dof, dof)
@@ -200,8 +200,7 @@ def Dx(dof, dx, bc='periodic'):
         matrix[-1, 1] = 1 / (2*dx)
     else:
         raise ValueError("This type of bounary condition is not recognized.")
-    D1 = matrix.tocsr()
-    return D1
+    return matrix.tocsr()
 
 
 def Dxx(dof, dx, bc='periodic'):
@@ -224,7 +223,7 @@ def Dxx(dof, dx, bc='periodic'):
 
     Returns
     -------
-    D2 : matrix (sparse csr format)
+    matrix (sparse csr format)
         The central difference approximation of the first derivative.
     """
     shape = (dof, dof)
@@ -236,8 +235,7 @@ def Dxx(dof, dx, bc='periodic'):
         matrix[-1, 1] = 1 / (dx**2)
     else:
         raise ValueError("This type of bounary condition is not recognized.")
-    D2 = matrix.tocsr()
-    return D2
+    return matrix.tocsr()
 
 
 def advectdiffuse(dof, dx, mu):
@@ -256,7 +254,7 @@ def advectdiffuse(dof, dx, mu):
     into a matrix vector product:
 
     .. math::
-        u_{t} = D^{(1)} u +  μD^{(2)} u = (D^{(1)} + μD^{(2)})\, u = K u
+        u_{t} = D_{x} u +  μD^{(2)} u = (D_{x} + μD_{xx})\, u = K u
 
     This function calculates the matrix :math:`K`. Because it should be
     compatible with general, non-homogeneous formulation, a part that is
