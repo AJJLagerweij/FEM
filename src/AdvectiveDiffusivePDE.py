@@ -100,7 +100,7 @@ def backwardEuler(func, u0, dt, t_end, args=()):
 
     The backward Euler method predicts the field of our function based upon
     information of the previous timestep only. Imagine that we are at timestep
-    :math:`n` and want to predict our field at timestep :math:`u^({n+1})`.
+    :math:`n` and want to predict our field at timestep :math:`u^{(n+1)}`.
     Now a backward finite difference approximation used the time derivative
     of the next timestep, wich is not yet known:
 
@@ -275,7 +275,7 @@ def advectdiffuse(dof, dx, mu):
     -------
     K : matrix (sparse csr format)
         The time derivative part of the pde obtained from the spatial part.
-    b : array_like (1D)
+    b : vector (dense array)
         The remaining term, in this homeneous case it is a zero array.
     """
     K = -Dx(dof, dx) + mu * Dxx(dof, dx)
@@ -312,10 +312,9 @@ def plot_update(i):
 if __name__ == "__main__":
     # Define properties
     dx = 1e-2
-    dt = 5e-3
-    t_end = 1
+    dt = 1e-4
+    t_end = 20
     mu = 0.01
-    # euler = 'forward'
 
     # Define discrete ranges
     dof = int(1/dx) + 1
@@ -332,7 +331,7 @@ if __name__ == "__main__":
 
     # Plotting with animation
     fig, ax = plt.subplots()
-    # ax.set_xlim(0, 1)
+    ax.set_xlim(0, 1)
 
     line_forw, = ax.plot(x, u_forw[0], label='forward')
     line_back, = ax.plot(x, u_back[0], label='backward')
