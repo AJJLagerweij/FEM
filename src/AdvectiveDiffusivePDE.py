@@ -74,7 +74,7 @@ def forwardEuler(func, u0, dt, t_end, args=()):
 
     Returns
     -------
-    u : array_like
+    array_like
         The function for all time steps.
     """
     # Prepare array to store the sulution in, if memory becomes an issue we
@@ -147,7 +147,7 @@ def backwardEuler(func, u0, dt, t_end, args=()):
 
     Returns
     -------
-    u : array_like
+    array_like
         The function for all time steps.
     """
     # Prepare array to store the sulution in, if memory becomes an issue we
@@ -170,7 +170,9 @@ def backwardEuler(func, u0, dt, t_end, args=()):
 
 def Dx(dof, dx, bc='periodic'):
     r"""
-    Return the central differences matrix for the first derivatie.
+    Return the central differences matrix for the first derivatie. That is
+    the matrix :math:`D_{x}` represents the central difference approximation
+    of :math:`\partial_{x}` in Cartesian axis systems.
 
     Parameters
     ----------
@@ -205,7 +207,9 @@ def Dx(dof, dx, bc='periodic'):
 
 def Dxx(dof, dx, bc='periodic'):
     r"""
-    Return the central differences matrix for the second derivatie.
+    Return the central differences matrix for the second derivatie. That is
+    the matrix :math:`D_{xx}` represents the central difference approximation
+    of :math:`\partial_{xx}` in Cartesian axis systems.
 
     Parameters
     ----------
@@ -251,7 +255,8 @@ def advectdiffuse(dof, dx, mu):
         u_{t} = - u_{x} + μu_{xx}
 
     Because we use finite difference based matrix products we can convert this
-    into a matrix vector product:
+    into a matrix vector product, where :math:`D_x` is the central difference
+    approximation of :math:`\partial_x` and similarly 
 
     .. math::
         u_{t} = D_{x} u +  μD^{(2)} u = (D_{x} + μD_{xx})\, u = K u
