@@ -32,7 +32,7 @@ def forwardEuler(func, u0, dt, t_end, args=()):
 
     The backward Euler method predicts the field of our function based upon
     information of the previous timestep only. Imagine that we are at timestep
-    :math:`n` and want to predict our field at timestep :math:`u^({n+1})`.
+    :math:`n` and want to predict our field at timestep :math:`u^{(n+1)}`.
     Now a forward finite difference approximation is used:
 
     .. math::
