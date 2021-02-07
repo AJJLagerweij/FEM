@@ -20,14 +20,14 @@ print(sys.path)
 
 # -- Project information -----------------------------------------------------
 
-project = 'TopOpt in Python'
-copyright = '2019, A.J.J. Lagerweij'
+project = 'AMCS 394E: FETopOpt in Python'
+copyright = '2020, A.J.J. Lagerweij'
 author = 'A.J.J. Lagerweij'
 
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.0.9'
+release = '0.0.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -102,7 +102,7 @@ html_static_path = ['nstatic']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'TopOptinPythondoc'
+htmlhelp_basename = 'AMCS394E: FEM'
 
 
 # -- Options for LaTeX output ------------------------------------------------

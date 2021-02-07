@@ -1,2 +1,1 @@
-About this Project
-=====================
+.. include:: ../../README.md

@@ -1,29 +1,17 @@
-**********************************
-Documentation for TopOpt in Python
-**********************************
+*******************************
+Documentation for FEM AMCS 394E
+*******************************
 
 Introduction
 ============
 
-.. raw:: latex
+.. include:: About.rst
 
-   \chapter{About}
-   
 .. toctree::
-   :caption: About
+   :caption: Table of Contents
    :maxdepth: 1
 
-   About
    License_Link
-   
-.. raw:: latex
-
-   \chapter{Docstrings}
-
-.. toctree::
-   :caption: Docstrings
-   :maxdepth: 2
-
    Homework
 
 Indices and Tables
