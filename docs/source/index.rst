@@ -2,9 +2,6 @@
 Documentation for FEM AMCS 394E
 *******************************
 
-Introduction
-============
-
 .. include:: About.rst
 
 .. toctree::
