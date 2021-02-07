@@ -160,7 +160,7 @@ def backwardEuler(func, u0, dt, t_end, args=()):
     # The t derivative matrix is constant, as it is expensive to build these
     # kind of matrices we make it only once.
     K, b = func(*args)
-    A = sparse.identity(dof) - K
+    A = sparse.identity(dof) - dt*K
 
     # Update the timesteps with the implicit scheme.
     for n in range(max_iter):
@@ -312,7 +312,7 @@ def plot_update(i):
 if __name__ == "__main__":
     # Define properties
     dx = 1e-2
-    dt = 1e-4
+    dt = 5e-3
     t_end = 1
     mu = 0.01
     # euler = 'forward'
