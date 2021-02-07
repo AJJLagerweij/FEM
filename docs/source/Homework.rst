@@ -1,9 +1,9 @@
-Setup of the Code
-=====================
+Homework Docs
+=============
 
-Density Constraints
+Homework 1
 -------------------
 
-.. automodule:: AdvectiveDiffusivePDE
+.. automodule:: src.AdvectiveDiffusivePDE
     :members:
 
