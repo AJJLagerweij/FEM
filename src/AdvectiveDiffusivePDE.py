@@ -6,7 +6,7 @@ The PDE described by
 .. math::
     u_{t} + u_{x} = μu_{xx}  \quad ∀x ∈ Ω = [0, 1]  \;\; \& \;\;  t > 0
 
-WWhith a periodic boundary condition. It will show a combination of diffusive
+Whith a periodic boundary condition. It will show a combination of diffusive
 and advective behaviour. The approximation used is a second order finite
 difference scheme in space with both a forward and backward Euler method of
 lines implementation to handle the time direction.
