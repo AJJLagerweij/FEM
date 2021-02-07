@@ -20,7 +20,7 @@ print(sys.path)
 
 # -- Project information -----------------------------------------------------
 
-project = 'AMCS 394E: FETopOpt in Python'
+project = 'AMCS 394E: FEM'
 copyright = '2020, A.J.J. Lagerweij'
 author = 'A.J.J. Lagerweij'
 
@@ -102,7 +102,7 @@ html_static_path = ['nstatic']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'AMCS394E: FEM'
+htmlhelp_basename = 'AMCS394E-FEM'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -129,7 +129,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'TopOptinPython.tex', 'TopOpt in Python Documentation',
+    (master_doc, 'AMCS394E-FEM.tex', 'AMCS 394E: FEM',
      'A.J.J. Lagerweij', 'manual'),
 ]
 
@@ -139,7 +139,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'topoptinpython', 'TopOpt in Python Documentation',
+    (master_doc, 'AMCS394E-FEM', 'AMCS 394E: FEM',
      [author], 1)
 ]
 
@@ -150,8 +150,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'TopOptinPython', 'TopOpt in Python Documentation',
-     author, 'TopOptinPython', 'One line description of project.',
+    (master_doc, 'AMCS394E-FEM', 'AMCS 394E: FEM',
+     author, 'AMCS394E-FEM', 'My homework  results for Contemporary Topics in Computational Science: Computing with the Finite Element Method.',
      'Miscellaneous'),
 ]
 
