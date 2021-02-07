@@ -1,3 +1,8 @@
+[![Documentation Status](https://readthedocs.org/projects/fem-amcs394/badge/?version=latest)](https://fem-amcs394.readthedocs.io/en/latest/?badge=latest)
+<a href='https://fem-amcs394.readthedocs.io/en/latest/?badge=latest'>
+    <img src='https://readthedocs.org/projects/fem-amcs394/badge/?version=latest' alt='Documentation Status' />
+</a>
+
 AMCS 394E: FEM
 ==============
 
