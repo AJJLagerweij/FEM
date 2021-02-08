@@ -1,6 +1,10 @@
-*******************************
+.. |br| raw:: html
+
+   <br />
+
+###############################
 Documentation for FEM AMCS 394E
-*******************************
+###############################
 
 .. include:: About.rst
 
@@ -18,8 +22,10 @@ Documentation for FEM AMCS 394E
 
    Docstrings
 
+
+******************
 Indices and Tables
-==================
+******************
 
 * :ref:`genindex`
 * :ref:`modindex`
