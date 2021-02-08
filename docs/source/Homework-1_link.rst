@@ -1,1 +1,1 @@
-.. include:: ../../Homework 1/Deliverable
+.. include:: ../../Homework 1/Deliverable.rst
