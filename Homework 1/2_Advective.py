@@ -25,7 +25,7 @@ import matplotlib.animation as animation
 # Importing my own scripts
 import sys
 sys.path.insert(1, '../src')
-from pde import diffusive
+from pde import advective
 from time_integral import forwardEuler, backwardEuler
 
 # Define properties
@@ -45,8 +45,8 @@ u = np.sin(2*np.pi*x)  # Initial condition
 
 # Solve the problem using method of lines.
 args = (dof, dx, c)
-u_forw = forwardEuler(diffusive, u, dt, t_end, args=args)
-u_back = backwardEuler(diffusive, u, dt, t_end, args=args)
+u_forw = forwardEuler(advective, u, dt, t_end, args=args)
+u_back = backwardEuler(advective, u, dt, t_end, args=args)
 
 # Plotting ploting statically
 fig, ax = plt.subplots()
