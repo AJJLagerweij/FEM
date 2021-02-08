@@ -45,7 +45,7 @@ def diffusive(dof, dx, mu):
 
     Because we use finite difference based matrix products we can convert this
     into a matrix vector product, where :math:`D_xx` is the central difference
-    approximation of :math:`\partial_xx`:
+    approximation of :math:`\partial_{xx}`:
 
     .. math::
         u_{t} = \mu D_{xx} u = K u
