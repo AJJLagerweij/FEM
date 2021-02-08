@@ -9,7 +9,14 @@ Documentation for FEM AMCS 394E
    :maxdepth: 1
 
    License_Link
-   Homework
+   Homework-1_link
+
+
+.. toctree::
+   :caption: Docstrings
+   :maxdepth: 1
+
+   Docstrings
 
 Indices and Tables
 ==================
