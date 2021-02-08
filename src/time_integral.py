@@ -1,16 +1,5 @@
 r"""
-Solving an Advective and Diffusive PDE with finite differences.
-
-The PDE described by
-
-.. math::
-    u_{t} + u_{x} = μu_{xx}  \quad ∀x ∈ Ω = [0, 1]  \;\; \& \;\;  t > 0
-
-Whith a periodic boundary condition. It will show a combination of diffusive
-and advective behaviour. The approximation used is a second order finite
-difference scheme in space with both a forward and backward Euler method of
-lines implementation to handle the time direction.
-
+Various implementations of the method of lines to progress through time.
 The goal is to implement the code in python and not rely on existing solvers.
 
 Bram Lagerweij
@@ -23,7 +12,8 @@ import numpy as np
 import scipy.sparse as sparse
 from scipy.sparse.linalg import spsolve
 
-def forwardEuler(func, u0, dt, t_end, args=()):
+
+def forwardEuler(func, u, dt, t_end, args=()):
     r"""
     Itterate a through time with the forward Eurler method.
 
@@ -60,7 +50,7 @@ def forwardEuler(func, u0, dt, t_end, args=()):
     ----------
     func : callable
         The time derivative of the pde to be solved such that :math:`u_t = K\,u + b`.
-    u0 : array_like
+    u : array_like
         The field at the start :math:`u(t=0)`.
     dt : float
         The size of the step.
@@ -74,24 +64,18 @@ def forwardEuler(func, u0, dt, t_end, args=()):
     array_like
         The function for all time steps.
     """
-    # Prepare array to store the sulution in, if memory becomes an issue we
-    # can store only the previous timestep but due to plotting I want to store
-    # everything.
-    max_iter = int(t_end / dt)
-    u = np.zeros((max_iter+1, len(u0)))
-    u[0] = u0
-
     # The t derivative matrix is constant, as it is expensive to build these
     # kind of matrices we make it only once.
     K, b = func(*args)
 
     # Update the timesteps.
+    max_iter = int(t_end / dt)
     for n in range(max_iter):
-        u[n+1] = u[n] + dt * (K * u[n] + b)
+        u = u + dt * (K * u + b)
     return u
 
 
-def backwardEuler(func, u0, dt, t_end, args=()):
+def backwardEuler(func, u, dt, t_end, args=()):
     r"""
     Itterate a through time with the backward Eurler method.
 
@@ -133,7 +117,7 @@ def backwardEuler(func, u0, dt, t_end, args=()):
     ----------
     func : callable
         The time derivative of the pde to be solved such that :math:`u_t = K\,u + b`.
-    u0 : array_like
+    u : array_like
         The field at the start :math:`u(t=0)`.
     dt : float
         The size of the time step.
@@ -147,20 +131,13 @@ def backwardEuler(func, u0, dt, t_end, args=()):
     array_like
         The function for all time steps.
     """
-    # Prepare array to store the sulution in, if memory becomes an issue we
-    # can store only the previous timestep but due to plotting I want to store
-    # everything.
-    max_iter = int(t_end / dt)
-    u = np.zeros((max_iter+1, len(u0)))
-    u[0] = u0
-
     # The t derivative matrix is constant, as it is expensive to build these
     # kind of matrices we make it only once.
     K, b = func(*args)
     A = sparse.identity(len(b)) - dt*K
 
     # Update the timesteps with the implicit scheme.
+    max_iter = int(t_end / dt)
     for n in range(max_iter):
-        u[n+1] = spsolve(A, u[n] + dt*b)
+        u = spsolve(A, u + dt*b)
     return u
-

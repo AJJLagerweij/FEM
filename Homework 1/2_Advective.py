@@ -1,15 +1,14 @@
 r"""
-Solving an Advective and Diffusive PDE with finite differences.
+Solving an Advective PDE with finite differences.
 
 The PDE described by
 
 .. math::
-    u_{t} + u_{x} = \mu u_{xx}  \quad \forall x \in\Omega = [0, 1]  \;\; \& \;\;  t > 0
+    u_{t} + u_{x} = 0  \quad \forall x \in\Omega = [0, 1]  \;\; \& \;\;  t > 0
 
-Whith a periodic boundary condition. It will show a combination of diffusive
-and advective behaviour. The approximation used is a second order finite
-difference scheme in space with both a forward and backward Euler method of
-lines implementation to handle the time direction.
+Whith a periodic boundary condition. The approximation used is a second order
+finite difference scheme in space with both a forward and backward Euler method
+of lines implementation to handle the time direction.
 
 The goal is to implement the code in python and not rely on existing solvers.
 
@@ -26,14 +25,13 @@ import matplotlib.animation as animation
 # Importing my own scripts
 import sys
 sys.path.insert(1, '../src')
-from pde import advectivediffusive
+from pde import diffusive
 from time_integral import forwardEuler, backwardEuler
 
 # Define properties
 dx = 1e-2
 dt = 1e-4
 t_end = 1
-mu = 0.01  # Diffusive term
 c = 1  # Advective term
 
 # Define discrete ranges
@@ -46,9 +44,9 @@ t = np.arange(0, t_end+dt, step=dt)
 u = np.sin(2*np.pi*x)  # Initial condition
 
 # Solve the problem using method of lines.
-args = (dof, dx, mu, c)
-u_forw = forwardEuler(advectivediffusive, u, dt, t_end, args=args)
-u_back = backwardEuler(advectivediffusive, u, dt, t_end, args=args)
+args = (dof, dx, c)
+u_forw = forwardEuler(diffusive, u, dt, t_end, args=args)
+u_back = backwardEuler(diffusive, u, dt, t_end, args=args)
 
 # Plotting ploting statically
 fig, ax = plt.subplots()

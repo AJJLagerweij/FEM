@@ -34,7 +34,6 @@ from derivative import Dx, Dxx
 def diffusive(dof, dx, mu):
     r"""
     Time derivative of the PDE for advective diffusive problems.
-    AA
 
     .. math::
         u_{t} = \mu u_{xx}  \qquad \forall \, x \in \Omega = [0, 1] \quad \& \quad t>0
@@ -74,6 +73,7 @@ def diffusive(dof, dx, mu):
     K = mu * Dxx(dof, dx)
     b = np.zeros(dof)
     return K, b
+
 
 def advective(dof, dx, c):
     r"""
@@ -117,7 +117,6 @@ def advective(dof, dx, c):
     K = -c * Dx(dof, dx)
     b = np.zeros(dof)
     return K, b
-
 
 
 def advectivediffusive(dof, dx, mu, c):
