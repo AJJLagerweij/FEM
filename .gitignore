@@ -9,13 +9,10 @@ __pycache__/
 # the documentation bulid
 docs/source/_build
 
-# hide the latex output files
-*.aux
-*.bcf
-*.log
-*.out
-*.run.xml
-*.synctex.gz
+# vsCode
+*.code-workspace*
+*.json
+
 
 # Distribution / packaging
 .Python
