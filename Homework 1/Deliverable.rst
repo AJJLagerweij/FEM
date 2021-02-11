@@ -23,7 +23,7 @@ Consider the one-dimensional advection diffusion equation:
 .. math::
 	{u}_{t} + c{u}_{x} + \mu{u}_{xx} = 0 \qquad \forall \, x \in \Omega = [0, 1] \quad \& \quad t>0
 
-where :math:`\mu>0` is the dempaning coefficient and :math:`c` the wave speed. Consider periodic boundary conditions and the following initial condition:
+where :math:`\mu>0` is the diffusion coefficient and :math:`c` the wave speed. Consider periodic boundary conditions and the following initial condition:
 
 .. math::
 	u(x,0) = \sin(2\pi x)
