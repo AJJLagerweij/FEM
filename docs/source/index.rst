@@ -9,7 +9,7 @@ Documentation for FEM AMCS 394E
 .. include:: About.rst
 
 .. toctree::
-   :caption: Table of Contents
+   :caption: Homework Assignments
    :maxdepth: 2
 
    Homework-1_Link
