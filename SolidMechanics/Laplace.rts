@@ -25,7 +25,7 @@ Linear Laplace Equation in 2D
 The most basic description of the Laplace equation is given by:
 
 .. math::
-    \vec{\nabla}^2 u(\vec{m})& = \pdv[2]{u}{x} + \pdv[2]{u}{y} = 0 &\qquad \forall \vec{m} \in \Omega \\
+    \vec{\nabla}^2 u(\vec{m}) &= \pdv[2]{u}{x} + \pdv[2]{u}{y} = 0 \qquad& \forall \vec{m} \in \Omega \\
     \quad\text{s.t.:}& \quad u(\vec{m}) = \vec{\tilde{u}} & \forall \vec{m} \in \mathcal{S}_u\\
                      & \quad \vec{\grad} {u}(\vec{m}) = \tilde{\vec{t}} & \forall \vec{m} \in \mathcal{S}_t
 
