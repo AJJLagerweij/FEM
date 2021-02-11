@@ -1,0 +1,52 @@
+.. |br| raw:: html
+
+   <br />
+
+.. math::
+    \require{physics}
+    \renewcommand{\vec}[1]{\underline{#1}}
+    \def\mat#1{\vec{\vec{#1}}}
+    \def\ten#1{\vec{\vec{\vec{\vec{#1}}}}}
+
+#####
+About
+#####
+
+.. admonition:: Toppic
+
+   The reason for me is to solve classical problems in Solid Mechanics.
+   This section, and those below will introduce the typical equations that are encountered in solid mechanics.
+   This section is not exhaustive and it might be extended in the future to discuss more details.
+
+   Bram Lagerweij |br|
+   11 Feb 2020
+  
+
+The examples will become gradually more complex. It starts with the simplest problem, the Laplace equation:
+
+.. math::
+   {\grad}^2 u(\vec{m}) = 0 \qquad \forall \vec{m}\in\Omega
+
+In here one can imagine various levels of complication:
+
+1. With a simple geometry, no sharp corners, and a combination of Neuman and Diriclet boundary conditions.
+2. With a more complex geometry, sharp corners, cracks and inclusions.
+3. With a 'non-linear' stiffness, :math:`{\grad}\vdot\qty(\vec{C}\,{\grad}u(\vec{m}))` adding a non-constant variable :math:`\vec{C}` which is a function depending somehowe on :math:`\grad u`.
+4. Where :math:`\vec{C}` is non-linear and history dependent, aka :math:`\vec{C}^{(n+1)}` is a function af all previous timesteps.
+5. With softening in the non-linear stiffness :math:`C`, that is the tangent of :math:`\vec{C}\,\grad u` will become negative at some point.
+6. Versions in 3D
+
+Moving on to solids where we solve elasticity and plasticity equations:
+
+.. math::
+   \grad\vdot\,\mat{\sigma} + \vec{b} &= 0 \qquad \forall \vec{m}\in\Omega\\
+   \qq{where} & \mat{\sigma} = \ten{C}:\mat{\varepsilon} \\
+   & \mat{\varepsilon} = \frac{1}{2}\big(\grad \vec{u} + (\grad \vec{u})^T\big)
+
+The simplest problem would be linear elasticity, but more complicated versions can be build as well.
+
+1. With a simple geometry, no sharp corners, and a combination of Neuman and Diriclet boundary conditions.
+2. With a more complex geometry, sharp corners, cracks and inclusions.
+3. Large displacements (geometrically non-linear) and deformations (this might require a different strain measure).
+4. Softening and possbily fracture.
+5. Self Contact.

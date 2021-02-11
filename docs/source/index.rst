@@ -10,18 +10,28 @@ Documentation for FEM AMCS 394E
 
 .. toctree::
    :caption: Table of Contents
-   :maxdepth: 1
+   :maxdepth: 2
 
    Homework-1_Link
-   Laplace_Link
-   License_Link
 
+.. toctree::
+   :caption: PDE's for Solid Mechanics
+   :maxdepth: 2
+
+   Solids_About
+   Solids_Laplace_Link
 
 .. toctree::
    :caption: Docstrings
    :maxdepth: 2
 
    Docstrings
+
+.. toctree::
+   :caption: Others
+   :maxdepth: 1
+
+   License_Link
 
 
 ******************

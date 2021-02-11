@@ -43,9 +43,9 @@ The following images summarizes this.
 
    A domain :math:`\Omega` subjected to the Laplace equation with combined boundary conditions.
 
-
+****************
 Poisson equation
-*****************
+****************
 In case of nonhomogeneous formulations the Laplace equations is called the Poisson equation.
 
 .. math::
