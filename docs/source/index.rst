@@ -12,7 +12,8 @@ Documentation for FEM AMCS 394E
    :caption: Table of Contents
    :maxdepth: 1
 
-   Homework-1_link
+   Homework-1_Link
+   Laplace_Link
    License_Link
 
 

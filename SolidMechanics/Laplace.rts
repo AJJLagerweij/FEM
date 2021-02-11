@@ -1,0 +1,44 @@
+.. |br| raw:: html
+
+   <br />
+
+.. math::
+    \require{physics}
+    \renewcommand{\vec}[1]{\underline{#1}}
+
+################
+Laplace Equation
+################
+
+.. admonition:: Toppic
+
+   The Laplace equation is the simplest example of the PDE's considerd in Solid Mechanics.
+   It is an eliptical PDE, and is simplified compared to linear elasticity in the sense that its solution is a scalar field, instead fo the vector field found in elasticity problems.
+   This makes tha Laplace a good start to explore numerical solving strategies for Solid Mechanics problems.
+
+   Bram Lagerweij |br|
+   11 Feb 2020
+
+*****************************
+Linear Laplace Equation in 2D
+*****************************
+The most basic description of the Laplace equation is given by:
+
+.. math::
+    \vec{\nabla}^2 u(\vec{m})& = \pdv[2]{u}{x} + \pdv[2]{u}{y} = 0 &\qquad \forall \vec{m} \in \Omega \\
+    \quad\text{s.t.:}& \quad u(\vec{m}) = \vec{\tilde{u}} & \forall \vec{m} \in \mathcal{S}_u\\
+                     & \quad \vec{\grad} {u}(\vec{m}) = \tilde{\vec{t}} & \forall \vec{m} \in \mathcal{S}_t
+
+Where the entirety of the boundary :math:`\partial\Omega` is the union of these to boundary conditions that do not intersect.
+
+.. math:: 
+    \partial\Omega = \mathcal{S}_u \cup \mathcal{S}_t \\
+    0 = \mathcal{S}_u \cap \mathcal{S}_t
+
+The following images summarizes this.
+
+
+.. figure:: ../../Solid Mechanics/Domain.svg
+   :name: Laplace_Domain
+
+   A domain :math:`\Omega` subjected to the Laplace equation with combined boundary conditions.
