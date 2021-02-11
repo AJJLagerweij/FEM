@@ -25,9 +25,9 @@ Laplace Equation
 The most basic description of the Laplace equation is given by:
 
 .. math::
-    \vec{\nabla}^2 u(\vec{m}) &= \pdv[2]{u}{x} + \pdv[2]{u}{y} = 0 \qquad& \forall \vec{m} \in \Omega \\
+    \grad^2 u(\vec{m}) &= \pdv[2]{u}{x} + \pdv[2]{u}{y} = 0 \qquad& \forall \vec{m} \in \Omega \\
     \quad\text{s.t.:}& \quad u(\vec{m}) = \vec{\tilde{u}}(\vec{m}) & \forall \vec{m} \in \mathcal{S}_u\\
-                     & \quad \vec{\grad} {u}(\vec{m}) = \tilde{\vec{t}}(\vec{m}) & \forall \vec{m} \in \mathcal{S}_t
+                     & \quad \grad {u}(\vec{m}) = \tilde{\vec{t}}(\vec{m}) & \forall \vec{m} \in \mathcal{S}_t
 
 Where the entirety of the boundary :math:`\partial\Omega` is the union of these to boundary conditions that do not intersect.
 
@@ -40,6 +40,8 @@ The following images summarizes this.
 
 .. figure:: ../../Solid Mechanics/images/Domain.svg
    :name: Laplace_Domain
+   :align: center
+   :width: 250
 
    A domain :math:`\Omega` subjected to the Laplace equation with combined boundary conditions.
 
@@ -49,8 +51,12 @@ Poisson equation
 In case of nonhomogeneous formulations the Laplace equations is called the Poisson equation.
 
 .. math::
-    \vec{\nabla}^2 u(\vec{m}) &= \pdv[2]{u}{x} + \pdv[2]{u}{y} = \vec{b}(\vec{m}) \qquad& \forall \vec{m} \in \Omega \\
+    \grad^2 u(\vec{m}) &= \pdv[2]{u}{x} + \pdv[2]{u}{y} = \vec{b}(\vec{m}) \qquad& \forall \vec{m} \in \Omega \\
     \quad\text{s.t.:}& \quad u(\vec{m}) = \vec{\tilde{u}}(\vec{m}) & \forall \vec{m} \in \mathcal{S}_u\\
-                     & \quad \vec{\grad} {u}(\vec{m}) = \tilde{\vec{t}}(\vec{m}) & \forall \vec{m} \in \mathcal{S}_t
+                     & \quad \grad {u}(\vec{m}) = \tilde{\vec{t}}(\vec{m}) & \forall \vec{m} \in \mathcal{S}_t
 
 The boundary condition is still defined in the same way as in the Laplace equaiton.
+
+*********
+Weak form
+*********
