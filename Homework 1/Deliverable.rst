@@ -21,9 +21,9 @@ Homework 1
 Consider the one-dimensional advection diffusion equation:
 
 .. math::
-	{u}_{t} + {u}_{x} + \mu{u}_{xx} = 0 \qquad \forall \, x \in \Omega = [0, 1] \quad \& \quad t>0
+	{u}_{t} + c{u}_{x} + \mu{u}_{xx} = 0 \qquad \forall \, x \in \Omega = [0, 1] \quad \& \quad t>0
 
-where :math:`mu>0` is a coefficient.  Consider periodic boundary conditions and the following initial condition:
+where :math:`\mu>0` is the dempaning coefficient and :math:`c` the wave speed. Consider periodic boundary conditions and the following initial condition:
 
 .. math::
 	u(x,0) = \sin(2\pi x)
@@ -36,14 +36,14 @@ Use forward and backward Euler to obtain full discretization (write down the sch
 
 1.1 Advective Diffusive PDE
 ===========================
-Consider a final time of :math:`t=1` and :math:`\mu=0.01`. For each full discretization proceed as follows:
+Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each full discretization proceed as follows:
 
 1. Experiment using the following time step sizes: :math:`\Delta t = 10^{−4},\, 10^{−3}` and :math:`10^{−1}`. 
 2. How do the explicit and implicit methods behave for these time steps?
 
 1.2 Advective PDE
 =================
-Consider :math:`\mu=0` and solve the PDEusing the explicit and the implicit methods.
+Consider :math:`\mu=0` and :math:`c=1` and solve the PDE using the explicit and the implicit methods.
 Use :math:`\Delta t = 10^{−4}` and solve the problem for the following final times :math:`t=1,\, 5,\, 10,\, 15` and :math:`20`.
 Comment on the behaviour of each full discretization as the final time increases.
 
