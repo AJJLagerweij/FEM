@@ -7,21 +7,21 @@
     \renewcommand{\vec}[1]{\underline{#1}}
 
 ################
-Laplace Equation
+Poisson Equation
 ################
 
 .. admonition:: Toppic
 
-   The Laplace equation is the simplest example of the PDE's considerd in Solid Mechanics.
+   The Poisson equation is the simplest example of the PDE's considerd in Solid Mechanics.
    It is an eliptical PDE, and is simplified compared to linear elasticity in the sense that its solution is a scalar field, instead fo the vector field found in elasticity problems.
-   This makes tha Laplace a good start to explore numerical solving strategies for Solid Mechanics problems.
+   This makes Poisson's equation a good start to explore numerical solving strategies for Solid Mechanics problems.
 
    Bram Lagerweij |br|
    11 Feb 2020
 
-*****************************
-Linear Laplace Equation in 2D
-*****************************
+****************
+Laplace Equation
+****************
 The most basic description of the Laplace equation is given by:
 
 .. math::
