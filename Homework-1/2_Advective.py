@@ -31,8 +31,8 @@ from time_integral import forwardEuler, backwardEuler
 # Define properties
 dx = 1e-2
 dt = 1e-4
-t_end = 1
-c = 1  # Advective term
+t_end = 20
+c = 2  # Advective term
 
 # Define discrete ranges
 dof = int(1/dx) + 1
@@ -51,11 +51,11 @@ u_back = backwardEuler(advective, u, dt, t_end, args=args)
 # Plotting ploting statically
 fig, ax = plt.subplots()
 ax.set_xlim(0, 1)
-ax.set_xlabel('$x$ location')
-ax.set_ylabel('$u(x)$')
+ax.set_ylim(-1, 1)
+ax.annotate('time t={}'.format(t[-1]), xy=(0.5, 0.9), ha='center')
+plt.tight_layout()
 
 line_forw, = ax.plot(x, u_forw, label='forward')
 line_back, = ax.plot(x, u_back, label='backward')
-annotation = ax.annotate('time t=0', xy=(0.5, 1))
 
 plt.legend()

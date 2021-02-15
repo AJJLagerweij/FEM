@@ -58,7 +58,7 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
    :align: center
    :width: 600
 
-   : With a timestep of  :math:`dt=10^{-3}` both the forward and backward difference scheme are stable.
+   : With a timestep of  :math:`dt=10^{-3}` both the forward and backward Euler scheme are stable.
    An animated plot can be found :download:`here <../../Homework-1/images/AdDiff2.webm>`.
 
 .. figure:: ../../Homework-1/images/AdDiff3.svg
@@ -75,6 +75,14 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
 Consider :math:`\mu=0` and :math:`c=2` and solve the PDE using the explicit and the implicit methods.
 Use :math:`\Delta t = 10^{−4}` and solve the problem for the following final times :math:`t=1,\, 5,\, 10,\, 15` and :math:`20`.
 Comment on the behaviour of each full discretization as the final time increases.
+
+.. figure:: ../../Homework-1/images/AdvectUnstable.svg
+   :name: AdvectiveUnstable
+   :align: center
+   :width: 600
+
+   : Even with small timesteps this type of hyperbolic like equation can become unstable when using a backward Euler method.
+   An animated plot can be found :download:`here <../../Homework-1/images/AdvectUnstable.webm>`.
 
 
 ****************************
