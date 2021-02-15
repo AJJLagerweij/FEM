@@ -19,8 +19,6 @@ Homework 1
    Bram Lagerweij |br|
    08 Feb 2020
 
-
-
 *****************
 1 Method of Lines
 *****************
@@ -44,8 +42,33 @@ Use forward and backward Euler to obtain full discretization (write down the sch
 ===========================
 Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each full discretization proceed as follows:
 
-1. Experiment using the following time step sizes: :math:`\Delta t = 10^{−4},\, 10^{−3}` and :math:`10^{−1}`. 
+1. Experiment using the following time step sizes: :math:`\Delta t = 10^{−4},\, 10^{−3}` and :math:`10^{−2}`. 
 2. How do the explicit and implicit methods behave for these time steps?
+
+.. figure:: ../../Homework-1/images/AdDiff1.svg
+   :name: AdDiff1
+   :align: center
+   :width: 600
+
+   : The forward difference scheme is unstable for :math:`dt=10^{-3}`, the backward scheme behaves as expected.
+   An animated plot can be found :download:`here <../../Homework-1/images/AdDiff1.webm>`.
+
+.. figure:: ../../Homework-1/images/AdDiff2.svg
+   :name: AdDiff2
+   :align: center
+   :width: 600
+
+   : With a timestep of  :math:`dt=10^{-3}` both the forward and backward difference scheme are stable.
+   An animated plot can be found :download:`here <../../Homework-1/images/AdDiff2.webm>`.
+
+.. figure:: ../../Homework-1/images/AdDiff3.svg
+   :name: AdDiff3
+   :align: center
+   :width: 600
+
+   : As expected with a timestep of :math:`dt=10^{-4}` both time integrations behave stable.
+   An animated plot can be found :download:`here <../../Homework-1/images/AdDiff3.webm>`.
+
 
 1.2 Advective PDE
 =================
