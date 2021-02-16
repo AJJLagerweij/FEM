@@ -13,6 +13,9 @@ docs/source/_build
 *.code-workspace*
 *.json
 
+# PyCharm
+.idea
+
 
 # Distribution / packaging
 .Python
