@@ -6,7 +6,7 @@ The PDE described by
 .. math::
     u_{t} + u_{x} = \mu u_{xx}  \quad \forall x \in\Omega = [0, 1]  \;\; \& \;\;  t > 0
 
-Whith a periodic boundary condition. It will show a combination of diffusive
+With a periodic boundary condition. It will show a combination of diffusive
 and advective behaviour. The approximation used is a second order finite
 difference scheme in space with both a forward and backward Euler method of
 lines implementation to handle the time direction.
@@ -19,47 +19,44 @@ COHMAS Mechanical Engineering KAUST
 """
 
 # Importing External modules
-import numpy as np
+import sys
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
+import numpy as np
 
 # Importing my own scripts
-import sys
 sys.path.insert(1, '../src')
 from pde import advectivediffusive
 from time_integral import forwardEuler, backwardEuler
 
 # Define properties
 dx = 1e-2
-dt = 1e-2
+dt = 1e-4
 t_end = 1
 mu = 0.01  # Diffusive term
 c = 1  # Advective term
 
 # Define discrete ranges
-dof = int(1/dx) + 1
-x = np.linspace(0, 1, dof)
-dx = x[1] - x[0]
-t = np.arange(0, t_end+dt, step=dt)
+dof = int(1 / dx) + 1
+x, dx = np.linspace(0, 1, dof, retstep=True)
+t = np.arange(0, t_end + dt, step=dt)
 
 # Prepare solver
-u = np.sin(2*np.pi*x)  # Initial condition
+u0 = np.sin(2 * np.pi * x)  # Initial condition
 
 # Solve the problem using method of lines.
-args = (dof, dx, mu, c)
-u_forw = forwardEuler(advectivediffusive, u, dt, t_end, args=args)
-u_back = backwardEuler(advectivediffusive, u, dt, t_end, args=args)
+u_forw = forwardEuler(advectivediffusive, u0, dt, t_end, args=(dof, dx, mu, c))
+u_back = backwardEuler(advectivediffusive, u0, dt, t_end, args=(dof, dx, mu, c))
 
-# Plotting ploting statically
-fig, ax = plt.subplots()
-ax.set_xlim(0, 1)
-ax.set_ylim(-1, 1)
-ax.set_xlabel('$x$ location')
-ax.set_ylabel('$u(x)$')
-ax.annotate('time t={}'.format(t[-1]), xy=(0.5, 0.9), ha='center')
+# Plotting plotting statically
+plt.xlim(0, 1)
+plt.ylim(-1, 1)
+plt.xlabel('$x$ location')
+plt.ylabel('$u(x)$')
+plt.annotate('time t={}'.format(t[-1]), xy=(0.5, 0.9), ha='center')
 plt.tight_layout()
 
-line_forw, = ax.plot(x, u_forw, label='forward')
-line_back, = ax.plot(x, u_back, label='backward')
+plt.plot(x, u_forw, label='forward')
+plt.plot(x, u_back, label='backward')
 
 plt.legend()
+plt.show()
