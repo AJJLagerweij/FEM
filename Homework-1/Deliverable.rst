@@ -85,7 +85,6 @@ Comment on the behaviour of each full discretization as the final time increases
 
    : Even with small time steps this type of hyperbolic like equation can become unstable when using a forward Euler method.
    `Click here for an animated version <https://raw.githubusercontent.com/AJJLagerweij/FEM/main/Homework-1/images/AdvectUnstable.webm>`__.
-   :download:`test <../../Homework-1/images/AdvectUnstable.webm>`
 
 There is a so called Courant-Friedrichs-Lewy condition that formulates a condition of stability on the model:
 
