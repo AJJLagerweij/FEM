@@ -12,7 +12,7 @@
 Homework 1
 ##########
 
-.. admonition:: Toppic
+.. admonition:: Topic
 
    Homework regarding the first week. The goal is  to  work with basic numerical approximation of PDE's' and functions.
 
@@ -51,8 +51,7 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
    :width: 600
 
    : The forward difference scheme is unstable for :math:`dt=10^{-3}`, the backward scheme behaves as expected.
-   `Click here for an animated plot. <images/AdDiff1.webm>`__.
-   An animated plot can be found :download:`here <../../Homework-1/images/AdDiff1.webm>`.
+   `Click here for an animated version. <https://raw.githubusercontent.com/AJJLagerweij/FEM/main/Homework-1/images/AdDiff1.webm>`__.
 
 .. figure:: ../../Homework-1/images/AdDiff2.svg
    :name: AdDiff2
@@ -60,8 +59,7 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
    :width: 600
 
    : With a timestep of  :math:`dt=10^{-3}` both the forward and backward Euler scheme are stable.
-   `Click here for an animated plot. <../../Homework-1/images/AdDiff2.webm>`__.
-   An animated plot can be found :download:`here <../../Homework-1/images/AdDiff2.webm>`.
+   `Click here for an animated version <https://raw.githubusercontent.com/AJJLagerweij/FEM/main/Homework-1/images/AdDiff2.webm>`__.
 
 .. figure:: ../../Homework-1/images/AdDiff3.svg
    :name: AdDiff3
@@ -69,9 +67,10 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
    :width: 600
 
    : As expected with a timestep of :math:`dt=10^{-4}` both time integrations behave stable.
-   `Click here for an animated plot. <https://raw.githubusercontent.com/AJJLagerweij/FEM/main/Homework-1/images/AdDiff3.webm>`__.
-   An animated plot can be found :download:`here <../../Homework-1/images/AdDiff3.webm>`.
+   `Click here for an animated version <https://raw.githubusercontent.com/AJJLagerweij/FEM/main/Homework-1/images/AdDiff3.webm>`__.
 
+.. literalinclude:: /../../Homework-1/1_AdvectiveDiffusive.py
+   :linenos:
 
 1.2 Advective PDE
 =================
@@ -84,10 +83,22 @@ Comment on the behaviour of each full discretization as the final time increases
    :align: center
    :width: 600
 
-   : Even with small timesteps this type of hyperbolic like equation can become unstable when using a backward Euler method.
-   `Click here for an animated plot. <images/AdvectUnstable.webm>`__.
-   An animated plot can be found :download:`here <../../Homework-1/images/AdvectUnstable.webm>`.
+   : Even with small time steps this type of hyperbolic like equation can become unstable when using a forward Euler method.
+   `Click here for an animated version <https://raw.githubusercontent.com/AJJLagerweij/FEM/main/Homework-1/images/AdvectUnstable.webm>`__.
+   :download:`test <../../Homework-1/images/AdvectUnstable.webm>`
 
+There is a so called Courant-Friedrichs-Lewy condition that formulates a condition of stability on the model:
+
+.. math::
+    C = \frac{u\Delta t}{\Delta x} \leq C_{\max}
+
+Where :math:`C_{\max}` is a constant, which for explicit schemes, such as forward Euler, is around 1.
+If the condition is violated the method becomes unstable, that does not mean that the results are unstable from the first iteration.
+In the animation the instabilities become only clear after 14 seconds. Nevertheless, even at :math:`t=1` the method should be considered unstable.
+Similarly the backward Euler is inaccurate as well, it is too dissipative, after 20 seconds around 20% of our, wave magnitude has disappeared.
+
+.. literalinclude:: /../../Homework-1/2_Advective.py
+   :linenos:
 
 ****************************
 2 Approximation of functions
@@ -124,9 +135,9 @@ The Taylor series till the order :math:`N` is defined through:
 .. math::
     f_h(x) = \sum_{n=0}^N \frac{f^{(n)}(x_0)}{n!} (x - x_0)^n
 
-Which imediately got me into problems, analyzing the :math:`n`-th derivative of a function is a numerically a pain.
+Which immediately got me into problems, analyzing the :math:`n`-th derivative of a function is a numerically a pain.
 Quickly the round off errors become significant, and from the 5th derivative onward the basic `scipy` Taylor series function became useless.
-As a result I decided to hardcode the weighting contsants in our expansion, these are obtained from manual derivatives.
+As a result I decided to hardcode the weighting constants in our expansion, these are obtained from manual derivatives.
 
 .. figure:: ../../Homework-1/images/Taylor.svg
    :name: Taylor_Expansion
@@ -145,16 +156,16 @@ The Fourier series, which we assume to be real, approximates the equation with:
 .. math::
     f_h(x) = \sum_{n=0}^N  c_n\exp^{\frac{2\pi n x}{P}i} + \bar{c}_n\exp^{-\frac{2\pi n x}{P}i}
 
-where :math:`P` is the period of the function :math:`f(x)` and :math:`c_n` are complex valued coeffinients that can be found through a Fourier Transform.
-In our case I used a FFT algorithm to find these coefficients from our discrete dataset, esentially the rfft tries to solve:
+where :math:`P` is the period of the function :math:`f(x)` and :math:`c_n` are complex valued coefficients that can be found through a Fourier Transform.
+In our case I used a FFT algorithm to find these coefficients from our discrete dataset, essentially the real-FFH tries to solve:
 
 .. math::
     c_n = \sum_{n=0}^{K} x_k \exp^{\frac{2\pi k n}{K-1}} \qquad n = 0, \dots, N
 
 in a highly efficient manner. Notice that for each unknown :math:`c_n` consists of a real and imaginary part.
-This does mean that this approximation for any given :math:`N` is more comlex.
+This does mean that this approximation for any given :math:`N` is more complex.
 The resulting approximation is shown in :numref:`Fourier_series`. Which show that this series is highly efficient in the approximation of our function.
-This is not to surpricing, afterall we are approximation a trigonometric functions with a serie of trigonometric functions it is likely that we find the exact function somewhere in our series.
+This is not to surprising, after all we are approximation a trigonometric functions with a series of trigonometric functions it is likely that we find the exact function somewhere in our series.
 
 .. figure:: ../../Homework-1/images/Fourier.svg
    :name: Fourier_series
@@ -178,7 +189,7 @@ It should be noted that this type of fitting can be rewritten as an minimization
 .. math::
     \qq{that means: find} a_0, \dots a_{N-1} \qq{such that} f(x_i) - f_h(x_i) = 0 \quad \forall x_i
 
-This minimization can efficiently be casted to a system of equations and subsequentely be solved.
+This minimization can efficiently be casted to a system of equations and subsequently be solved.
 This system of equations has :math:`N` unknowns and :math:`N` functions, and because each of these functions is linearly independent a solution exists.
 Simply said we construct a polynomial that goes exactly through these :math:`N` points.
 
@@ -190,7 +201,7 @@ Simply said we construct a polynomial that goes exactly through these :math:`N` 
    : Approximating :math:`f(x)` with a polynomials of order :math:`N-1` using :math:`N` sample points.
 
 One can also choose to use more sample points to evaluate the minimization problem, lets consider that we use :math:`M` sample points.
-It is not generaly possible to find a :math:`N-1` order polynomial to fit exactly through more then :math:`N` points.
+It is not generally possible to find a :math:`N-1` order polynomial to fit exactly through more then :math:`N` points.
 But we can find the best polynomial, to be specific one that minimizes:
 
 .. math::
@@ -209,7 +220,7 @@ The results seems closer, because we're not just minimizing the error at :math:`
 
 2.1.4 Comparison
 ****************
-For the comparison of these different approximations I've plottet the errors on a log scale.
+For the comparison of these different approximations I've plotted the errors on a log scale.
 Please do note that the Fourier series has 2 times as many unknowns for the :math:`N` compared to the other methods.
 
 .. figure:: ../../Homework-1/images/E1.svg
@@ -226,17 +237,17 @@ Please do note that the Fourier series has 2 times as many unknowns for the :mat
 
    : The error :math:`E_2` for our different approximations where the approximation order ranges from 1 to 20.
 
-I assume that the error of the Taylor series is increasing because the higher order terms will cause heigher errors at the boundarie of our domain.
-But all in all it is my opinion that the Taylor series is a bad approximator for this purpose, it is difficult to calculate due to the derivatives and 
-the result is inaccurate. This is not so surpricing however, Taylor series are ment to approximate the behaviour of a function around a given point :math:`x_0`
+I assume that the error of the Taylor series is increasing because the higher order terms will cause higher errors at the boundaries of our domain.
+But all in all it is my opinion that the Taylor series is a bad approximation for this purpose, it is difficult to calculate due to the derivatives and
+the result is inaccurate. This is not so surprising however, Taylor series are meant to approximate the behaviour of a function around a given point :math:`x_0`
 to characterize the local behaviour. We are here using it on a relatively large domain.
 
-The script used for these computations can be found at `3 LocalApproximation.py <3_LocalApproximation.py>`_.
+The script used for these computations can be found at `3 LocalApproximation.py <https://github.com/AJJLagerweij/FEM/blob/main/Homework-1/3_LocalApproximation.py>`_.
 
 2.2 Local Approximations
 ========================
 Split the domain :math:`\Omega` into :math:`N` cells. For each cell :math:`K`, compute linear and quadratic approximations :math:`f_K(x)` where :math:`f_K(x_i)=f(x_i)` where :math:`x_i` are evenly spaced gridpoints, including the boundaries of the cell.
-Comput and report both :math:`E_1` and :math:`E_2` for a different numbers of cells :math:`N=4,\, 5,\, 6,\,\dots,\,10`.
+Compute and report both :math:`E_1` and :math:`E_2` for a different numbers of cells :math:`N=4,\, 5,\, 6,\,\dots,\,10`.
 
 The approximation by linear elements is created by scaling hat (shape) functions appropriately.
 These functions are chosen in such a way that:
@@ -346,7 +357,7 @@ the nodes. But I haven't yet implemented such an function yet.
     :align: center
     :width: 600
 
-    : The approximation of :math:`f(x)` with quadtratic elements.
+    : The approximation of :math:`f(x)` with quadratic elements.
 
 It is important to notice from :numref:`Quadratic Elements Approximation` that the resulting curve is not smooth.
 for example at :math:`x=0.5` one can see that the red approximation (6 elements) is non-smooth.
@@ -373,4 +384,4 @@ independently.
 
    : The error :math:`E_1` for our element based approximations with 1 to 20 elements.
 
-The script used for these computations can be found at `4 GlobalApproximation.py <4_GlobalApproximation.py>`_.
+The script used for these computations can be found at `4 GlobalApproximation.py <https://github.com/AJJLagerweij/FEM/blob/main/Homework-1/4_GlobalApproximation.py>`_.

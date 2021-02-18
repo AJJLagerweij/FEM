@@ -28,35 +28,37 @@ sys.path.insert(1, '../src')
 from pde import advectivediffusive
 from time_integral import forwardEuler, backwardEuler
 
-# Define properties
-dx = 1e-2
-dt = 1e-4
-t_end = 1
-mu = 0.01  # Diffusive term
-c = 1  # Advective term
 
-# Define discrete ranges
-dof = int(1 / dx) + 1
-x, dx = np.linspace(0, 1, dof, retstep=True)
-t = np.arange(0, t_end + dt, step=dt)
+if __name__ == '__main__':
+    # Define properties
+    dx = 1e-2
+    dt = 1e-4
+    t_end = 1
+    mu = 0.01  # Diffusive term
+    c = 1  # Advective term
 
-# Prepare solver
-u0 = np.sin(2 * np.pi * x)  # Initial condition
+    # Define discrete ranges
+    dof = int(1 / dx) + 1
+    x, dx = np.linspace(0, 1, dof, retstep=True)
+    t = np.arange(0, t_end + dt, step=dt)
 
-# Solve the problem using method of lines.
-u_forw = forwardEuler(advectivediffusive, u0, dt, t_end, args=(dof, dx, mu, c))
-u_back = backwardEuler(advectivediffusive, u0, dt, t_end, args=(dof, dx, mu, c))
+    # Prepare solver
+    u0 = np.sin(2 * np.pi * x)  # Initial condition
 
-# Plotting plotting statically
-plt.xlim(0, 1)
-plt.ylim(-1, 1)
-plt.xlabel('$x$ location')
-plt.ylabel('$u(x)$')
-plt.annotate('time t={}'.format(t[-1]), xy=(0.5, 0.9), ha='center')
-plt.tight_layout()
+    # Solve the problem using method of lines.
+    u_forw = forwardEuler(advectivediffusive, u0, dt, t_end, args=(dof, dx, mu, c))
+    u_back = backwardEuler(advectivediffusive, u0, dt, t_end, args=(dof, dx, mu, c))
 
-plt.plot(x, u_forw, label='forward')
-plt.plot(x, u_back, label='backward')
+    # Plotting plotting statically
+    plt.xlim(0, 1)
+    plt.ylim(-1, 1)
+    plt.xlabel('$x$ location')
+    plt.ylabel('$u(x)$')
+    plt.annotate('time t={}'.format(t[-1]), xy=(0.5, 0.9), ha='center')
+    plt.tight_layout()
 
-plt.legend()
-plt.show()
+    plt.plot(x, u_forw, label='forward')
+    plt.plot(x, u_back, label='backward')
+
+    plt.legend()
+    plt.show()
