@@ -45,12 +45,20 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
 1. Experiment using the following time step sizes: :math:`\Delta t = 10^{−4},\, 10^{−3}` and :math:`10^{−2}`. 
 2. How do the explicit and implicit methods behave for these time steps?
 
+There is a so called Courant-Friedrichs-Lewy condition that formulates a condition of stability on the model:
+
+.. math::
+    C = \frac{c\Delta t}{\Delta x} \leq C_{\max}
+
+Where :math:`C_{\max}` is a constant, which for explicit schemes, such as forward Euler, is around 1.
+If the condition is violated the method becomes unstable, that does not mean that the results are unstable from the first iteration.
+
 .. figure:: ../../Homework-1/images/AdDiff1.svg
    :name: AdDiff1
    :align: center
    :width: 600
 
-   : The forward difference scheme is unstable for :math:`dt=10^{-3}`, the backward scheme behaves as expected.
+   : The forward difference scheme is unstable for :math:`dt=10^{-2}`, the backward scheme behaves as expected.
    `Click here for an animated version <_static/AdDiff1.webm>`__.
 
 .. figure:: ../../Homework-1/images/AdDiff2.svg
@@ -86,13 +94,7 @@ Comment on the behaviour of each full discretization as the final time increases
    : Even with small time steps this type of hyperbolic like equation can become unstable when using a forward Euler method.
    `Click here for an animated version <_static/AdvectUnstable.webm>`__.
 
-There is a so called Courant-Friedrichs-Lewy condition that formulates a condition of stability on the model:
-
-.. math::
-    C = \frac{c\Delta t}{\Delta x} \leq C_{\max}
-
-Where :math:`C_{\max}` is a constant, which for explicit schemes, such as forward Euler, is around 1.
-If the condition is violated the method becomes unstable, that does not mean that the results are unstable from the first iteration.
+Due to the region of convergence of the forward Euler method such a hyperbolic PDE with no dissipation will always be unstable.
 In the animation the instabilities become only clear after 14 seconds. Nevertheless, even at :math:`t=1` the method should be considered unstable.
 Similarly the backward Euler is inaccurate as well, it is too dissipative, after 20 seconds around 20% of our, wave magnitude has disappeared.
 
@@ -381,6 +383,6 @@ independently.
    :align: center
    :width: 600
 
-   : The error :math:`E_1` for our element based approximations with 1 to 20 elements.
+   : The error :math:`E_2` for our element based approximations with 1 to 20 elements.
 
 The script used for these computations can be found at `4 GlobalApproximation.py <https://github.com/AJJLagerweij/FEM/blob/main/Homework-1/4_GlobalApproximation.py>`_.
