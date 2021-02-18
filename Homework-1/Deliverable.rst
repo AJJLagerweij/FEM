@@ -51,6 +51,7 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
    :width: 600
 
    : The forward difference scheme is unstable for :math:`dt=10^{-3}`, the backward scheme behaves as expected.
+   `Click here for an animated plot. <images/AdDiff1.webm>`_.
    An animated plot can be found :download:`here <../../Homework-1/images/AdDiff1.webm>`.
 
 .. figure:: ../../Homework-1/images/AdDiff2.svg
@@ -59,6 +60,7 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
    :width: 600
 
    : With a timestep of  :math:`dt=10^{-3}` both the forward and backward Euler scheme are stable.
+   `Click here for an animated plot. <../../Homework-1/images/AdDiff2.webm>`_.
    An animated plot can be found :download:`here <../../Homework-1/images/AdDiff2.webm>`.
 
 .. figure:: ../../Homework-1/images/AdDiff3.svg
@@ -67,6 +69,7 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
    :width: 600
 
    : As expected with a timestep of :math:`dt=10^{-4}` both time integrations behave stable.
+   `Click here for an animated plot. <https://raw.githubusercontent.com/AJJLagerweij/FEM/main/Homework-1/images/AdDiff3.webm>`_.
    An animated plot can be found :download:`here <../../Homework-1/images/AdDiff3.webm>`.
 
 
@@ -82,6 +85,7 @@ Comment on the behaviour of each full discretization as the final time increases
    :width: 600
 
    : Even with small timesteps this type of hyperbolic like equation can become unstable when using a backward Euler method.
+   `Click here for an animated plot. <images/AdvectUnstable.webm>`_.
    An animated plot can be found :download:`here <../../Homework-1/images/AdvectUnstable.webm>`.
 
 
