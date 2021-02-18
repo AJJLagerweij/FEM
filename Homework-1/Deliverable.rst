@@ -17,7 +17,7 @@ Homework 1
    Homework regarding the first week. The goal is  to  work with basic numerical approximation of PDE's' and functions.
 
    Bram Lagerweij |br|
-   08 Feb 2020
+   18 Feb 2020
 
 *****************
 1 Method of Lines
