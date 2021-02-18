@@ -25,7 +25,9 @@ Documentation for FEM AMCS 394E
    :caption: Docstrings
    :maxdepth: 2
 
-   Docstrings
+   Docstrings_Derivative
+   Docstrings_PDE
+   Docstrings_Time
 
 .. toctree::
    :caption: Others
