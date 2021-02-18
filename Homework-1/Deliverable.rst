@@ -227,7 +227,7 @@ But all in all it is my opinion that the Taylor series is a bad approximator for
 the result is inaccurate. This is not so surpricing however, Taylor series are ment to approximate the behaviour of a function around a given point :math:`x_0`
 to characterize the local behaviour. We are here using it on a relatively large domain.
 
-The script used for these computations can be found at `3 LocalApproximation.py <Homework-1/3_LocalApproximation.py>`_.
+The script used for these computations can be found at `3 LocalApproximation.py <3_LocalApproximation.py>`_.
 
 2.2 Local Approximations
 ========================
@@ -369,4 +369,4 @@ independently.
 
    : The error :math:`E_1` for our element based approximations with 1 to 20 elements.
 
-The script used for these computations can be found at `4 GlobalApproximation.py <Homework-1/4_GlobalApproximation.py>`_.
+The script used for these computations can be found at `4 GlobalApproximation.py <4_GlobalApproximation.py>`_.
