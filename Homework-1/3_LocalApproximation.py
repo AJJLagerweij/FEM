@@ -159,7 +159,9 @@ def Polynomial(fun, N, x):
     Compute the best fit polynomial:
 
     .. math::
-        f_h(x) =
+        f_h(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{N-1}x^{N-1}
+
+    which is fitted through :math:`N` evently distributed points.
 
     Parameters
     ----------
@@ -189,8 +191,10 @@ def Polynomial5(fun, N, x):
     r"""
     Compute the best fit polynomial:
 
-    .. math::
-        f_h(x) =
+.. math::
+        f_h(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{N-1}x^{N-1}
+
+    which is fitted through :math:`5N` equally distributed points.
 
     Parameters
     ----------
