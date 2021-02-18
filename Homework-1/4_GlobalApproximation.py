@@ -288,8 +288,8 @@ for N in range(1, 21):
 
     # Quadratic fit
     quadratic = Quadratic(exact, x, N)
-    e1_quadratic.append(E1(exact(x), linear, x))
-    e2_quadratic.append(E2(exact(x), linear, x))
+    e1_quadratic.append(E1(exact(x), quadratic, x))
+    e2_quadratic.append(E2(exact(x), quadratic, x))
     # plt.plot(x, quadratic, label=f'Quadratic {N}')
 
 
@@ -312,7 +312,7 @@ plt.legend(loc=3)
 
 plt.figure()
 plt.plot(N_list, e2_linear, 's', label='Linear')
-plt.plot(N_list, e1_quadratic, 'o', label='Quadratic')
+plt.plot(N_list, e2_quadratic, 'o', label='Quadratic')
 plt.yscale('log')
 plt.ylabel('$E_2$')
 plt.xticks(np.arange(0, N + 1, 1))
