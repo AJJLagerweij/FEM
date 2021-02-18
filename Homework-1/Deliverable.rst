@@ -227,9 +227,146 @@ But all in all it is my opinion that the Taylor series is a bad approximator for
 the result is inaccurate. This is not so surpricing however, Taylor series are ment to approximate the behaviour of a function around a given point :math:`x_0`
 to characterize the local behaviour. We are here using it on a relatively large domain.
 
-The script used for these computations can be found at :download:`3 LocalApproximation.py <../../Homework-1/3_LocalApproximation.py>`
+The script used for these computations can be found at `3 LocalApproximation.py <Homework-1/3_LocalApproximation.py>`_.
 
 2.2 Local Approximations
 ========================
 Split the domain :math:`\Omega` into :math:`N` cells. For each cell :math:`K`, compute linear and quadratic approximations :math:`f_K(x)` where :math:`f_K(x_i)=f(x_i)` where :math:`x_i` are evenly spaced gridpoints, including the boundaries of the cell.
 Comput and report both :math:`E_1` and :math:`E_2` for a different numbers of cells :math:`N=4,\, 5,\, 6,\,\dots,\,10`.
+
+The approximation by linear elements is created by scaling hat (shape) functions appropriately.
+These functions are chosen in such a way that:
+
+    1) The sum of all the shape functions together equals one, :math:`\sum_{n=1}^{N} \varphi_i(x) = 1` This is called the Partition of Unity Method.
+    2) There where a single function reaches its maximum all the other functions equal zero.
+
+Then our approximation is defined by:
+
+.. math::
+    f_h(x) = \sum_{n=1}^N w_n \varphi_n(x)
+
+where the weights :math:`w_n` are unknown. But because the shape function where chosen smartly these weights are independent.
+After all at the point where a single shape function reaches its maximum (1) the other functions are zero.
+As a result the weight of this shape function equals the value of the function we are trying to approximate at the center point of the shape:
+
+.. math::
+    w_n = f(X_n)
+
+where :math:`X_n` denotes the point where shape function :math:`\varphi_n(x)` reaches its maximum.
+
+2.2.1 Linear Elements
+*********************
+In the case of linear elements these shape functions are defined as:
+
+.. math::
+    \varphi_n(x) =
+    \begin{cases}
+        0 \quad &\forall \quad 0 &\leq x \leq &X_{n-1} \\
+        \frac{x - X_{n-1}}{X_{n} - X_{n-1}} \quad &\forall\quad  X_{n-1} &\leq x \leq &X_{n}\\
+        1 - \frac{x - X_{n}}{X_{n+1} - X_{n}} \quad &\forall \quad X_{n} &\leq x \leq &X_{n+1}\\
+        0 \quad & \forall \quad X_{n+1} &\leq x \leq &L
+    \end{cases}
+
+where :math:`X_n` is the node of this shape function, :math:`X_{n-1}` and :math:`X_{n+1}` the nodes surrounding ours.
+
+A more efficient formulation includes the creation of a unit function that is rescaled depending on the locations of
+the nodes. But I haven't yet implemented such an function yet.
+
+.. figure:: ../../Homework-1/images/Linear_elements.svg
+    :name: Linear Elements
+    :align: center
+    :width: 600
+
+    : The function :math:`4\sin(\pi x) + 1` approximated with four elements.
+    The first element contain the orange and half of the green shape function.
+
+.. figure:: ../../Homework-1/images/Linear.gif
+    :name: Linear Elements Refinement
+    :align: center
+    :width: 600
+
+    : The function :math:`4\sin(\pi x) + 1` approximated more and more linear elements.
+
+.. figure:: ../../Homework-1/images/Linear_ele.svg
+    :name: Linear Elements Approxmation
+    :align: center
+    :width: 600
+
+    : The approximation of :math:`f(x)` with linear elements.
+
+
+2.2.2 Quadratic Elements
+************************
+In the case of quadratic elements there are two different types of shape function.
+One of these function extents into two elements, similar to what the linear element does.
+The second shape function is only inside a single element, and on an interior node.
+This node is placed exactly in the middle between the start and end of the element.
+I'll give these nodes the subscripts :math:`n-\frac{1}{2}` and :math:`n+\frac{1}{2}`.
+Now the shape functions are defined by:
+
+.. math::
+    \varphi_n(x) &=
+    \begin{cases}
+        0 \quad &\forall \quad 0 &\leq x \leq &X_{n-1} \\
+        \frac{2}{(X_n - X_{n-1})^2} (x - X_{n-1})(x - X_{n-\frac{1}{2}}) \quad &\forall\quad  X_{n-1} &\leq x \leq &X_{n}\\
+        \frac{2}{(X_{n+1} - X_{n})^2}(x - X_{n+1})(x - X_{n+\frac{1}{2}}) \quad &\forall \quad X_{n} &\leq x \leq &X_{n+1}\\
+        0 \quad & \forall \quad X_{n+1} &\leq x \leq &L
+    \end{cases}\\
+    \varphi_{n-\frac{1}{2}} (x) &=
+    \begin{cases}
+        0 \quad &\forall \quad 0 &\leq x \leq &X_{n-1} \\
+        -\frac{4}{(X_n - X_{n-1})^2} (x - X_{n-1})(x - X_{n}) \,\, \quad &\forall\quad  X_{n-1} &\leq x \leq &X_{n}\\
+        0 \quad & \forall \quad X_{n+1} &\leq x \leq &L
+    \end{cases}
+
+Again a more efficient formulation includes the creation of a unit function that is rescaled depending on the locations of
+the nodes. But I haven't yet implemented such an function yet.
+
+.. figure:: ../../Homework-1/images/Quadratic_elements.svg
+    :name: Quadratic Elements
+    :align: center
+    :width: 600
+
+    : The function :math:`4\sin(\pi x) + 1` approximated with four elements.
+    The first element contain the orange and half of the green shape function.
+
+.. figure:: ../../Homework-1/images/Quadratic.gif
+    :name: Quadratic Elements Refinement
+    :align: center
+    :width: 600
+
+    : The function :math:`4\sin(\pi x) + 1` approximated more and more quadratic elements.
+
+.. figure:: ../../Homework-1/images/Quadratic_ele.svg
+    :name: Quadratic Elements Approximation
+    :align: center
+    :width: 600
+
+    : The approximation of :math:`f(x)` with quadtratic elements.
+
+It is important to notice from :numref:`Quadratic Elements Approximation` that the resulting curve is not smooth.
+for example at :math:`x=0.5` one can see that the red approximation (6 elements) is non-smooth.
+
+2.2.3 Comparison
+****************
+For the comparison of these different approximations I've plotted the errors on a log scale.
+Please do note that the quadratic elements have :math:`(N+1)N` unknowns where the linear elements have :math:`N+1` weights
+to be determined.
+Nevertheless there is no interdependency between these weights, which as mentioned before means that these can be determined
+independently.
+
+.. figure:: ../../Homework-1/images/E1_ele.svg
+   :name: Error1_elements
+   :align: center
+   :width: 600
+
+   : The error :math:`E_1` for our element based approximations with 1 to 20 elements.
+
+.. figure:: ../../Homework-1/images/E2_ele.svg
+   :name: Error2_elements
+   :align: center
+   :width: 600
+
+   : The error :math:`E_1` for our element based approximations with 1 to 20 elements.
+
+The script used for these computations can be found at `4 GlobalApproximation.py <Homework-1/4_GlobalApproximation.py>`_.
