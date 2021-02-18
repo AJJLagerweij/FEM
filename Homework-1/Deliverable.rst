@@ -51,7 +51,7 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
    :width: 600
 
    : The forward difference scheme is unstable for :math:`dt=10^{-3}`, the backward scheme behaves as expected.
-   `Click here for an animated version <nstatic/AdDiff1.webm>`__.
+   `Click here for an animated version <_static/AdDiff1.webm>`__.
 
 .. figure:: ../../Homework-1/images/AdDiff2.svg
    :name: AdDiff2
@@ -59,7 +59,7 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
    :width: 600
 
    : With a timestep of  :math:`dt=10^{-3}` both the forward and backward Euler scheme are stable.
-   `Click here for an animated version <nstatic/AdDiff2.webm>`__.
+   `Click here for an animated version <_static/AdDiff2.webm>`__.
 
 .. figure:: ../../Homework-1/images/AdDiff3.svg
    :name: AdDiff3
@@ -67,7 +67,7 @@ Consider a final time of :math:`t=1`, :math:`c=1` and :math:`\mu=0.01`. For each
    :width: 600
 
    : As expected with a timestep of :math:`dt=10^{-4}` both time integrations behave stable.
-   `Click here for an animated version <nstatic/AdDiff3.webm>`__.
+   `Click here for an animated version <_static/AdDiff3.webm>`__.
 
 .. literalinclude:: /../../Homework-1/1_AdvectiveDiffusive.py
    :linenos:
@@ -84,7 +84,7 @@ Comment on the behaviour of each full discretization as the final time increases
    :width: 600
 
    : Even with small time steps this type of hyperbolic like equation can become unstable when using a forward Euler method.
-   `Click here for an animated version <nstatic/AdvectUnstable.webm>`__.
+   `Click here for an animated version <_static/AdvectUnstable.webm>`__.
 
 There is a so called Courant-Friedrichs-Lewy condition that formulates a condition of stability on the model:
 
