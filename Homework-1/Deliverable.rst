@@ -89,7 +89,7 @@ Comment on the behaviour of each full discretization as the final time increases
 There is a so called Courant-Friedrichs-Lewy condition that formulates a condition of stability on the model:
 
 .. math::
-    C = \frac{u\Delta t}{\Delta x} \leq C_{\max}
+    C = \frac{c\Delta t}{\Delta x} \leq C_{\max}
 
 Where :math:`C_{\max}` is a constant, which for explicit schemes, such as forward Euler, is around 1.
 If the condition is violated the method becomes unstable, that does not mean that the results are unstable from the first iteration.
