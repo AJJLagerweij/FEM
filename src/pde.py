@@ -4,17 +4,22 @@ Storing varios PDE's that can be will be solved in this course. This includes:
 - Diffusive 1D
 
 .. math::
-	u_{t} = \mu u_{xx} \qquad \forall \, x \in \Omega = [0, 1] \quad \& \quad t>0
+   u_{t} = \mu u_{xx} \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
 
 - Advective 1D
 
 .. math::
-	u_{t} + c {u}_{x} = 0 \qquad \forall \, x \in \Omega = [0, 1] \quad \& \quad t>0
+   u_{t} + c {u}_{x} = 0 \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
 
 - Diffusive-Advective 1D
 
 .. math::
-	u_{t} + c {u}_{x} = \mu u_{xx} \qquad \forall \, x \in \Omega = [0, 1] \quad \& \quad t>0
+   u_{t} + c {u}_{x} = \mu u_{xx} \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
+
+- Poisson in 1D
+
+.. math::
+   u_{uu} = f(x) \qquad \forall \, x \in \Omega = [0, L]
 
 The goal is to implement the code in python and not rely on existing methods.
 
@@ -36,7 +41,7 @@ def diffusive(dof, dx, mu):
     Time derivative of the PDE for advective diffusive problems.
 
     .. math::
-        u_{t} = \mu u_{xx}  \qquad \forall \, x \in \Omega = [0, 1] \quad \& \quad t>0
+        u_{t} = \mu u_{xx}  \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
 
     Thus this returns:
 
@@ -80,7 +85,7 @@ def advective(dof, dx, c):
     Time derivative of the PDE for advective diffusive problems.
 
     .. math::
-        u_{t} + c u_{x} = 0  \qquad \forall \, x \in \Omega = [0, 1] \quad \& \quad t>0
+        u_{t} + c u_{x} = 0  \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
 
     Thus this returns:
 
@@ -124,7 +129,7 @@ def advectivediffusive(dof, dx, mu, c):
     Time derivative of the PDE for advective diffusive problems.
 
     .. math::
-        u_{t} + c u_{x} = \mu u_{xx}  \qquad \forall \, x \in \Omega = [0, 1] \quad \& \quad t>0
+        u_{t} + c u_{x} = \mu u_{xx}  \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
 
     Thus this returns:
 
@@ -165,3 +170,45 @@ def advectivediffusive(dof, dx, mu, c):
     b = np.zeros(dof)
     return K, b
 
+
+def poisson(dof, dx, f, c=1):
+    r"""
+    Problem formulation of a Poisson equation.
+
+    .. math::
+        c u_{xx} = f(x)  \qquad \forall \, x \in \Omega = [0, L]
+
+    Because we use finite difference based matrix products we can convert this
+    into a matrix vector product, where :math:`D_{xx}` the is the
+    central difference apprximation of :math:`\partial_{xx}`:
+
+    .. math::
+        D_{xx} u = K u = f/c
+
+    This function calculates the matrix :math:`K` and the forcing vector :math:`f`.
+    The matrix is however singular as no boundary conditions are sepecifed.
+
+    Parameters
+    ----------
+    dof : int
+        Number of degrees of freedom.
+    dx : float
+        Stepsize in the of spatial discretisation.
+    f : callable
+        A function to calculate the forcing term for any location :math:`x`.
+    c : float, optional
+        A scalar multiplying the derivative.
+
+    Returns
+    -------
+    K : matrix (sparse csr format)
+        The stiffness matrix.
+    b : vector (dense array)
+        The right hand side, caused by the non-homogeneous behavior.
+    """
+    K = Dxx(dof, dx, bc='none')
+
+    # Calculate the right hand side.
+    x = dx*np.linspace(0, dof-1, dof)
+    b = f(x) / c
+    return K, b
