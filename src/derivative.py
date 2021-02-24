@@ -40,7 +40,7 @@ def Dx(dof, dx, bc='periodic'):
     -----
     The following boundary conditions are possible:
 
-    - 'periodic' (default) that the first and last dof's are representing
+    - 'periodic' (default) that the first and last dofs are representing
       the same point. As a result the derivative of the first point depends
       on the second last point and the derivative of the last point will depend
       on the second point as well.
@@ -94,7 +94,7 @@ def Dxx(dof, dx, bc='periodic'):
     -----
     The following boundary conditions are possible:
 
-    - 'periodic' (defeat) that the first and last dof's are representing
+    - 'periodic' (defeat) that the first and last dofs are representing
       the same point. As a result the derivative of the first point depends
       on the second last point and the derivative of the last point will depend
       on the second point as well.
