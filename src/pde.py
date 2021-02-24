@@ -1,5 +1,5 @@
 r"""
-Storing varios PDE's that can be will be solved in this course. This includes:
+Storing various PDEs that can be will be solved in this course. This includes:
 
 - Diffusive 1D
 
@@ -64,16 +64,16 @@ def diffusive(dof, dx, mu):
     dof : int
         Number of degrees of freedom.
     dx : float
-        Stepsize in the of spatial discretisation.
+        Step size in the of spatial discretization.
     mu : float
-        The defusive coefficient.
+        The diffusive coefficient.
 
     Returns
     -------
     K : matrix (sparse csr format)
         The time derivative part of the pde obtained from the spatial part.
     b : vector (dense array)
-        The remaining term, in this homeneous case it is a zero array.
+        The remaining term, in this homogeneous case it is a zero array.
     """
     K = mu * Dxx(dof, dx)
     b = np.zeros(dof)
@@ -108,16 +108,16 @@ def advective(dof, dx, c):
     dof : int
         Number of degrees of freedom.
     dx : float
-        Stepsize in the of spatial discretisation.
+        Step size in the of spatial discretization.
     c : float
-        The avective coefficient.
+        The advective coefficient.
 
     Returns
     -------
     K : matrix (sparse csr format)
         The time derivative part of the pde obtained from the spatial part.
     b : vector (dense array)
-        The remaining term, in this homeneous case it is a zero array.
+        The remaining term, in this homogeneous case it is a zero array.
     """
     K = -c * Dx(dof, dx)
     b = np.zeros(dof)
@@ -139,7 +139,7 @@ def advectivediffusive(dof, dx, mu, c):
     Because we use finite difference based matrix products we can convert this
     into a matrix vector product, where :math:`D_x` is the central difference
     approximation of :math:`\partial_x` and similarly  :math:`D_{xx}` the
-    central difference apprximation of :math:`\partial_{xx}`:
+    central difference approximation of :math:`\partial_{xx}`:
 
     .. math::
         u_{t} = -c D_{x} u +  \mu D_{xx} u = (-c D_{x} + \mu D_{xx})\, u = K u
@@ -153,18 +153,18 @@ def advectivediffusive(dof, dx, mu, c):
     dof : int
         Number of degrees of freedom.
     dx : float
-        Stepsize in the of spatial discretisation.
+        Step size in the of spatial discretization.
     mu : float
         The diffusive coefficient.
     c : float
-    	The avective coefficient.
+        The advective coefficient.
 
     Returns
     -------
     K : matrix (sparse csr format)
         The time derivative part of the pde obtained from the spatial part.
     b : vector (dense array)
-        The remaining term, in this homeneous case it is a zero array.
+        The remaining term, in this homogeneous case it is a zero array.
     """
     K = -c * Dx(dof, dx) + mu * Dxx(dof, dx)
     b = np.zeros(dof)
@@ -180,20 +180,20 @@ def poisson(dof, dx, f, c=1):
 
     Because we use finite difference based matrix products we can convert this
     into a matrix vector product, where :math:`D_{xx}` the is the
-    central difference apprximation of :math:`\partial_{xx}`:
+    central difference approximation of :math:`\partial_{xx}`:
 
     .. math::
         D_{xx} u = K u = f/c
 
     This function calculates the matrix :math:`K` and the forcing vector :math:`f`.
-    The matrix is however singular as no boundary conditions are sepecifed.
+    The matrix is however singular as no boundary conditions are specified.
 
     Parameters
     ----------
     dof : int
         Number of degrees of freedom.
     dx : float
-        Stepsize in the of spatial discretisation.
+        Step size in the of spatial discretization.
     f : callable
         A function to calculate the forcing term for any location :math:`x`.
     c : float, optional
@@ -209,6 +209,6 @@ def poisson(dof, dx, f, c=1):
     K = Dxx(dof, dx, bc='none')
 
     # Calculate the right hand side.
-    x = dx*np.linspace(0, dof-1, dof)
+    x = dx * np.linspace(0, dof - 1, dof)
     b = f(x) / c
     return K, b

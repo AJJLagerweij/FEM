@@ -13,7 +13,7 @@ import scipy.sparse as sparse
 
 def Dx(dof, dx, bc='periodic'):
     r"""
-    Return the central differences matrix for the first derivatie. That is
+    Return the central differences matrix for the first derivative. That is
     the matrix :math:`D_{x}` represents the central difference approximation
     of :math:`\partial_{x}` in 1D axis systems.
 
@@ -40,12 +40,12 @@ def Dx(dof, dx, bc='periodic'):
     -----
     The following boundary conditions are possible:
 
-    - 'periodic' (defealt) that the first and last dof's are representing
+    - 'periodic' (default) that the first and last dof's are representing
       the same point. As a result the derivative of the first point depends
-      on the second last point and the derivative of the last point will depnend
+      on the second last point and the derivative of the last point will depend
       on the second point as well.
     - 'none' means that the row of the first and last degree of freedom are
-      left empty. This will result in a singular matrix, thus extra constsraints
+      left empty. This will result in a singular matrix, thus extra constraints
       will have to be defined before solving a system with such a matrix.
     """
     shape = (dof, dof)
@@ -67,7 +67,7 @@ def Dx(dof, dx, bc='periodic'):
 
 def Dxx(dof, dx, bc='periodic'):
     r"""
-    Return the central differences matrix for the second derivatie. That is
+    Return the central differences matrix for the second derivative. That is
     the matrix :math:`D_{xx}` represents the central difference approximation
     of :math:`\partial_{xx}` in 1D axis systems.
 
@@ -94,12 +94,12 @@ def Dxx(dof, dx, bc='periodic'):
     -----
     The following boundary conditions are possible:
 
-    - 'periodic' (defealt) that the first and last dof's are representing
+    - 'periodic' (defeat) that the first and last dof's are representing
       the same point. As a result the derivative of the first point depends
-      on the second last point and the derivative of the last point will depnend
+      on the second last point and the derivative of the last point will depend
       on the second point as well.
     - 'none' means that the row of the first and last degree of freedom are
-      left empty. This will result in a singular matrix, thus extra constsraints
+      left empty. This will result in a singular matrix, thus extra constraints
       will have to be defined before solving a system with such a matrix.
 
     """
