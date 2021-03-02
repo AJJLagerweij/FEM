@@ -37,7 +37,6 @@ Where the entirety of the boundary :math:`\partial\Omega` is the union of these 
 
 The following images summarizes this.
 
-
 .. figure:: ../../Solid Mechanics/images/Domain.svg
    :name: Laplace_Domain
    :align: center

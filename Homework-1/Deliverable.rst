@@ -258,8 +258,8 @@ Compute and report both :math:`E_1` and :math:`E_2` for a different numbers of c
 The approximation by linear elements is created by scaling hat (shape) functions appropriately.
 These functions are chosen in such a way that:
 
-    1) The sum of all the shape functions together equals one, :math:`\sum_{n=1}^{N} \varphi_i(x) = 1` This is called the Partition of Unity Method.
-    2) There where a single function reaches its maximum all the other functions equal zero.
+1. The sum of all the shape functions together equals one, :math:`\sum_{n=1}^{N} \varphi_i(x) = 1` This is called the Partition of Unity Method.
+2. There where a single function reaches its maximum all the other functions equal zero.
 
 Then our approximation is defined by:
 
