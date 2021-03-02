@@ -5,8 +5,9 @@ Approximating
     f(x) = \sin^4(2\pi x) \qquad \forall \, x \in \Omega = [0, 1]
 
 With the following local approximation functions :math:`f_h(x)` defined in finite sized cells:
-    1. using linear curve inside the cells and,
-    2. using quadratic curves inside the cells.
+
+1. using linear curve inside the cells and,
+2. using quadratic curves inside the cells.
 
 Test these approximations using two errors:
 

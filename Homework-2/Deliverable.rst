@@ -15,7 +15,7 @@ Homework 2
 .. admonition:: Topic
 
    Homework regarding the third week. The goal is to work with simple 1D FEM methods.
-   We'll be solving several PDE's and project function on a FEM space.
+   We'll be solving several PDEs and project function on a FEM space.
 
    Bram Lagerweij |br|
    2 Mar 2021
@@ -76,12 +76,12 @@ Plot these shape functions for both spaces.
 Consider the previously described NS-equations and the Chorin'n projection method and obtain:
 
 1. weak formulation
-2. discreate weak form
+2. discrete weak form
 3. the linear algabra representation of the problem.
 
-***************************************************
-2 Project a smooth function to :math:`C^0` FE space
-***************************************************
+***************************************
+2 Project a smooth function to FE space
+***************************************
 From HW1 we consider the following function again:
 
 .. math::
@@ -107,7 +107,7 @@ Perform the projection through the following steps.
 For both projections compute the followin two errors
 
 .. math::
-   E_1 = \int_0^1 \| f(x) - f_h(x) \| \dd{x} \qand E_2 = \sqrt(\int_0^1 (f(x)- f_h(x))^2 \dd{x})
+   E_1 = \int_0^1 \| f(x) - f_h(x) \| \dd{x} \qand E_2 = \sqrt{\int_0^1 (f(x)- f_h(x))^2 \dd{x}}
 
 where :math:`f_h(x)` is the projection of :math:`f(x)` on our FE space.
 Estimate the order of convergence for each space.
@@ -119,9 +119,9 @@ That is assume that the error behaves as:
 where :math:`c` is a constant and :math:`h=1/N` is the mesh size. Whan is the value of :math:`p`?
 Does this error behave different for the different spaces and norms?
 
-*******************************************************
-3 Project a non-smooth function to :math:`C^0` FE space
-*******************************************************
+*******************************************
+3 Project a non-smooth function to FE space
+*******************************************
 Preform the same projection for the following non-smooth function:
 
 .. math::

@@ -5,9 +5,10 @@ Approximating
     f(x) = \sin^4(2\pi x) \qquad \forall \, x \in \Omega = [0, 1]
 
 With the following approximations functions :math:`f_h(x)`:
-    1. a Taylor series expansion around :math:`x=0.5`,
-    2. a Fourier series,
-    3. a global polynomial and,
+
+1. a Taylor series expansion around :math:`x=0.5`,
+2. a Fourier series,
+3. a global polynomial and,
 
 Test these approximations using two errors:
 
