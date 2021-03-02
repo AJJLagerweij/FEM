@@ -92,6 +92,7 @@ and project it on the finite element space.
 2.1 Projection
 ==============
 Perform the projection through the following steps.
+
 1. Consider piecewise linear and quadratic continuous polynomials.
 2. Consider the reference element :math:`[0, 1]` and interpolatory basis functions to derive the shape functions for each space.
 3. What is the weak formulation and the linear algebra problem associated with the projection?
@@ -148,6 +149,7 @@ The exact solution to this equation is given by:
 4.1 Solve through FEM
 =====================
 Solve this problem using a FEM implementation with the following steps:
+
 1. Consider continuous piecewise linear polynomials and interpolatory basis functions.
 2. Obtain the discrete weak formulation.
 3. Identify the different matrices associated with the finite element discretization.

@@ -17,7 +17,7 @@ Homework 1
    Homework regarding the first week. The goal is  to  work with basic numerical approximation of PDE's' and functions.
 
    Bram Lagerweij |br|
-   18 Feb 2020
+   18 Feb 2021
 
 
 .. contents:: Table of Contents
@@ -248,7 +248,7 @@ But all in all it is my opinion that the Taylor series is a bad approximation fo
 the result is inaccurate. This is not so surprising however, Taylor series are meant to approximate the behaviour of a function around a given point :math:`x_0`
 to characterize the local behaviour. We are here using it on a relatively large domain.
 
-The script used for these computations can be found at `3 LocalApproximation.py <https://github.com/AJJLagerweij/FEM/blob/main/Homework-1/3_LocalApproximation.py>`_.
+The script used for these computations can be found at `3 GlobalApproximation.py <https://github.com/AJJLagerweij/FEM/blob/main/Homework-1/3_GlobalApproximation.py>`_.
 
 2.2 Local Approximations
 ========================
@@ -390,4 +390,4 @@ independently.
 
    : The error :math:`E_2` for our element based approximations with 1 to 20 elements.
 
-The script used for these computations can be found at `4 GlobalApproximation.py <https://github.com/AJJLagerweij/FEM/blob/main/Homework-1/4_GlobalApproximation.py>`_.
+The script used for these computations can be found at `4 LocalApproximation.py <https://github.com/AJJLagerweij/FEM/blob/main/Homework-1/4_LocalApproximation.py>`_.
