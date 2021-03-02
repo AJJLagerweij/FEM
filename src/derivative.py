@@ -28,7 +28,7 @@ def Dx(dof, dx, bc='periodic'):
 
     Raises
     ------
-    ValueError
+    NotImplementedError
         Is raised when the requested boundary condition is not implemented.
 
     Returns
@@ -61,7 +61,7 @@ def Dx(dof, dx, bc='periodic'):
         matrix[-1, -2] = 0
         matrix[-1, -1] = 0
     else:
-        raise ValueError("This type of bounary condition is not recognized.")
+        raise NotImplementedError("This type of bounary condition is not recognized.")
     return matrix.tocsr()
 
 
@@ -82,7 +82,7 @@ def Dxx(dof, dx, bc='periodic'):
 
     Raises
     ------
-    ValueError
+    NotImplementedError
         Is raised when the requested boundary condition is not implemented.
 
     Returns
@@ -116,6 +116,6 @@ def Dxx(dof, dx, bc='periodic'):
         matrix[-1, -2] = 0
         matrix[-1, -1] = 0
     else:
-        raise ValueError("This type of bounary condition is not recognized.")
+        raise NotImplementedError("This type of bounary condition is not recognized.")
     return matrix.tocsr()
 
