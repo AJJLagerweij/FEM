@@ -19,6 +19,11 @@ Homework 1
    Bram Lagerweij |br|
    18 Feb 2020
 
+
+.. contents:: Table of Contents
+    :local:
+    :depth: 2
+
 *****************
 1 Method of Lines
 *****************

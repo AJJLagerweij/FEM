@@ -13,6 +13,7 @@ Documentation for FEM AMCS 394E
    :maxdepth: 2
 
    Homework-1_Link
+   Homework-2_Link
 
 .. toctree::
    :caption: PDE's for Solid Mechanics
