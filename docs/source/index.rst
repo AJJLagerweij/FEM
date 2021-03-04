@@ -30,7 +30,7 @@ Documentation for FEM AMCS 394E
    Docstrings_FEM
    Docstrings_Element
    Docstrings_Time
-   Docstring_Helper
+   Docstrings_Helper
    Docstrings_Derivative
 
 .. toctree::

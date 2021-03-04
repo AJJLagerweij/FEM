@@ -5,7 +5,7 @@ This main FEM loop will assample the differenc matrices that are required in a F
 It takes the following steps:
 
 1. Loop over all elements.
-2. Compute the element based integrals
+2. Compute the element based integrals.
     1. calculate the quantities in the reference element.
     2. integrate using Quadrature rules and include the mapping from reference to global axis system.
 3. Assamble these element based contributions into a global operator.
