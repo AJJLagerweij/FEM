@@ -23,14 +23,15 @@ COHMAS Mechanical Engineering KAUST
 
 # Importing modules.
 import sys
-import matplotlib.pyplot as plt
+import numba as nb
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.integrate import simpson
-from scipy.linalg import solve
 
 # Importing my own modules
 sys.path.insert(1, '../src')
 from fem import fem1d
+from element import interpolate
 
 
 def E1(fun, fun_h, x):
@@ -86,13 +87,36 @@ def E2(fun, fun_h, x):
     return integral
 
 
-def mesh(N):
-    nodes = np.linspace(0, 1, N+1)
-    ele, dof = np.indices((N, 2))
-    connectivity = ele + dof
+def mesh(x_start, x_end, n, order=1):
+    """
+    Meshing the 1D domain into `n` evenly spaced elements.
+
+    Parameters
+    ----------
+    x_start : float
+        Starting coordinate of the domain.
+    x_end : float
+        End coordinate of the domain.
+    n : int
+        Number of elements used to discretized the domain.
+    order : int, optional
+        Order of the interpolation functions.
+
+    Returns
+    -------
+    nodes : array_like(float)
+        Coordinates of all the nodal points.
+    connectivity array_like(int), shape((n+1, order+1))
+        Elements to node connectivity array.
+    """
+    ele, dof = np.indices((n, order+1))
+    connectivity = order*ele + dof
+    ndofs = connectivity.max()+1
+    nodes = np.linspace(x_start, x_end, ndofs)
     return nodes, connectivity
 
 
+@nb.jit(nopython=True)
 def exact(x):
     """
     The exact function:
@@ -113,83 +137,116 @@ def exact(x):
     fun = np.sin(2 * np.pi * x) ** 4
     return fun
 
-N = 128
+
+# Setup grid to measure exact results and errors.
+len_x = int(1e6)
+x = np.linspace(0, 1, len_x)
+
+# Store error results.
+N_list = 2**np.arange(1, 18)
+e1_linear = []
+e2_linear = []
+e1_quadratic = []
+e2_quadratic = []
 num_q = 4
 
-# Create mesh
-grid, connect = mesh(N)
 
-# Obtain global system of equations
-M, f = fem1d(grid, connect, exact, num_q, order=1)
+# Compute and compare Linear elements.
+lin_plot = plt.figure(num='Linear Elements')
+lin_ax = plt.gca()
+lin_ax.plot(x, exact(x), lw=2, label='Exact')
 
-# Solve linear system of equations
-u = solve(M, f)
+print("Linear")
+for N in N_list:
+    print(f'{N} Elements')
+    grid, connect = mesh(0, 1, N, order=1)
+    u = fem1d(grid, connect, exact, num_q, order=1, mass=True)
+    u_x = interpolate(u, grid, connect, x, order=1)
+
+    lin_ax.plot(x, u_x, ':', label=f'{N} elements')
+    e1_linear.append(E1(exact(x), u_x, x))
+    e2_linear.append(E2(exact(x), u_x, x))
+
+lin_ax.set_ylim(-0.25, 1.25)
+lin_ax.set_ylabel('$f(x)$ and $f_h(x)$')
+lin_ax.set_xlim(0, 1)
+lin_ax.set_xlabel('$x$')
+lin_ax.legend(loc=1)
+lin_plot.tight_layout()
 
 
-# Plot result for comparison to exact solution.
-x = np.linspace(0, 1, 1001)
-fig = plt.figure()
-plt.plot(x, exact(x), label='exact')
-plt.plot(grid, u, ':o')
-plt.title(f'{N} elements')
+# Compute and compare Quadratic elements.
+qua_plot = plt.figure(num='Quadratic Elements')
+qua_ax = plt.gca()
+qua_ax.plot(x, exact(x), lw=2, label='Exact')
+
+print("Quadratic")
+for N in N_list:
+    print(f'{N} Elements')
+    grid, connect = mesh(0, 1, N, order=2)
+    u = fem1d(grid, connect, exact, num_q, order=2, mass=True)
+    u_x = interpolate(u, grid, connect, x, order=2)
+
+    qua_ax.plot(x, u_x, ':', label=f'{N} elements')
+    e1_quadratic.append(E1(exact(x), u_x, x))
+    e2_quadratic.append(E2(exact(x), u_x, x))
+
+qua_ax.set_ylim(-0.25, 1.25)
+qua_ax.set_ylabel('$f(x)$ and $f_h(x)$')
+qua_ax.set_xlim(0, 1)
+qua_ax.set_xlabel('$x$')
+qua_ax.legend(loc=1)
+qua_plot.tight_layout()
+
+
+# Plotting the errors vs number of elements.
+plt.figure(num='E1 vs Elements')
+plt.plot(N_list, e1_linear, 's', label='Linear')
+plt.plot(N_list, e2_quadratic, 'o', label='Quadratic')
+plt.plot(N_list, 1/N_list**1, ':', label='$N^{-1}$')
+plt.plot(N_list, 1/N_list**2, ':', label='$N^{-2}$')
+plt.plot(N_list, 1/N_list**3, ':', label='$N^{-3}$')
+plt.yscale('log')
+plt.xscale('log')
+plt.ylabel('$E_1$')
+plt.xlabel('Number of Elements')
+plt.legend(loc=3)
+
+plt.figure(num='E2 vs Elements')
+plt.plot(N_list, e2_linear, 's', label='Linear')
+plt.plot(N_list, e2_quadratic, 'o', label='Quadratic')
+plt.plot(N_list, 1/N_list**1, ':', label='$N^{-1}$')
+plt.plot(N_list, 1/N_list**2, ':', label='$N^{-2}$')
+plt.plot(N_list, 1/N_list**3, ':', label='$N^{-3}$')
+plt.yscale('log')
+plt.xscale('log')
+plt.ylabel('$E_2$')
+plt.xlabel('Number of Elements')
+plt.legend(loc=3)
 plt.show()
 
+# Plotting the errors vs degrees of freedom.
+plt.figure(num='E1 vs DOFs')
+plt.plot(N_list + 1, e1_linear, 's', label='Linear')
+plt.plot(2*N_list + 1, e2_quadratic, 'o', label='Quadratic')
+plt.plot(N_list, 1/N_list**1, ':', label='$dof^{-1}$')
+plt.plot(N_list, 1/N_list**2, ':', label='dof$^{-2}$')
+plt.plot(N_list, 1/N_list**3, ':', label='dof$^{-3}$')
+plt.yscale('log')
+plt.xscale('log')
+plt.ylabel('$E_1$')
+plt.xlabel('Degrees of Freedom')
+plt.legend(loc=3)
 
-
-# # Compute exact function.
-# len_x = 11
-# x = np.linspace(0, 1, len_x)
-
-# plt.figure()
-# plt.plot(x, exact(x), lw=2, zorder=10, label='Exact')
-
-# # Store error results.
-# N_list = []
-# e1_linear = []
-# e2_linear = []
-# e1_quadratic = []
-# e2_quadratic = []
-
-# for N in range(1, 21):
-#     N_list.append(N)
-#
-#     # Linear fits.
-#     linear = Linear(exact, x, N)
-#     e1_linear.append(E1(exact(x), linear, x))
-#     e2_linear.append(E2(exact(x), linear, x))
-#     plt.plot(x, linear, label=f'Linear {N}')
-#
-#     # Quadratic fit
-#     quadratic = Quadratic(exact, x, N)
-#     e1_quadratic.append(E1(exact(x), quadratic, x))
-#     e2_quadratic.append(E2(exact(x), quadratic, x))
-#     plt.plot(x, quadratic, label=f'Quadratic {N}')
-#
-#
-# plt.ylim(-0.25, 1.25)
-# plt.ylabel('$f(x)$ and $f_h(x)$')
-# plt.xlim(0, 1)
-# plt.xlabel('$x$')
-# plt.legend(loc=1)
-#
-# # Plotting the errors.
-# plt.figure()
-# plt.plot(N_list, e1_linear, 's', label='Linear')
-# plt.plot(N_list, e2_quadratic, 'o', label='Quadratic')
-# plt.yscale('log')
-# plt.ylabel('$E_1$')
-# plt.xticks(np.arange(0, N + 1, 1))
-# plt.xlim(0, N + 1)
-# plt.xlabel('N')
-# plt.legend(loc=3)
-#
-# plt.figure()
-# plt.plot(N_list, e2_linear, 's', label='Linear')
-# plt.plot(N_list, e2_quadratic, 'o', label='Quadratic')
-# plt.yscale('log')
-# plt.ylabel('$E_2$')
-# plt.xticks(np.arange(0, N + 1, 1))
-# plt.xlim(0, N + 1)
-# plt.xlabel('N')
-# plt.legend(loc=3)
-# plt.show()
+plt.figure(num='E2 vs DOFs')
+plt.plot(N_list, e2_linear, 's', label='Linear')
+plt.plot(2*N_list, e2_quadratic, 'o', label='Quadratic')
+plt.plot(N_list, 1/N_list**1, ':', label='$dof^{-1}$')
+plt.plot(N_list, 1/N_list**2, ':', label='dof$^{-2}$')
+plt.plot(N_list, 1/N_list**3, ':', label='dof$^{-3}$')
+plt.yscale('log')
+plt.xscale('log')
+plt.ylabel('$E_2$')
+plt.xlabel('Degrees of Freedom')
+plt.legend(loc=3)
+plt.show()
