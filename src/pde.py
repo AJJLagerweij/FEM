@@ -46,7 +46,7 @@ def projection(x, c, fun, num_q, order):
         f_h(x) = \sum_{n=0}^N u_n \phi_n(x)
 
     as a weighted summation of the basisfunctions of approximation.
-    That is all basisfunctions fall within our FE space :math:\phi_n \in V_h`.
+    Where :math:`phi_n` are the basisfunctions of our FE space :math:`V_h`.
     The unknows here are the weights :math:`f_n`.
     To find these weights we formulate a weak form:
 
