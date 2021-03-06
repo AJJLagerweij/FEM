@@ -62,7 +62,7 @@ def projection(x, c, fun, num_q, order=1):
     As the weights :math:`u_n` are independent of location, we can take them out of the integral:
 
     .. math::
-        \sum_{j=0}^N u_j int_\Omega \phi_i \phi_j(x) dV = \int_\Omega \phi_i f(x) dV \quad \forall \quad \phi\in V_h
+        \sum_{j=0}^N u_j \int_\Omega \phi_i \phi_j(x) dV = \int_\Omega \phi_i f(x) dV \quad \forall \quad \phi\in V_h
 
     Which can be rewritten as a system of linear equations, which is:
 
