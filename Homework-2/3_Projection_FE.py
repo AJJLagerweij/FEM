@@ -2,7 +2,7 @@ r"""
 Approximating
 
 .. math::
-    f(x) = \sin^4(2\pi x) \qquad \forall \, x \in \Omega = [0, 1]
+    f(x) = \begin{cases} 1 & 0.35 \leq x \leq 0.65 \\ 0 & \text{otherwise} \end{cases}
 
 Onto a FE space, the approximation :math:`f_h(x)` defined in finite sized elements using:
 
@@ -22,9 +22,10 @@ COHMAS Mechanical Engineering KAUST
 
 # Importing modules.
 import sys
+
+import matplotlib.pyplot as plt
 import numba as nb
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.integrate import simpson
 
 # Importing my own modules
@@ -122,7 +123,7 @@ def exact(x):
     The exact function:
 
     .. math::
-        f(x) = \sin^4(2\pi x)
+        f(x) = \begin{cases} 1 & 0.35 \leq x \leq 0.65 \\ 0 & \text{otherwise} \end{cases}
 
     Parameters
     ----------
@@ -134,7 +135,9 @@ def exact(x):
     array_like(float)
         The function :math:`f(x)` at points `x`.
     """
-    fun = np.sin(2 * np.pi * x) ** 4
+    fun = np.zeros_like(x)
+    index = np.where((0.35<x) & (x<0.65))
+    fun[index] = 1
     return fun
 
 

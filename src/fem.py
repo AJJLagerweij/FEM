@@ -96,5 +96,3 @@ def kernel1d(x, c, rhs, num_q, order, mass=False):
     else:
         m = None
     return m, f
-
-
