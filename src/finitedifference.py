@@ -1,4 +1,4 @@
-"""
+r"""
 Finite difference example problems.
 
 - Diffusive 1D
