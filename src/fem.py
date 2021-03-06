@@ -18,14 +18,13 @@ COHMAS Mechanical Engineering KAUST
 # Import external modules.
 import numpy as np
 import numba as nb
-import scipy.sparse as ssp
 
 # From my own scripts import
 from element import shape1d, get_element, element_rhs, element_mass
 
 
 @nb.jit(nopython=False)
-def kernel1d(x, c, rhs, num_q, order=1, mass=False):
+def kernel1d(x, c, rhs, num_q, order, mass=False):
     """
     Create the global FEM system by looping over the elements.
 
@@ -99,14 +98,3 @@ def kernel1d(x, c, rhs, num_q, order=1, mass=False):
     return m, f
 
 
-# Numba cannot jit this due to lack of scipy sparse support.
-def fem1d(x, c, rhs, num_q, order=1, mass=False):
-    # Obtain matrix elements from main FEM kernel.
-    m, f = kernel1d(x, c, rhs, num_q, order=order, mass=True)
-
-    # Convert matrix objects to sparse counterparts.
-    if mass is True:
-        m = ssp.coo_matrix(m).tocsr()
-
-    u = ssp.linalg.spsolve(m, f)
-    return u

@@ -24,8 +24,8 @@ import numpy as np
 
 # Importing my own scripts
 sys.path.insert(1, '../src')
-from pde import advective
-from time_integral import forwardEuler, backwardEuler
+from pde import advective_fd
+from solvers import forwardEuler, backwardEuler
 
 
 if __name__ == '__main__':
@@ -44,8 +44,8 @@ if __name__ == '__main__':
     u0 = np.sin(2 * np.pi * x)  # Initial condition
 
     # Solve the problem using method of lines.
-    u_forw = forwardEuler(advective, u0, dt, t_end, args=(dof, dx, c))
-    u_back = backwardEuler(advective, u0, dt, t_end, args=(dof, dx, c))
+    u_forw = forwardEuler(advective_fd, u0, dt, t_end, args=(dof, dx, c))
+    u_back = backwardEuler(advective_fd, u0, dt, t_end, args=(dof, dx, c))
 
     # Plotting the results.
     plt.xlim(0, 1)

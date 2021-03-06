@@ -30,7 +30,8 @@ from scipy.integrate import simpson
 
 # Importing my own modules
 sys.path.insert(1, '../src')
-from fem import fem1d
+from pde import projection
+from solvers import solve
 from element import interpolate
 
 
@@ -87,7 +88,7 @@ def E2(fun, fun_h, x):
     return integral
 
 
-def mesh(x_start, x_end, n, order=1):
+def mesh(x_start, x_end, n, order):
     """
     Meshing the 1D domain into `n` evenly spaced elements.
 
@@ -99,7 +100,7 @@ def mesh(x_start, x_end, n, order=1):
         End coordinate of the domain.
     n : int
         Number of elements used to discretized the domain.
-    order : int, optional
+    order : int
         Order of the interpolation functions.
 
     Returns
@@ -143,7 +144,7 @@ len_x = int(1e6)
 x = np.linspace(0, 1, len_x)
 
 # Store error results.
-N_list = 2**np.arange(1, 18)
+N_list = 2**np.arange(1, 8)
 e1_linear = []
 e2_linear = []
 e1_quadratic = []
@@ -159,9 +160,9 @@ lin_ax.plot(x, exact(x), lw=2, label='Exact')
 print("Linear")
 for N in N_list:
     print(f'{N} Elements')
-    grid, connect = mesh(0, 1, N, order=1)
-    u = fem1d(grid, connect, exact, num_q, order=1, mass=True)
-    u_x = interpolate(u, grid, connect, x, order=1)
+    grid, connect = mesh(0, 1, N, 1)
+    u = solve(projection, args=(grid, connect, exact, num_q, 1))
+    u_x = interpolate(u, grid, connect, x, 1)
 
     lin_ax.plot(x, u_x, ':', label=f'{N} elements')
     e1_linear.append(E1(exact(x), u_x, x))
@@ -183,9 +184,9 @@ qua_ax.plot(x, exact(x), lw=2, label='Exact')
 print("Quadratic")
 for N in N_list:
     print(f'{N} Elements')
-    grid, connect = mesh(0, 1, N, order=2)
-    u = fem1d(grid, connect, exact, num_q, order=2, mass=True)
-    u_x = interpolate(u, grid, connect, x, order=2)
+    grid, connect = mesh(0, 1, N, 2)
+    u = solve(projection, args=(grid, connect, exact, num_q, 2))
+    u_x = interpolate(u, grid, connect, x, 2)
 
     qua_ax.plot(x, u_x, ':', label=f'{N} elements')
     e1_quadratic.append(E1(exact(x), u_x, x))

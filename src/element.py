@@ -15,7 +15,7 @@ from helper import gauss
 
 
 @nb.jit(nopython=True)
-def shape1d(x, order=1):
+def shape1d(x, order):
     """
     Shape function for a 1D Lagrange reference element.
 
@@ -23,8 +23,8 @@ def shape1d(x, order=1):
     ----------
     x : array_like (float)
         Location where the shape functions are sampled.
-    order : int, optional
-        The order of the polynomial used. Optional, default value is 1.
+    order : int
+        The order of the polynomial used.
 
     Returns
     -------
@@ -37,20 +37,36 @@ def shape1d(x, order=1):
         Raised when the requested order of shape function polynomaial is not implemented.
     """
     phi = np.zeros((order+1, len(x)))
+    dphi = np.zeros_like(phi)
+
     if order == 1:
+        # Shape functions
         phi[0] = 1 - x
         phi[1] = x
+
+        # Derivatives
+        dphi[0] = -1
+        dphi[1] = 1
+
     elif order == 2:
+        # Shape functions
         phi[0] = 1 - 3 * x + 2 * x ** 2
         phi[2] = -x + 2 * x ** 2
         phi[1] = 4 * x - 4 * x ** 2
+
+        # Derivatives
+        dphi[0] = -3 + 4 * x
+        dphi[2] = -1 + 4 * x
+        dphi[1] = 4 - 8 * x
+
     else:
         raise NotImplementedError("This order of shape function is not implemented.")
-    return phi
+
+    return phi, dphi
 
 
 @nb.jit(nopython=False)
-def interpolate(u, x, c, x_inter, order=1):
+def interpolate(u, x, c, x_inter, order):
     """
     Obtain the field :math`u(x)` any points `x_inter` following the FE interpolation.
 
@@ -64,8 +80,8 @@ def interpolate(u, x, c, x_inter, order=1):
         Element to degree of freedom connectivety map.
     x_inter : array_like(float)
         The location where we want to obtain our interpolated field.
-    order : int, optional
-        The order of the shape functions used. Default is 1.
+    order : int
+        The order of the shape functions used.
 
     Returns
     -------
@@ -89,14 +105,14 @@ def interpolate(u, x, c, x_inter, order=1):
         x_loc = (x_inter[ind] - x_ele[0]) / (x_ele[-1] - x_ele[0])
 
         # Obtain the shape functions and calculate the field.
-        phi_x = shape1d(x_loc, order=order)
+        phi_x, dphi_x = shape1d(x_loc, order)
         u_inter[ind] = np.sum(u[dofe] * phi_x.T, axis=1)
 
     return u_inter
 
 
 @nb.jit(nopython=True)
-def get_element(num_q, x, rhs, order=1):
+def get_element(num_q, x, rhs, order):
     """
     Get the properties of this element.
 
@@ -108,8 +124,8 @@ def get_element(num_q, x, rhs, order=1):
         Nodal locations in global coordinates.
     rhs : callable
         Function that acts as our right hand side (nonhomogeneous term).
-    order : int, optional
-        Order of the polynomial used by our element. Default is 1.
+    order : int
+        Order of the polynomial used by our element.
 
     Returns
     -------
@@ -128,7 +144,7 @@ def get_element(num_q, x, rhs, order=1):
     xq, wq = gauss(num_q)
 
     # Get properties at quadrature points.
-    phi_xq = shape1d(xq, order=order)
+    phi_xq, dphi_x = shape1d(xq, order)
     wq_phi_xq_detJ = wq * phi_xq * detJ * 0.2
     f_xq = rhs(xq*h + x[0])
     return phi_xq, wq_phi_xq_detJ, f_xq

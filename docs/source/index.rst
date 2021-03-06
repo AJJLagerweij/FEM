@@ -29,7 +29,7 @@ Documentation for FEM AMCS 394E
    Docstrings_PDE
    Docstrings_FEM
    Docstrings_Element
-   Docstrings_Time
+   Docstrings_Solvers
    Docstrings_Helper
    Docstrings_Derivative
 
