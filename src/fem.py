@@ -20,12 +20,145 @@ import numpy as np
 import numba as nb
 
 # From my own scripts import
-from element import shape1d, get_element, element_rhs, element_mass
+from element import get_element
+
+
+@nb.jit(nopython=True)
+def element_mass(phi_xq, wq_detJ):
+    r"""
+    Compute the elmement mass matrix.
+
+    Parameters
+    ----------
+    phi_xq : array_like(float), shape((dofe, num_q))
+        For each shape function the value at the quadrature points.
+    wq_detJ : array_like(float), shape((dofe, num_q))
+        Integration weight including the mapping from local to global coordinates.
+
+    Returns
+    -------
+    me : array_like(float), shape((dofe, dofe))
+        Element mass matrix.
+    """
+    # Create empty storage for element properties.
+    dofe = len(phi_xq)
+    me = np.zeros((dofe, dofe))
+
+    # Quadrature summations handeled by numpy.sum().
+    # Loop over all degrees of freedom and get:
+    for i in range(dofe):
+        # Matrix diagonal quantiy.
+        me[i, i] = np.sum(phi_xq[i] * phi_xq[i] * wq_detJ)
+
+        # Loop over all degrees of freedom and get matrix quantities.
+        for j in range(i+1, dofe):
+            me_ij = np.sum(phi_xq[j] * phi_xq[i] * wq_detJ)
+            me[i, j] = me_ij
+            me[j, i] = me_ij
+    return me
+
+
+@nb.jit(nopython=True)
+def element_transport(phi_xq, dphi_xq, wq_detJ):
+    r"""
+    Compute the elmement mass matrix.
+
+    Parameters
+    ----------
+    phi_xq : array_like(float), shape((dofe, num_q))
+        For each shape function the value at the quadrature points.
+    dphi_xq : array_like(float), shape((dofe, num_q))
+        For each shape function the derivative at the quadrature points.
+    wq_detJ : array_like(float), shape((dofe, num_q))
+        Integration weight including the mapping from local to global coordinates.
+
+    Returns
+    -------
+    te : array_like(float), shape((dofe, dofe))
+        Element mass matrix.
+    """
+    # Create empty storage for element properties.
+    dofe = len(phi_xq)
+    te = np.zeros((dofe, dofe))
+
+    # Quadrature summations handeled by numpy.sum().
+    # Loop over all degrees of freedom and get:
+    for i in range(dofe):
+        # Loop over all degrees of freedom and get matrix quantities.
+        for j in range(dofe):
+            te[i, j] = np.sum(phi_xq[j] * dphi_xq[i] * wq_detJ)
+    return te
+
+
+@nb.jit(nopython=True)
+def element_stiffness(dphi_xq, wq_detJ):
+    r"""
+    Compute the elmement mass matrix.
+
+    Parameters
+    ----------
+    dphi_xq : array_like(float), shape((dofe, num_q))
+        For each shape function the derivative at the quadrature points.
+    wq_detJ : array_like(float), shape((dofe, num_q))
+        Integration weight including the mapping from local to global coordinates.
+
+    Returns
+    -------
+    se : array_like(float), shape((dofe, dofe))
+        Element mass matrix.
+    """
+    # Create empty storage for element properties.
+    dofe = len(dphi_xq)
+    se = np.zeros((dofe, dofe))
+
+    # Quadrature summations handeled by numpy.sum().
+    # Loop over all degrees of freedom and get:
+    for i in range(dofe):
+        # Matrix diagonal quantiy.
+        se[i, i] = np.sum(dphi_xq[i] * dphi_xq[i] * wq_detJ)
+
+        # Loop over all degrees of freedom and get matrix quantities.
+        for j in range(i+1, dofe):
+            me_ij = np.sum(dphi_xq[j] * dphi_xq[i] * wq_detJ)
+            se[i, j] = me_ij
+            se[j, i] = me_ij
+    return se
+
+
+@nb.jit(nopython=True)
+def element_rhs(phi_xq, wq_detJ, f_xq):
+    r"""
+    Compute the elmement right hand side vector.
+
+    Parameters
+    ----------
+    phi_xq : array_like(float), shape((dofs, num_q))
+        For each shape function the value at the quadrature points.
+    f_xq : array_like(float), shape(num_q)
+        The value of the right hand side equation evaluated at the quadrature points.
+    wq_detJ : array_like(float), shape((dofs, num_q))
+        Integration weight including the mapping from local to global coordinates.
+
+    Returns
+    -------
+    fe : array_like(float), shape(dofe)
+        Element right hand side in our system of equations.
+    """
+    # Create empty storage for element properties.
+    dofe = len(phi_xq)
+    fe = np.zeros(dofe)
+
+    # Quadrature summations handeled by numpy.sum().
+    # Loop over all degrees of freedom and get:
+    for i in range(dofe):
+        # Vector quantity.
+        fe[i] = np.sum(f_xq * phi_xq[i] *wq_detJ)
+    return fe
 
 
 @nb.jit(nopython=False)
-def kernel1d(x, c, rhs, num_q, order, mass=False):
-    """
+def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=False):
+    r"""
     Create the global FEM system by looping over the elements.
 
     Parameters
@@ -35,55 +168,94 @@ def kernel1d(x, c, rhs, num_q, order, mass=False):
     c : array_like(int), shape((num_ele, dofe/ele))
         Element to degree of freedom connectivety map.
     rhs : callable
-        Function that acts as our right hand side (nonhomogeneous term).
+        Function that acts as our right hand side (nonhomogeneous term), set equal to `None` if the rhs is zero valued.
     num_q : int
         Number of Gausian quadrature points.
     order : int
         Order of the polynomial used by our element.
     mass : bool, optional
         Return a mass matrix. Default is `False`.
+    transport : bool, optional
+        Return the transport matrix. Default is `False`.
+    stiffness : bool, optional
+        Return the stiffness matrix. Default is `False`.
 
     Returns
     -------
     f : array_like(float), shape(dofe)
         Global right hand side in our system of equations.
         Only when `rhs != None`, `None` otherwise.
-    m : COO (value (row, value))
-        Global mass matrix, ready to be converted to COO. Repeating idicess do exist.
+    M : COO (value, (row, column))
+        Global mass matrix, ready to be converted to COO. Repeating indices do exist.
         Only `mass == True`, `None` otherwise.
+    T : COO (value, (row, column))
+        Global transport matrix, ready to be converted to COO. Repeating indices do exist.
+        Only 'transport == True`, `None` otherwise.
+    S : COO (value, (row, column))
+        Global stiffness matrix, ready to be converted to COO. Repeating indices do exist.
+        Only 'stiffness == True`, `None` otherwise.
     """
     num_ele = len(c)
     num_dofs = np.max(c) + 1
     num_dofe = len(c[0])  # number of element dofe
 
     # Initialize right hand side vector (dense).
-    if rhs != None:
-        f = np.zeros(num_dofs)
-    else:
-        f = None
+    f = np.zeros(num_dofs)
 
     # Initialize mass matrix (sparse coo format).
     if mass is True:
-        m_v = np.zeros((num_ele, num_dofe**2))  # Value list
-        m_i = np.zeros((num_ele, num_dofe**2), dtype=nb.types.uint)  # Row list
-        m_j = np.zeros((num_ele, num_dofe**2), dtype=nb.types.uint)  # Column list
+        m_v = np.zeros((num_ele, num_dofe ** 2))  # Value list
+        m_i = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Row list
+        m_j = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Column list
     else:
         m_v, m_i, m_j = None, None, None
+
+    # Initialize transport matrix (sparse coo format).
+    if transport is True:
+        t_v = np.zeros((num_ele, num_dofe ** 2))  # Value list
+        t_i = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Row list
+        t_j = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Column list
+    else:
+        t_v, t_i, t_j = None, None, None
+
+    # Initialize stiffness matrix (sparse coo format).
+    if stiffness is True:
+        s_v = np.zeros((num_ele, num_dofe ** 2))  # Value list
+        s_i = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Row list
+        s_j = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Column list
+    else:
+        s_v, s_i, s_j = None, None, None
 
     for ele in range(num_ele):
         # Obtain element properties
         dofe = c[ele]
         x_ele = x[dofe]
-        phi_xq, wq_phi_xq_detJ, f_xq = get_element(num_q, x_ele, rhs, order=order)
+        phi_xq, dphi_xq, f_xq, wq_detJ = get_element(num_q, x_ele, rhs, order=order)
 
         # Perform integration and compute right hand side vector.
         if rhs != None:
-            fe = element_rhs(wq_phi_xq_detJ, f_xq)
+            fe = element_rhs(phi_xq, wq_detJ, f_xq)
             f[dofe] += fe
 
         # Calculate element mass matrix and add to value colunm row arrays.
         if mass == True:
-            me = element_mass(phi_xq, wq_phi_xq_detJ)
+            me = element_mass(phi_xq, wq_detJ)
+            ie = np.repeat(dofe, len(dofe))
+            je = ie.reshape((-1, len(dofe))).T.ravel()
+            m_v[ele] = me.ravel()
+            m_i[ele] = ie
+            m_j[ele] = je
+
+        if transport == True:
+            me = element_transport(phi_xq, dphi_xq, wq_detJ)
+            ie = np.repeat(dofe, len(dofe))
+            je = ie.reshape((-1, len(dofe))).T.ravel()
+            m_v[ele] = me.ravel()
+            m_i[ele] = ie
+            m_j[ele] = je
+
+        if stiffness == True:
+            me = element_stiffness(dphi_xq, wq_detJ)
             ie = np.repeat(dofe, len(dofe))
             je = ie.reshape((-1, len(dofe))).T.ravel()
             m_v[ele] = me.ravel()
@@ -92,7 +264,18 @@ def kernel1d(x, c, rhs, num_q, order, mass=False):
 
     # Flatten mass COO arrays, repeating indices remain.
     if mass == True:
-        m = (m_v.ravel(), (m_i.ravel(), m_j.ravel()))
+        M = (m_v.ravel(), (m_i.ravel(), m_j.ravel()))
     else:
-        m = None
-    return m, f
+        M = None
+
+    if transport == True:
+        T = (t_v.ravel(), (t_i.ravel(), t_j.ravel()))
+    else:
+        T = None
+
+    if stiffness == True:
+        S = (s_v.ravel(), (s_i.ravel(), s_j.ravel()))
+    else:
+        S = None
+
+    return M, T, S, f
