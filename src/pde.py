@@ -106,6 +106,11 @@ def diffusive(x, c, mu, num_q, order):
     .. math::
         u_{t} = \mu u_{xx}  \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
 
+    is discretized though FE such that it results in linear algabra objects.
+    This FE projection represents the following equation:
+
+    .. math::
+        M u_t = K u + b
 
     Parameters
     ----------
@@ -124,8 +129,8 @@ def diffusive(x, c, mu, num_q, order):
     -------
     M : matrix, (sparse csr format)
         The mass matrix.
-    S : matrix, (sparse csr format)
-        The stiffeness matrix.
+    K : matrix, (sparse csr format)
+        The negative stiffeness matrix.
     b : vector, (dense array)
         The right hand side, caused by the non-homogeneous behavior.
     """
@@ -134,5 +139,5 @@ def diffusive(x, c, mu, num_q, order):
 
     # Convert matrix objects to sparse counterparts.
     M = sparse.coo_matrix(M).tocsr()
-    S = mu * sparse.coo_matrix(S).tocsr()
-    return M, S, b
+    K = mu * sparse.coo_matrix(S).tocsr()
+    return M, K, b
