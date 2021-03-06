@@ -4,7 +4,7 @@ Storing various PDEs that can be will be solved in this course. This includes:
 - Diffusive 1D
 
     .. math::
-       u_{t} = \mu u_{xx} \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
+       u_{t} - \mu u_{xx} = 0 \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
 
 - Advective 1D
 
@@ -14,12 +14,12 @@ Storing various PDEs that can be will be solved in this course. This includes:
 - Diffusive-Advective 1D
 
     .. math::
-       u_{t} + c {u}_{x} = \mu u_{xx} \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
+       u_{t} + c {u}_{x} - \mu u_{xx} = 0 \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
 
 - Poisson in 1D
 
     .. math::
-       u_{uu} = f(x) \qquad \forall \, x \in \Omega = [0, L]
+       u_{xx} = f(x) \qquad \forall \, x \in \Omega = [0, L]
 
 The goal is to implement the code in python and not rely on existing methods.
 
@@ -104,7 +104,7 @@ def diffusive(x, c, mu, num_q, order):
     Time derivative of the PDE for advective diffusive problems.
 
     .. math::
-        u_{t} = \mu u_{xx}  \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
+        u_{t} - \mu u_{xx} = 0 \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
 
     is discretized though FE such that it results in linear algabra objects.
     This FE projection represents the following equation:

@@ -4,7 +4,7 @@ Finite difference example problems.
 - Diffusive 1D
 
     .. math::
-       u_{t} = \mu u_{xx} \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
+       u_{t} - \mu u_{xx} = 0 \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
 
 - Advective 1D
 
@@ -14,12 +14,12 @@ Finite difference example problems.
 - Diffusive-Advective 1D
 
     .. math::
-       u_{t} + c {u}_{x} = \mu u_{xx} \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
+       u_{t} + c {u}_{x} - \mu u_{xx} = 0 \qquad \forall \, x \in \Omega = [0, L] \quad \& \quad t>0
 
 - Poisson in 1D
 
     .. math::
-     u_{uu} = f(x) \qquad \forall \, x \in \Omega = [0, L]
+        - c u_{xx} = f(x) \qquad \forall \, x \in \Omega = [0, L]
 
 Bram Lagerweij
 COHMAS Mechanical Engineering KAUST
@@ -289,7 +289,7 @@ def poisson(dof, dx, f, c=1):
     Problem formulation of a Poisson equation.
 
     .. math::
-        c u_{xx} = f(x)  \qquad \forall \, x \in \Omega = [0, L]
+        -c u_{xx} = f(x)  \qquad \forall \, x \in \Omega = [0, L]
 
     Because we use finite difference based matrix products we can convert this
     into a matrix vector product, where :math:`D_{xx}` the is the
