@@ -133,13 +133,13 @@ Preform the same projection for the following non-smooth function:
 Consider the one-dimensional advection diffusion equation:
 
 .. math::
-   u_t + u_x - \mu u_{xx} =0 \qquad \forall \quad x\in\Omega=[0,1]
+   u_t + u_x - \mu u_{xx} =0 \qquad \forall \quad x\in\Omega=[0,2\pi]
 
 where :math:`\mu>0` is a coefficient.
 Consider periodic boundary conditions and the following initial conditions:
 
 .. math::
-   u(x, 0) = \sin^4 (2\pi x)
+   u(x, 0) = \sin^4 (x)
 
 The exact solution to this equation is given by:
 
@@ -153,7 +153,7 @@ Solve this problem using a FEM implementation with the following steps:
 1. Consider continuous piecewise linear polynomials and interpolatory basis functions.
 2. Obtain the discrete weak formulation.
 3. Identify the different matrices associated with the finite element discretization.
-4. Implement and solve the equation via finite elements up to :math:`t = 1`.
+4. Implement and solve the equation via finite elements up to :math:`t = 2\pi`.
 
 4.2 Compute the error
 =====================
