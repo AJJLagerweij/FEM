@@ -31,7 +31,7 @@ Documentation for FEM AMCS 394E
    Docstrings_Element
    Docstrings_Solvers
    Docstrings_Helper
-   Docstrings_Derivative
+   Docstrings_FiniteDifference
 
 .. toctree::
    :caption: Others

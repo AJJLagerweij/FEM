@@ -1,5 +1,0 @@
-***********
-Derivatives
-***********
-.. automodule:: derivative
-    :members:

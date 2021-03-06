@@ -25,7 +25,7 @@ import numpy as np
 
 # Importing my own scripts
 sys.path.insert(1, '../src')
-from pde import advectivediffusive_fd
+from finitedifference import advectivediffusive
 from solvers import forwardEuler, backwardEuler
 
 
@@ -46,8 +46,8 @@ if __name__ == '__main__':
     u0 = np.sin(2 * np.pi * x)  # Initial condition
 
     # Solve the problem using method of lines.
-    u_forw = forwardEuler(advectivediffusive_fd, u0, dt, t_end, args=(dof, dx, mu, c))
-    u_back = backwardEuler(advectivediffusive_fd, u0, dt, t_end, args=(dof, dx, mu, c))
+    u_forw = forwardEuler(advectivediffusive, u0, dt, t_end, args=(dof, dx, mu, c))
+    u_back = backwardEuler(advectivediffusive, u0, dt, t_end, args=(dof, dx, mu, c))
 
     # Plotting the results.
     plt.xlim(0, 1)

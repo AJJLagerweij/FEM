@@ -29,7 +29,7 @@ from scipy.sparse.linalg import spsolve
 
 # Importing my own scripts
 sys.path.insert(1, '../src')
-from pde import poisson_fd
+from finitedifference import poisson
 
 
 def moment(P, L):
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     M = moment(P, L)  # Create a callable for the moment in Nmm
 
     # Create linear problem.
-    K, f = poisson_fd(dof, dx, M, c=EI)
+    K, f = poisson(dof, dx, M, c=EI)
 
     # Boundary condition u(0) = 0
     K[0, 0] = 1
