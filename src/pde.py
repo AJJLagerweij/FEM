@@ -99,7 +99,7 @@ def projection(x, c, fun, num_q, order):
     return M, b
 
 
-def diffusive(dof, dx, mu):
+def diffusive(x, c, mu, num_q, order):
     r"""
     Time derivative of the PDE for advective diffusive problems.
 
@@ -113,8 +113,8 @@ def diffusive(dof, dx, mu):
         Global coordinates of all degrees of freedom.
     c : array_like(int), shape((num_ele, dofe/ele))
         Element to degree of freedom connectivety map.
-    fun : callable
-        Function that acts as our right hand side (nonhomogeneous term).
+    mu : float
+        Diffusive constant.
     num_q : int
         Number of Gausian quadrature points.
     order : int
@@ -134,5 +134,5 @@ def diffusive(dof, dx, mu):
 
     # Convert matrix objects to sparse counterparts.
     M = sparse.coo_matrix(M).tocsr()
-    S = sparse.coo_matrix(S).tocsr()
+    S = mu * sparse.coo_matrix(S).tocsr()
     return M, S, b

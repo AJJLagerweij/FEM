@@ -174,15 +174,17 @@ def diffusive(dof, dx, mu):
 
     Returns
     -------
+    M : matrix (sparse csr format)
+        The mass matrix, which will equal the identity matrix in finite differenc problems.
     K : matrix (sparse csr format)
         The time derivative part of the pde obtained from the spatial part.
     b : vector (dense array)
         The remaining term, in this homogeneous case it is a zero array.
     """
-    # M = sparse.
+    M = sparse.identity(dof, format='csr')
     K = mu * Dxx(dof, dx)
     b = np.zeros(dof)
-    return K, b
+    return M, K, b
 
 
 def advective(dof, dx, c):
@@ -219,14 +221,17 @@ def advective(dof, dx, c):
 
     Returns
     -------
+    M : matrix (sparse csr format)
+        The mass matrix, which will equal the identity matrix in finite differenc problems.
     K : matrix (sparse csr format)
         The time derivative part of the pde obtained from the spatial part.
     b : vector (dense array)
         The remaining term, in this homogeneous case it is a zero array.
     """
+    M = sparse.identity(dof, format='csr')
     K = -c * Dx(dof, dx)
     b = np.zeros(dof)
-    return K, b
+    return M, K, b
 
 
 def advectivediffusive(dof, dx, mu, c):
@@ -266,14 +271,17 @@ def advectivediffusive(dof, dx, mu, c):
 
     Returns
     -------
+    M : matrix (sparse csr format)
+        The mass matrix, which will equal the identity matrix in finite differenc problems.
     K : matrix (sparse csr format)
         The time derivative part of the pde obtained from the spatial part.
     b : vector (dense array)
         The remaining term, in this homogeneous case it is a zero array.
     """
+    M = sparse.identity(dof, format='csr')
     K = -c * Dx(dof, dx) + mu * Dxx(dof, dx)
     b = np.zeros(dof)
-    return K, b
+    return M, K, b
 
 
 def poisson(dof, dx, f, c=1):

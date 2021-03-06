@@ -8,14 +8,23 @@ COHMAS Mechanical Engineering KAUST
 """
 
 # Importing External modules
-import numpy as np
-import scipy.sparse as sparse
+from scipy.sparse import identity
 from scipy.sparse.linalg import spsolve
 
 
 def forwardEuler(func, u, dt, t_end, args=()):
     r"""
     Itterate a through time with the forward Eurler method.
+
+    Lets assume that, through any type of discretization, the time derivative was obtained.
+    This time derivative can be represented through linear algabra as:
+
+    .. math::
+        M u_t = K u + b \qquad \text{that is} \qquad u_t = M^{-1}(K u + b)
+
+    where :math:`M` is the mass matrix, :math:`K` the siffness and transport matrix
+    and vector :math:`b` the right hand side. these are obtained from approximations
+    of the spatial derivatives defined by the functien provided to `func`.
 
     The backward Euler method predicts the field of our function based upon
     information of the previous timestep only. Imagine that we are at timestep
@@ -30,26 +39,32 @@ def forwardEuler(func, u, dt, t_end, args=()):
     .. math::
         u^{(n+1)} = u^{(n)} + dt\, u^{(n)}_t
 
-    Our time derivative at the current timestep, :math:`u^{(n)}_t` is obtained
-    with:
+    Now from our linear algabra implementation we substitute :math:`u_t`
 
     .. math::
-        u_t = K u + b
-
-    where matrix :math:`K` and vector :math:`b` stem from approximations of our
-    spatial derivatives defined by the functien provided to `func`. Resulting
-    in the following update scheme:
-
-    .. math::
-        u^{(n+1)} = u^{(n)} + dt\, (K u^{(n)} + b)
+        u^{(n+1)} = u^{(n)} + dt\, M^{-1}(K u^{(n)} + b)
 
     most important of all is to see that everything on the right hand side is
-    exactly known. Thus the updated field can be calculated directly.
+    exactly known. Thus the updated field can be calculated directly. However
+    For this purpouse we would have to invert the mass matrix. If the mass matrix
+    is the identity matrix this is simple, but in generally this is not the case.
+    As we don't want to invert large matrices, we multiply all terms by :math:`M`.
+
+    .. math::
+        M u^{(n+1)} = M u^{(n)} + dt\,(K u^{(n)} + b)
+
+    Which is a system of equations as everything on the right hand side is known and
+    can be calculated directly.
+
+    Notes
+    -----
+    This code will recognize if :math:`M` is the identity matrix and, in that case
+    it will solve the problem directly, avoiding the need to solve a sytem of equations.
 
     Parameters
     ----------
     func : callable
-        The time derivative of the pde to be solved such that :math:`u_t = K\,u + b`.
+        The time derivative of the pde to be solved such that :math:`M\,u_t = K\,u + b`.
     u : array_like
         The field at the start :math:`u(t=0)`.
     dt : float
@@ -64,20 +79,40 @@ def forwardEuler(func, u, dt, t_end, args=()):
     array_like
         The function for all time steps.
     """
-    # The t derivative matrix is constant, as it is expensive to build these
-    # kind of matrices we make it only once.
-    K, b = func(*args)
-
-    # Update the timesteps.
     max_iter = int(t_end / dt)
-    for n in range(max_iter):
-        u = u + dt * (K * u + b)
+
+    # The t derivative matrix is constant, as it is expensive to
+    # build these kind of matrices we make it only once.
+    M, K, b = func(*args)
+
+    # Check if M is an identity matrix
+    eye = identity(M.shape[0], format='csr')
+    if (M!=eye).nnz==0:
+        for n in range(max_iter):
+            u = u + dt * (K * u + b)
+
+    # Mass matrix is not identity matrix, hence we need
+    # to solve a system of equations.
+    else:
+        for n in range(max_iter):
+            rhs = M * u + dt * (K * u + b)
+            u = spsolve(M, rhs)
     return u
 
 
 def backwardEuler(func, u, dt, t_end, args=()):
     r"""
     Itterate a through time with the backward Eurler method.
+
+    Lets assume that, through any type of discretization, the time derivative was obtained.
+    This time derivative can be represented through linear algabra as:
+
+    .. math::
+        M\,u_t = K,\u + b \qquad \text{that is} \qquad u_t = M^{-1}(K\,u + b)
+
+    where :math:`M` is the mass matrix, :math:`K` the siffness and transport matrix
+    and vector :math:`b` the right hand side. these are obtained from approximations
+    of the spatial derivatives defined by the functien provided to `func`
 
     The backward Euler method predicts the field of our function based upon
     information of the previous timestep only. Imagine that we are at timestep
@@ -93,30 +128,25 @@ def backwardEuler(func, u, dt, t_end, args=()):
     .. math::
         u^{(n+1)} = u^{(n)} + dt\, u^{(n+1)}_t
 
+    in which we substitute the linear algabra representation of our PD.
+
+    .. math::
+        u^{(n+1)} = u^{(n)} + dt\, M^{-1}(K u^{n+1} + b)
+
     It is important to notic that there is a term with an unknown, as that is
-    at time step :math:`n+1' on both sides of the equation.
-    Our time derivative is obtained with an approximation equation:
+    at time step :math:`n+1' on both sides of the equation. Now we rewrite it
+    into a system of equations where we find all unknowns on the left hand side
+    and all knownn on the right hand side.
 
     .. math::
-        u_t = K u + b
+        (M - dt\,K)\,u^{(n+1)} = M\,u^{(n)} + dt b
 
-    where matrix :math:`K` and vector :math:`b` stem from approximations of our
-    spatial derivatives defined by the functien provided to `func`. This
-    results in:
-
-    .. math::
-        u^{(n+1)} = u^{(n)} + dt\, ( K u^{(n+1)} + b )
-
-    Now we rewrite it into a system of equations where we find all unknowns
-    on the left hand side and all knownn on the right hand side.
-
-    .. math::
-        (I - dt\,K)\, u^{(n+1)} = u^{(n)} + dt\,b
+    This is a system of equations which can be solved.
 
     Parameters
     ----------
     func : callable
-        The time derivative of the pde to be solved such that :math:`u_t = K\,u + b`.
+        The time derivative of the pde to be solved such that :math:`M\,u_t = K\,u + b`.
     u : array_like
         The field at the start :math:`u(t=0)`.
     dt : float
@@ -133,13 +163,14 @@ def backwardEuler(func, u, dt, t_end, args=()):
     """
     # The t derivative matrix is constant, as it is expensive to build these
     # kind of matrices we make it only once.
-    K, b = func(*args)
-    A = sparse.identity(len(b)) - dt*K
+    M, K, b = func(*args)
+    A = M - dt*K
 
     # Update the timesteps with the implicit scheme.
     max_iter = int(t_end / dt)
     for n in range(max_iter):
-        u = spsolve(A, u + dt*b)
+        rhs = u + dt*b
+        u = spsolve(A, b)
     return u
 
 

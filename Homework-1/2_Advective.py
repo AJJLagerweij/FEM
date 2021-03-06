@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     # Solve the problem using method of lines.
     u_forw = forwardEuler(advective, u0, dt, t_end, args=(dof, dx, c))
-    u_back = backwardEuler(advective, u0, dt, t_end, args=(dof, dx, c))
+    # u_back = backwardEuler(advective, u0, dt, t_end, args=(dof, dx, c))
 
     # Plotting the results.
     plt.xlim(0, 1)
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     plt.tight_layout()
 
     plt.plot(x, u_forw, label='forward')
-    plt.plot(x, u_back, label='backward')
+    # plt.plot(x, u_back, label='backward')
 
     plt.legend()
     plt.show()
