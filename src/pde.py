@@ -36,7 +36,7 @@ import scipy.sparse as sparse
 from fem import kernel1d
 
 
-def projection(x, c, fun, num_q, order=1):
+def projection(x, c, fun, num_q, order):
     r"""
     Projecting a 1D function :math:`f(x)` on a finite element basis.
 
@@ -51,18 +51,18 @@ def projection(x, c, fun, num_q, order=1):
     To find these weights we formulate a weak form:
 
     .. math::
-        \int_\Omega (f_h(x) - f(x)) \phi_i dV = 0 \quad \forall \quad \phi_i \in V_h
+        \int_\Omega (f_h(x) - f(x)) \, \phi_i(x)\, dV = 0 \quad \forall \quad \phi_i \in V_h
 
     in which we substitute our approximation function and separate the knowns from the unknowns.
     We find:
 
     .. math::
-         \int_\Omega \phi_i \sum_{j=0}^N u_j \phi_j(x) dV = \int_\Omega \phi_i f(x) dV \quad \forall \quad \phi\in V_h
+         \int_\Omega \phi_i(x) \sum_{j=0}^N u_j \phi_j(x)\, dV = \int_\Omega \phi_i(x) f(x) \, dV \quad \forall \quad \phi_i \in V_h
 
     As the weights :math:`u_n` are independent of location, we can take them out of the integral:
 
     .. math::
-        \sum_{j=0}^N u_j \int_\Omega \phi_i \phi_j(x) dV = \int_\Omega \phi_i f(x) dV \quad \forall \quad \phi\in V_h
+        \sum_{j=0}^N u_j \int_\Omega \phi_i(x) \phi_j(x)\, dV = \int_\Omega \phi_i(x) f(x)\, dV \quad \forall \quad \phi_i \in V_h
 
     Which can be rewritten as a system of linear equations, which is:
 
