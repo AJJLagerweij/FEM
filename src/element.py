@@ -65,6 +65,51 @@ def shape1d(x, order):
     return phi, dphi
 
 
+def triangle2d(x, order):
+    r"""
+    Shape function for a 2D linear triangles.
+
+    Parameters
+    ----------
+    x : array_like (float, float)
+        Location [x1, x2] where the shape functions are sampled.
+    order : int
+        The order of the polynomial used, only option is 1.
+
+    Returns
+    -------
+    array_like
+        The array with the values of the shape funcions at `x`.
+
+    Raises
+    ------
+    NotImplementedError
+        Raised when the requested order of shape function polynomaial is not implemented.
+    """
+    phi = np.zeros((order+1, len(x)))
+    dxphi = np.zeros_like(phi)
+    dyphi = np.zeros_like(phi)
+
+    if order == 1:
+        # Shape functions
+        phi[0] = x[0]
+        phi[1] = x[1]
+        phi[2] = 1 - x[0] - x[1]
+
+        # Derivatives
+        dxphi[0] = 1
+        dxphi[1] = 0
+        dxphi[2] = -1
+        dyhpi[0] = 0
+        dyhpi[0] = 1
+        dyhpi[0] = -1
+
+    else:
+        raise NotImplementedError("This order of shape function is not implemented.")
+
+    return phi, dphi
+
+
 @nb.jit(nopython=False)
 def interpolate(u, x, c, x_inter, order):
     r"""
@@ -150,5 +195,10 @@ def get_element(num_q, x, rhs, order):
     phi_xq, dphi_xq = shape1d(xq, order)
     invJ_dphi_xq = invJ * dphi_xq
     wq_detJ = wq * detJ
-    f_xq = rhs(xq*h + x[0])
+
+    # Check if the right hand side is a function or not.
+    if rhs != None:
+        f_xq = rhs(xq*h + x[0])
+    else:
+        f_xq = np.zeros_like(xq)
     return phi_xq, invJ_dphi_xq, f_xq, wq_detJ

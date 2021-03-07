@@ -164,9 +164,9 @@ def element_stiffness(invJ_dphi_xq, wq_detJ):
 
         # Loop over all degrees of freedom and get matrix quantities.
         for j in range(i+1, dofe):
-            me_ij = np.sum(invJ_dphi_xq[j] * invJ_dphi_xq[i] * wq_detJ)
-            se[i, j] = me_ij
-            se[j, i] = me_ij
+            se_ij = np.sum(invJ_dphi_xq[j] * invJ_dphi_xq[i] * wq_detJ)
+            se[i, j] = se_ij
+            se[j, i] = se_ij
     return se
 
 

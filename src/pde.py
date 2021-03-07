@@ -184,6 +184,16 @@ def diffusive(x, connect, mu, num_q, order):
     # Convert matrix objects to sparse counterparts.
     M = sparse.coo_matrix(M).tocsr()
     K = mu * sparse.coo_matrix(S).tocsr()
+
+    # Apply periodic boundary condition in a very dirty way.
+    M[0, 0] = M[1, 1]
+    M[0, -2] = M[1, 0]
+    M[-1, -1] = M[-2, -2]
+    M[-1, 1] = M[-2, -1]
+    K[0, 0] = K[1, 1]
+    K[0, -2] = K[1, 0]
+    K[-1, -1] = K[-2, -2]
+    K[-1, 1] = K[-2, -1]
     return M, K, b
 
 
@@ -277,6 +287,16 @@ def advective(x, connect, c, num_q, order):
     # Convert matrix objects to sparse counterparts.
     M = sparse.coo_matrix(M).tocsr()
     K = - c * sparse.coo_matrix(T).tocsr()
+
+    # Apply periodic boundary condition in a very dirty way.
+    M[0, 0] = M[1, 1]
+    M[0, -2] = M[1, 0]
+    M[-1, -1] = M[-2, -2]
+    M[-1, 1] = M[-2, -1]
+    K[0, 0] = K[1, 1]
+    K[0, -2] = K[1, 0]
+    K[-1, -1] = K[-2, -2]
+    K[-1, 1] = K[-2, -1]
     return M, K, b
 
 
@@ -381,4 +401,14 @@ def advectivediffusive(x, connect, c, mu, num_q, order):
     # Convert matrix objects to sparse counterparts.
     M = sparse.coo_matrix(M).tocsr()
     K = mu * sparse.coo_matrix(S).tocsr() - c * sparse.coo_matrix(T).tocsr()
+
+    # Apply periodic boundary condition in a very dirty way.
+    M[0, 0] = M[1, 1]
+    M[0, -2] = M[1, 0]
+    M[-1, -1] = M[-2, -2]
+    M[-1, 1] = M[-2, -1]
+    K[0, 0] = K[1, 1]
+    K[0, -2] = K[1, 0]
+    K[-1, -1] = K[-2, -2]
+    K[-1, 1] = K[-2, -1]
     return M, K, b
