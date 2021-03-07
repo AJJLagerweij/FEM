@@ -201,7 +201,7 @@ def element_rhs(phi_xq, wq_detJ, f_xq):
     return fe
 
 
-@nb.jit(nopython=False)
+@nb.jit(nopython=True)
 def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=False):
     r"""
     Create the global FEM system by looping over the elements.
@@ -292,20 +292,20 @@ def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=Fal
             m_j[ele] = je
 
         if transport == True:
-            me = element_transport(phi_xq, invJ_dphi_xq, wq_detJ)
+            te = element_transport(phi_xq, invJ_dphi_xq, wq_detJ)
             ie = np.repeat(dofe, len(dofe))
             je = ie.reshape((-1, len(dofe))).T.ravel()
-            m_v[ele] = me.ravel()
-            m_i[ele] = ie
-            m_j[ele] = je
+            t_v[ele] = te.ravel()
+            t_i[ele] = ie
+            t_j[ele] = je
 
         if stiffness == True:
-            me = element_stiffness(invJ_dphi_xq, wq_detJ)
+            se = element_stiffness(invJ_dphi_xq, wq_detJ)
             ie = np.repeat(dofe, len(dofe))
             je = ie.reshape((-1, len(dofe))).T.ravel()
-            m_v[ele] = me.ravel()
-            m_i[ele] = ie
-            m_j[ele] = je
+            s_v[ele] = se.ravel()
+            s_i[ele] = ie
+            s_j[ele] = je
 
     # Flatten mass COO arrays, repeating indices remain.
     if mass == True:

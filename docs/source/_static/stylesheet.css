@@ -1,3 +1,11 @@
 .wy-nav-content {
-    max-width: 1000px;
+    max-width: 2000px;
+}
+
+.rst-content .section ul p {
+    margin-bottom: 0;
+}
+
+.rst-content .section ul li p:last-child {
+    margin-bottom: 0;
 }

@@ -169,8 +169,8 @@ def backwardEuler(func, u, dt, t_end, args=()):
     # Update the timesteps with the implicit scheme.
     max_iter = int(t_end / dt)
     for n in range(max_iter):
-        rhs = u + dt*b
-        u = spsolve(A, b)
+        rhs = M*u + dt*b
+        u = spsolve(A, rhs)
     return u
 
 
