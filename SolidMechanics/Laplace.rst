@@ -98,7 +98,7 @@ And if we note :math:`x_n` as the location of one of these points than we can no
 .. math::
     u''(x_n) = \frac{u(x_{n-1}) - 2 u(x_n) + u(x_{n+1})}{dx^2}
 
-This is implemented into a matrix format by :meth:`derivative.Dxx`, such that:
+This is implemented into a matrix format by :func:`finitedifference.Dxx`, such that:
 
 .. math::
     u'' = D_{xx} u
@@ -107,7 +107,7 @@ where :math:`u` is a vector with the field at all the discrete points and :math:
 This does however not yet specify the way to analyze the derivative at the first and last points. After all that would
 require the calculation of :math:`u` outside the domain. As a result the matrix will have an empty first and last row.
 
-This and the right hand side (:math:`f`) of the Poisson equation are available through :meth:`pde.poisson`.
+This and the right hand side (:math:`f`) of the Poisson equation are available through :func:`finitedifference.poisson`.
 You would expect that we can solve the system of equations:
 
 .. math::

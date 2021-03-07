@@ -94,11 +94,31 @@ and project it on the finite element space.
 Perform the projection through the following steps.
 
 1. Consider piecewise linear and quadratic continuous polynomials.
+    Done, see :func:`element.shape1d`.
 2. Consider the reference element :math:`[0, 1]` and interpolatory basis functions to derive the shape functions for each space.
+    Done, see :func:`element.shape1d`.
 3. What is the weak formulation and the linear algebra problem associated with the projection?
+    The derivation of the weak form is described at :func:`pde.projection`.
 4. Compute the entries of the mass matrix for each space.
+    Done, see :func:`fem.element_mass`.
 5. Solve the system to obtain the DoF associated with the projection.
+    Done, see :func:`solvers.solve`.
 6. Plot the projected functions considering :math:`N = 25, 50, 100` and :math:`200` cells.
+    Done, see images :numref:`Smooth_Linear_Elements` and :numref:`Smooth_Quadratic_Elements`.
+
+.. figure:: ../../Homework-2/images/Smooth_Linear_Elements.svg
+    :name: Smooth_Linear_Elements
+    :align: center
+    :width: 600
+
+    : Approximating :math:`f(x)` with a finite element projections with :math:`N` linear elements.
+
+.. figure:: ../../Homework-2/images/Smooth_Quadratic_Elements.svg
+    :name: Smooth_Quadratic_Elements
+    :align: center
+    :width: 600
+
+    : Approximating :math:`f(x)` with a finite element projections with :math:`N` quadratic elements.
 
 .. _2.2 Projection:
 
@@ -110,14 +130,88 @@ For both projections compute the followin two errors
    E_1 = \int_0^1 \| f(x) - f_h(x) \| \dd{x} \qand E_2 = \sqrt{\int_0^1 (f(x)- f_h(x))^2 \dd{x}}
 
 where :math:`f_h(x)` is the projection of :math:`f(x)` on our FE space.
+
+.. figure:: ../../Homework-2/images/Smooth_E1_vs_Elements.svg
+    :name: Smooth_E1_vs_Elements
+    :align: center
+    :width: 600
+
+    : Comparing error 1 to the number of elements shows faster convergence of the quadratic elements.
+    The order seems to be 2 and 3 respectively.
+
+.. figure:: ../../Homework-2/images/Smooth_E2_vs_Elements.svg
+    :name: Smooth_E2_vs_Elements
+    :align: center
+    :width: 600
+
+    : Comparing error 2 to the number of elements shows faster convergence of the quadratic elements.
+    The order seems to be 2 and 3 respectively.
+
+.. figure:: ../../Homework-2/images/Smooth_E1_vs_DOFs.svg
+    :name: Smooth_E1_vs_DOFs
+    :align: center
+    :width: 600
+
+    : Comparing error 1 to the amount of degrees of freedom still shows faster convergence of the quadratic elements.
+    Clearly the difference is less pronounced, because the quadratic elements have more unknowns per element.
+    The order seems to be 2 and 3 respectively.
+
+.. figure:: ../../Homework-2/images/Smooth_E2_vs_DOFs.svg
+    :name: Smooth_E2_vs_DOFs
+    :align: center
+    :width: 600
+
+    : The result for error 2 is again similar to that for error 1.
+    The order seems to be 2 and 3 respectively.
+
 Estimate the order of convergence for each space.
 That is assume that the error behaves as:
 
 .. math::
    E = c h^p
 
-where :math:`c` is a constant and :math:`h=1/N` is the mesh size. Whan is the value of :math:`p`?
+where :math:`c` is a constant and :math:`h=1/N` is the mesh size. When is the value of :math:`p`?
 Does this error behave different for the different spaces and norms?
+
++--------+-----------------------------------------------------+-----------------------------------------------------+
+|        |                        Linear                       |                      Quadratic                      |
++========+===========+===========+==============+==============+===========+===========+==============+==============+
+| N      | E1 p(1/N) | E2 p(1/N) | E1 p(1/DoFs) | E2 p(1/DoFs) | E1 p(1/N) | E2 p(1/N) | E1 p(1/DoFs) | E2 p(1/DoFs) |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 2      |           |           |              |              |           |           |              |              |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 4      | 1.93      | 1.90      | 2.61         | 2.57         | 1.98      | 1.93      | 2.33         | 2.28         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 8      | 1.17      | 1.16      | 1.38         | 1.37         | 2.09      | 2.02      | 2.28         | 2.20         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 16     | 1.83      | 1.67      | 1.99         | 1.82         | 2.80      | 2.82      | 2.92         | 2.95         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 32     | 2.27      | 2.20      | 2.37         | 2.30         | 2.75      | 2.75      | 2.82         | 2.81         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 64     | 2.09      | 2.05      | 2.13         | 2.10         | 2.95      | 2.91      | 2.98         | 2.95         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 128    | 2.02      | 2.01      | 2.04         | 2.04         | 2.99      | 2.98      | 3.01         | 2.99         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 256    | 2.01      | 2.00      | 2.02         | 2.01         | 3.01      | 2.99      | 3.01         | 3.00         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 512    | 2.00      | 2.00      | 2.01         | 2.01         | 3.00      | 3.00      | 3.00         | 3.00         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 1024   | 2.00      | 1.99      | 2.00         | 2.00         | 3.00      | 3.00      | 3.00         | 3.00         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 2048   | 2.00      | 2.00      | 2.00         | 2.00         | 3.00      | 3.00      | 3.00         | 3.00         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 4096   | 2.00      | 2.00      | 2.00         | 2.00         | 3.00      | 3.00      | 3.00         | 3.00         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 8192   | 2.00      | 2.00      | 2.00         | 2.00         | 3.01      | 3.00      | 3.01         | 3.00         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 16384  | 2.00      | 1.99      | 2.00         | 1.99         | 3.00      | 3.00      | 3.00         | 3.00         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 32768  | 2.00      | 2.01      | 2.00         | 2.01         | 3.00      | 3.00      | 3.00         | 3.00         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 65536  | 2.00      | 2.00      | 2.00         | 2.00         | 3.00      | 3.00      | 3.00         | 3.00         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 131072 | 2.00      | 2.00      | 2.00         | 2.00         | 3.00      | 3.00      | 3.00         | 3.00         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
 
 *******************************************
 3 Project a non-smooth function to FE space
@@ -126,6 +220,78 @@ Preform the same projection for the following non-smooth function:
 
 .. math::
    f(x) = \begin{cases} 1 & 0.35 \leq x \leq 0.65 \\ 0 & \text{otherwise} \end{cases}
+
+.. figure:: ../../Homework-2/images/NonSmooth_E1_vs_Elements.svg
+    :name: NonSmooth_E1_vs_Elements
+    :align: center
+    :width: 600
+
+    : Comparing error 1 to the number of elements shows faster convergence for the linear elements.
+    The order seems to be 1 and less then 1 respectively.
+
+.. figure:: ../../Homework-2/images/NonSmooth_E2_vs_Elements.svg
+    :name: NonSmooth_E2_vs_Elements
+    :align: center
+    :width: 600
+
+    : Both approximations seem to be equally bad.
+    The order seems to be less then 1.
+
+.. figure:: ../../Homework-2/images/NonSmooth_E1_vs_DOFs.svg
+    :name: NonSmooth_E1_vs_DOFs
+    :align: center
+    :width: 600
+
+    : The linear approximation is better then the quadratic one.
+    The order seems to be 1 and less then 1 respectively.
+
+.. figure:: ../../Homework-2/images/NonSmooth_E2_vs_DOFs.svg
+    :name: NonSmooth_E2_vs_DOFs
+    :align: center
+    :width: 600
+
+    : Both approximations seem to be equally bad.
+    The order seems to be less then 1.
+
++--------+-----------------------------------------------------+-----------------------------------------------------+
+|        |                        Linear                       |                      Quadratic                      |
++========+===========+===========+==============+==============+===========+===========+==============+==============+
+| N      | E1 p(1/N) | E2 p(1/N) | E1 p(1/DoFs) | E2 p(1/DoFs) | E1 p(1/N) | E2 p(1/N) | E1 p(1/DoFs) | E2 p(1/DoFs) |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 2      |           |           |              |              |           |           |              |              |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 4      | 0.95      | 0.53      | 1.29         | 0.72         | 0.72      | 0.37      | 0.85         | 0.44         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 8      | 0.27      | 1.39      | 0.31         | 1.64         | 0.21      | 1.02      | 0.22         | 1.11         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 16     | 1.41      | 0.34      | 1.53         | 0.37         | 0.70      | -0.01     | 0.73         | -0.01        |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 32     | 0.47      | 1.64      | 0.49         | 1.71         | 0.30      | 1.01      | 0.30         | 1.04         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 64     | 1.51      | 0.35      | 1.55         | 0.36         | 0.70      | -0.01     | 0.71         | -0.01        |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 128    | 0.49      | 1.65      | 0.49         | 1.66         | 0.30      | 1.01      | 0.30         | 1.02         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 256    | 1.52      | 0.35      | 1.53         | 0.35         | 0.70      | -0.01     | 0.71         | -0.01        |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 512    | 0.48      | 1.65      | 0.48         | 1.65         | 0.29      | 1.01      | 0.29         | 1.01         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 1024   | 1.52      | 0.35      | 1.52         | 0.35         | 0.71      | -0.01     | 0.71         | -0.01        |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 2048   | 0.48      | 1.64      | 0.48         | 1.65         | 0.29      | 1.02      | 0.29         | 1.02         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 4096   | 1.52      | 0.36      | 1.52         | 0.36         | 0.71      | -0.01     | 0.71         | -0.01        |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 8192   | 0.48      | 1.64      | 0.48         | 1.64         | 0.29      | 1.01      | 0.29         | 1.01         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 16384  | 1.51      | 0.35      | 1.51         | 0.35         | 0.70      | -0.02     | 0.70         | -0.02        |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 32768  | 0.49      | 1.64      | 0.49         | 1.64         | 0.31      | 1.01      | 0.31         | 1.01         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 65536  | 1.53      | 0.38      | 1.53         | 0.38         | 0.72      | 0.02      | 0.72         | 0.02         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
+| 131072 | 0.46      | 1.64      | 0.46         | 1.64         | 0.25      | 1.06      | 0.25         | 1.06         |
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
 
 ***************************************
 4 Solve Advection-Diffusion PDE with FE
@@ -151,11 +317,15 @@ The exact solution to this equation is given by:
 Solve this problem using a FEM implementation with the following steps:
 
 1. Consider continuous piecewise linear polynomials and interpolatory basis functions.
+    Done, see :func:`element.shape1d`.
 2. Obtain the discrete weak formulation.
+    We need two steps here, firstly we need to project the initial condition, for which the weak form is derived in :func:`pde.projection`. Secondly the PDE will be solved using the method of lines, see :func:`solvers.forwardEuler` and :func:`solvers.backwardEuler`, which needs to be fed with the weak form of the PDE, avalible at :func:`pde.advectivediffusive`.
 3. Identify the different matrices associated with the finite element discretization.
+    For these functions the Mass (fem.element_mass), Transport (fem.element_transport) and Stiffness (fem.element_stiffness) matrices need to be obtained.
 4. Implement and solve the equation via finite elements up to :math:`t = 2\pi`.
+    Done, the result
 
 4.2 Compute the error
 =====================
 Compute the errors :math:`E_1` and :math:`E_2` and compare the results to those of previous weeks homework, in which the same PDE was solved using a Finite Difference approach.
-Preforme a convergence test as described in :ref:`2.2 Projection`.
+Preform a convergence test as described in :ref:`2.2 Projection`.

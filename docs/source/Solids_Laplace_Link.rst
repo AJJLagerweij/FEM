@@ -1,1 +1,1 @@
-.. include:: ../../SolidMechanics/Laplace.rts
+.. include:: ../../SolidMechanics/Laplace.rst

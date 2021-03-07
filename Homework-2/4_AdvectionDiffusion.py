@@ -30,6 +30,7 @@ from pde import projection, advectivediffusive
 from finitedifference import advectivediffusive as advectivediffusive_fd
 from solvers import solve, forwardEuler, backwardEuler
 from element import interpolate
+from helper import E1, E2
 
 
 def mesh(x_start, x_end, n, order):
@@ -112,60 +113,110 @@ def u0(x):
 
 if __name__ == '__main__':
     # Define properties.
-    N = 100  # number of elements.
     num_q = 4  # number of quadrature points
     dt = 1e-4  # time step
     t_end = 2 * np.pi  # final time.
     mu = 0.01  # Diffusive term
     c = 1  # Advective term
 
-    """
-    Solve the problem using finite differences with equal number of unknowns.
-    """
-    dof = N+1
-    x_fd, dx = np.linspace(0, 2*np.pi, dof, retstep=True)
-    t = np.arange(0, t_end + dt, step=dt)
+    # Store error results.
+    N_list = 2 ** np.arange(2, 12)
+    e1_forw_df = []
+    e2_forw_df = []
+    e1_back_df = []
+    e2_back_df = []
+    e1_forw_fe = []
+    e2_forw_fe = []
+    e1_back_fe = []
+    e2_back_fe = []
 
-    # Solve the problem using method of lines.
-    u_forw_fd = forwardEuler(advectivediffusive_fd, u0(x_fd), dt, t_end, args=(dof, dx, mu, c))
-    u_back_fd = backwardEuler(advectivediffusive_fd, u0(x_fd), dt, t_end, args=(dof, dx, mu, c))
+    for N in N_list:
+        # Because we are first order in time we need to refine time as well.
+        # We scale spatially with: O(dx^2) and temporally with: O(dt^2).
+        # Hence we set:
+        dt = 1e-3 * (1/N)**2
+        print(N, dt)
 
-    """
-    Solve the problem using finite elements with N elements.
-    """
-    # Define mesh with linear elements.
-    grid, connect = mesh(0, 2*np.pi, N, 1)
+        # Solve using finite differences.
+        dof = N+1
+        x_fd, dx = np.linspace(0, 2*np.pi, dof, retstep=True)
+        t = np.arange(0, t_end + dt, step=dt)
 
-    # Prepare solver, for first time step we need to project the initial
-    # condition onto our FE space.
-    u = solve(projection, args=(grid, connect, u0, num_q, 1))
+        # Solve the problem using method of lines.
+        u_forw_fd = forwardEuler(advectivediffusive_fd, u0(x_fd), dt, t_end, args=(dof, dx, mu, c))
+        u_back_fd = backwardEuler(advectivediffusive_fd, u0(x_fd), dt, t_end, args=(dof, dx, mu, c))
 
-    # Solve the problem using method of lines.
-    u_forw_fe = forwardEuler(advectivediffusive, u, dt, t_end, args=(grid, connect, c, -mu, num_q, 1))
-    u_back_fe = backwardEuler(advectivediffusive, u, dt, t_end, args=(grid, connect, c, -mu, num_q, 1))
+        # Calculate errors.
+        e1_forw_df.append(E1(exact(x_fd, t_end, mu, c), u_forw_fd, x_fd))
+        e2_forw_df.append(E2(exact(x_fd, t_end, mu, c), u_back_fd, x_fd))
+        e1_back_df.append(E1(exact(x_fd, t_end, mu, c), u_forw_fd, x_fd))
+        e2_back_df.append(E2(exact(x_fd, t_end, mu, c), u_back_fd, x_fd))
 
-    # Interpolate the solutions at points x for plotting.
-    x = np.linspace(0, 2 * np.pi, 10001)
-    ux_forw_fe = interpolate(u_forw_fe, grid, connect, x, 1)
-    ux_back_fe = interpolate(u_back_fe, grid, connect, x, 1)
+        # Define mesh with linear elements.
+        grid, connect = mesh(0, 2*np.pi, N, 1)
 
-    """
-    Plot the results.
-    """
-    plt.xlim(0, 2 * np.pi)
-    plt.ylim(0, 1)
-    plt.xlabel('$x$ location')
-    plt.ylabel('$u(x)$')
-    plt.annotate(f'time t={t[-1]}\n# elements N={N}', xy=(0.1, 0.9))
+        # Prepare solver, for first time step we need to project the initial
+        # condition onto our FE space.
+        u = solve(projection, args=(grid, connect, u0, num_q, 1))
+
+        # Solve the problem using method of lines.
+        u_forw_fe = forwardEuler(advectivediffusive, u, dt, t_end, args=(grid, connect, c, -mu, num_q, 1))
+        u_back_fe = backwardEuler(advectivediffusive, u, dt, t_end, args=(grid, connect, c, -mu, num_q, 1))
+
+        # Interpolate the solutions at points x for plotting.
+        x = np.linspace(0, 2 * np.pi, 10001)
+        ux_forw_fe = interpolate(u_forw_fe, grid, connect, x, 1)
+        ux_back_fe = interpolate(u_back_fe, grid, connect, x, 1)
+
+        # Calculate errors
+        e1_forw_fe.append(E1(exact(x, t_end, mu, c), ux_forw_fe, x))
+        e2_forw_fe.append(E2(exact(x, t_end, mu, c), ux_back_fe, x))
+        e1_back_fe.append(E1(exact(x, t_end, mu, c), ux_forw_fe, x))
+        e2_back_fe.append(E2(exact(x, t_end, mu, c), ux_back_fe, x))
+
+        # Plot the distribution of the different methods.
+        plt.figure(num='Solutions to the PDE')
+        plt.xlim(0, 2 * np.pi)
+        plt.ylim(0, 1)
+        plt.xlabel('$x$ location')
+        plt.ylabel('$u(x)$')
+        plt.annotate(f'time t={t[-1]}\n# elements N={N}', xy=(0.1, 0.9))
+        plt.tight_layout()
+        plt.plot(x, exact(x, t_end, mu, c), label='Exact', zorder=1)
+        plt.plot(x_fd, u_forw_fd, ':', label='FD forward')
+        plt.plot(x_fd, u_back_fd, ':', label='FD backward')
+        plt.plot(x, ux_forw_fe, ':', label='FE forward')
+        plt.plot(x, ux_back_fe, ':', label='FE backward')
+        plt.legend(loc=1)
+        plt.show()
+
+    # Plotting with respect to the number of elements.
+    plt.figure(num='E1 vs Elements')
+    plt.plot(N_list, e1_forw_df, 's', label='FD forward')
+    plt.plot(N_list, e1_back_df, 's', label='FD backward')
+    plt.plot(N_list, e1_forw_fe, 's', label='FE forward')
+    plt.plot(N_list, e1_back_fe, 's', label='FE backward')
+    plt.plot(N_list, 1 / N_list ** 1, ':', label='$N^{-1}$')
+    plt.plot(N_list, 1 / N_list ** 2, ':', label='$N^{-2}$')
+    plt.plot(N_list, 1 / N_list ** 3, ':', label='$N^{-3}$')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.ylabel('$E_2$')
+    plt.xlabel('Number of Elements')
+    plt.legend(loc=3)
     plt.tight_layout()
 
-    plt.plot(x, exact(x, t_end, mu, c), label='Exact', zorder=1)
-
-    plt.plot(x_fd, u_forw_fd, ':', label='FD forward')
-    plt.plot(x_fd, u_back_fd, ':', label='FD backward')
-
-    plt.plot(x, ux_forw_fe, ':', label='FE forward')
-    plt.plot(x, ux_back_fe, ':', label='FE backward')
-
-    plt.legend()
-    plt.show()
+    plt.figure(num='E2 vs Elements')
+    plt.plot(N_list, e2_forw_df, 's', label='FD forward')
+    plt.plot(N_list, e2_back_df, 's', label='FD backward')
+    plt.plot(N_list, e2_forw_fe, 's', label='FE forward')
+    plt.plot(N_list, e2_back_fe, 's', label='FE backward')
+    plt.plot(N_list, 1 / N_list ** 1, ':', label='$N^{-1}$')
+    plt.plot(N_list, 1 / N_list ** 2, ':', label='$N^{-2}$')
+    plt.plot(N_list, 1 / N_list ** 3, ':', label='$N^{-3}$')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.ylabel('$E_2$')
+    plt.xlabel('Number of Elements')
+    plt.legend(loc=3)
+    plt.tight_layout()

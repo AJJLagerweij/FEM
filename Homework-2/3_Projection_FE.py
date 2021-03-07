@@ -88,116 +88,113 @@ def exact(x):
     fun[index] = 1
     return fun
 
+if __name__ == '__main__':
+    # Setup grid to measure exact results and errors.
+    len_x = int(1e6)
+    x = np.linspace(0, 1, len_x)
 
-# Setup grid to measure exact results and errors.
-len_x = int(1e6)
-x = np.linspace(0, 1, len_x)
-
-# Store error results.
-N_list = 2**np.arange(1, 8)
-e1_linear = []
-e2_linear = []
-e1_quadratic = []
-e2_quadratic = []
-num_q = 4
-
-
-# Compute and compare Linear elements.
-lin_plot = plt.figure(num='Linear Elements')
-lin_ax = plt.gca()
-lin_ax.plot(x, exact(x), lw=2, label='Exact')
-
-print("Linear")
-for N in N_list:
-    print(f'{N} Elements')
-    grid, connect = mesh(0, 1, N, 1)
-    u = solve(projection, args=(grid, connect, exact, num_q, 1))
-    u_x = interpolate(u, grid, connect, x, 1)
-
-    lin_ax.plot(x, u_x, ':', label=f'{N} elements')
-    e1_linear.append(E1(exact(x), u_x, x))
-    e2_linear.append(E2(exact(x), u_x, x))
-
-lin_ax.set_ylim(-0.25, 1.25)
-lin_ax.set_ylabel('$f(x)$ and $f_h(x)$')
-lin_ax.set_xlim(0, 1)
-lin_ax.set_xlabel('$x$')
-lin_ax.legend(loc=1)
-lin_plot.tight_layout()
+    # Store error results.
+    N_list = 2**np.arange(1, 18)
+    e1_linear = []
+    e2_linear = []
+    e1_quadratic = []
+    e2_quadratic = []
+    num_q = 4
 
 
-# Compute and compare Quadratic elements.
-qua_plot = plt.figure(num='Quadratic Elements')
-qua_ax = plt.gca()
-qua_ax.plot(x, exact(x), lw=2, label='Exact')
+    # Compute and compare Linear elements.
+    lin_plot = plt.figure(num='Linear Elements')
+    lin_ax = plt.gca()
+    lin_ax.plot(x, exact(x), lw=2, label='Exact')
 
-print("Quadratic")
-for N in N_list:
-    print(f'{N} Elements')
-    grid, connect = mesh(0, 1, N, 2)
-    u = solve(projection, args=(grid, connect, exact, num_q, 2))
-    u_x = interpolate(u, grid, connect, x, 2)
+    for N in N_list:
+        grid, connect = mesh(0, 1, N, 1)
+        u = solve(projection, args=(grid, connect, exact, num_q, 1))
+        u_x = interpolate(u, grid, connect, x, 1)
 
-    qua_ax.plot(x, u_x, ':', label=f'{N} elements')
-    e1_quadratic.append(E1(exact(x), u_x, x))
-    e2_quadratic.append(E2(exact(x), u_x, x))
+        lin_ax.plot(x, u_x, ':', label=f'{N} elements')
+        e1_linear.append(E1(exact(x), u_x, x))
+        e2_linear.append(E2(exact(x), u_x, x))
 
-qua_ax.set_ylim(-0.25, 1.25)
-qua_ax.set_ylabel('$f(x)$ and $f_h(x)$')
-qua_ax.set_xlim(0, 1)
-qua_ax.set_xlabel('$x$')
-qua_ax.legend(loc=1)
-qua_plot.tight_layout()
+    lin_ax.set_ylim(-0.25, 1.25)
+    lin_ax.set_ylabel('$f(x)$ and $f_h(x)$')
+    lin_ax.set_xlim(0, 1)
+    lin_ax.set_xlabel('$x$')
+    lin_ax.legend(loc=1)
+    lin_plot.tight_layout()
 
+    # Compute and compare Quadratic elements.
+    qua_plot = plt.figure(num='Quadratic Elements')
+    qua_ax = plt.gca()
+    qua_ax.plot(x, exact(x), lw=2, label='Exact')
 
-# Plotting the errors vs number of elements.
-plt.figure(num='E1 vs Elements')
-plt.plot(N_list, e1_linear, 's', label='Linear')
-plt.plot(N_list, e2_quadratic, 'o', label='Quadratic')
-plt.plot(N_list, 1/N_list**1, ':', label='$N^{-1}$')
-plt.plot(N_list, 1/N_list**2, ':', label='$N^{-2}$')
-plt.plot(N_list, 1/N_list**3, ':', label='$N^{-3}$')
-plt.yscale('log')
-plt.xscale('log')
-plt.ylabel('$E_1$')
-plt.xlabel('Number of Elements')
-plt.legend(loc=3)
+    for N in N_list:
+        grid, connect = mesh(0, 1, N, 2)
+        u = solve(projection, args=(grid, connect, exact, num_q, 2))
+        u_x = interpolate(u, grid, connect, x, 2)
 
-plt.figure(num='E2 vs Elements')
-plt.plot(N_list, e2_linear, 's', label='Linear')
-plt.plot(N_list, e2_quadratic, 'o', label='Quadratic')
-plt.plot(N_list, 1/N_list**1, ':', label='$N^{-1}$')
-plt.plot(N_list, 1/N_list**2, ':', label='$N^{-2}$')
-plt.plot(N_list, 1/N_list**3, ':', label='$N^{-3}$')
-plt.yscale('log')
-plt.xscale('log')
-plt.ylabel('$E_2$')
-plt.xlabel('Number of Elements')
-plt.legend(loc=3)
-plt.show()
+        qua_ax.plot(x, u_x, ':', label=f'{N} elements')
+        e1_quadratic.append(E1(exact(x), u_x, x))
+        e2_quadratic.append(E2(exact(x), u_x, x))
 
-# Plotting the errors vs degrees of freedom.
-plt.figure(num='E1 vs DOFs')
-plt.plot(N_list + 1, e1_linear, 's', label='Linear')
-plt.plot(2*N_list + 1, e2_quadratic, 'o', label='Quadratic')
-plt.plot(N_list, 1/N_list**1, ':', label='$dof^{-1}$')
-plt.plot(N_list, 1/N_list**2, ':', label='dof$^{-2}$')
-plt.plot(N_list, 1/N_list**3, ':', label='dof$^{-3}$')
-plt.yscale('log')
-plt.xscale('log')
-plt.ylabel('$E_1$')
-plt.xlabel('Degrees of Freedom')
-plt.legend(loc=3)
+    qua_ax.set_ylim(-0.25, 1.25)
+    qua_ax.set_ylabel('$f(x)$ and $f_h(x)$')
+    qua_ax.set_xlim(0, 1)
+    qua_ax.set_xlabel('$x$')
+    qua_ax.legend(loc=1)
+    qua_plot.tight_layout()
 
-plt.figure(num='E2 vs DOFs')
-plt.plot(N_list, e2_linear, 's', label='Linear')
-plt.plot(2*N_list, e2_quadratic, 'o', label='Quadratic')
-plt.plot(N_list, 1/N_list**1, ':', label='$dof^{-1}$')
-plt.plot(N_list, 1/N_list**2, ':', label='dof$^{-2}$')
-plt.plot(N_list, 1/N_list**3, ':', label='dof$^{-3}$')
-plt.yscale('log')
-plt.xscale('log')
-plt.ylabel('$E_2$')
-plt.xlabel('Degrees of Freedom')
-plt.legend(loc=3)
-plt.show()
+    # Plotting the errors vs number of elements.
+    plt.figure(num='E1 vs Elements')
+    plt.plot(N_list, e1_linear, 's', label='Linear')
+    plt.plot(N_list, e2_quadratic, 'o', label='Quadratic')
+    plt.plot(N_list, 1 / N_list ** 1, ':', label='$N^{-1}$')
+    plt.plot(N_list, 1 / N_list ** 2, ':', label='$N^{-2}$')
+    plt.plot(N_list, 1 / N_list ** 3, ':', label='$N^{-3}$')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.ylabel('$E_1$')
+    plt.xlabel('Number of Elements')
+    plt.legend(loc=3)
+    plt.tight_layout()
+
+    plt.figure(num='E2 vs Elements')
+    plt.plot(N_list, e2_linear, 's', label='Linear')
+    plt.plot(N_list, e2_quadratic, 'o', label='Quadratic')
+    plt.plot(N_list, 1 / N_list ** 1, ':', label='$N^{-1}$')
+    plt.plot(N_list, 1 / N_list ** 2, ':', label='$N^{-2}$')
+    plt.plot(N_list, 1 / N_list ** 3, ':', label='$N^{-3}$')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.ylabel('$E_2$')
+    plt.xlabel('Number of Elements')
+    plt.legend(loc=3)
+    plt.tight_layout()
+
+    # Plotting the errors vs degrees of freedom.
+    plt.figure(num='E1 vs DOFs')
+    plt.plot(N_list + 1, e1_linear, 's', label='Linear')
+    plt.plot(2 * N_list + 1, e2_quadratic, 'o', label='Quadratic')
+    plt.plot(N_list, 1 / N_list ** 1, ':', label='$dof^{-1}$')
+    plt.plot(N_list, 1 / N_list ** 2, ':', label='dof$^{-2}$')
+    plt.plot(N_list, 1 / N_list ** 3, ':', label='dof$^{-3}$')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.ylabel('$E_1$')
+    plt.xlabel('Degrees of Freedom')
+    plt.legend(loc=3)
+    plt.tight_layout()
+
+    plt.figure(num='E2 vs DOFs')
+    plt.plot(N_list, e2_linear, 's', label='Linear')
+    plt.plot(2 * N_list, e2_quadratic, 'o', label='Quadratic')
+    plt.plot(N_list, 1 / N_list ** 1, ':', label='$dof^{-1}$')
+    plt.plot(N_list, 1 / N_list ** 2, ':', label='dof$^{-2}$')
+    plt.plot(N_list, 1 / N_list ** 3, ':', label='dof$^{-3}$')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.ylabel('$E_2$')
+    plt.xlabel('Degrees of Freedom')
+    plt.legend(loc=3)
+    plt.tight_layout()
+    plt.show()
