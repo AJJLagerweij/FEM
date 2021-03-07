@@ -22,65 +22,14 @@ COHMAS Mechanical Engineering KAUST
 2021
 """
 
-# Importing External modules? Read our tutorial
+# Importing External modules?
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy.polynomial.polynomial import polyfit
 from scipy.fft import rfft, irfft
-from scipy.integrate import simpson
 
-
-def E1(fun, fun_h, x):
-    r"""
-    Calculate the :math:`E_1` error.
-
-    .. math::
-        E_1 := \int_\Omega | f(x) - f_h(x) | dx
-
-
-    Parameters
-    ----------
-    fun : array_like
-        The solution of the exact equation at location :math:`x`.
-    fun_h : array_like
-        The solution of the approximation equation at location :math:`x`.
-    x : array_like
-        The locations where the function is analyzed.
-
-    Returns
-    -------
-    float
-        Error of the approximation.
-    """
-    e = np.abs(fun - fun_h)
-    integral = simpson(e, x)
-    return integral
-
-
-def E2(fun, fun_h, x):
-    r"""
-    Calculate the :math:`E_2` error.
-
-    .. math::
-        E_2 := \int_\Omega \big(f(x) - f_h(x)\big)^2 dx
-
-    Parameters
-    ----------
-    fun : array_like
-        The solution of the exact equation at location :math:`x`.
-    fun_h : array_like
-        The solution of the approximation equation at location :math:`x`.
-    x : array_like
-        The locations where the function is analyzed.
-
-    Returns
-    -------
-    float
-        Error of the approximation.
-    """
-    e = (fun - fun_h) ** 2
-    integral = simpson(e, x)
-    return integral
+# Importing my own scripts.
+from helper import E1, E2
 
 
 def Taylor_series(N, x):
