@@ -64,7 +64,7 @@ def mesh(x_start, x_end, n, order):
 
 @nb.jit(nopython=True)
 def exact(x):
-    """
+    r"""
     The exact function:
 
     .. math::

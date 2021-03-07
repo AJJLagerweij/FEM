@@ -131,8 +131,8 @@ def get_element(num_q, x, rhs, order):
     -------
     phi_xq : array_like(float), shape((dofs, num_q))
         For each shape function the value at the quadrature points.
-    dphi_xq : array_like(float), shape((dofs, num_q))
-        For each shape function its derivative value at the quadrature points.
+    invJ_dphi_xq : array_like(float), shape((dofs, num_q))
+        For each shape function its derivative value at the quadrature points times the inverse Jacobian.
     f_xq : array_like(float), shape(num_q)
         The value of the right hand side equation evaluated at the quadrature points.
     wq_detJ : array_like(float), shape((dofs, num_q))
@@ -141,12 +141,14 @@ def get_element(num_q, x, rhs, order):
     # Get information on element coordinates.
     h = x[-1] - x[0]
     detJ = h
+    invJ = 1/h
 
     # Get the Quadrature weights.
     xq, wq = gauss(num_q)
 
     # Get properties at quadrature points.
     phi_xq, dphi_xq = shape1d(xq, order)
+    invJ_dphi_xq = invJ * dphi_xq
     wq_detJ = wq * detJ
     f_xq = rhs(xq*h + x[0])
-    return phi_xq, dphi_xq, f_xq, wq_detJ
+    return phi_xq, invJ_dphi_xq, f_xq, wq_detJ

@@ -28,6 +28,21 @@ def element_mass(phi_xq, wq_detJ):
     r"""
     Compute the elmement mass matrix.
 
+    This matrix is defined as:
+
+    .. math::
+        M = \int_{\Omega} \phi_j(x) \phi_i(x) dV
+
+    when integrated in reference element coordinates, :math:`\xi` this is:
+
+    .. math::
+        M = \int_0^1 \phi_j(\xi) \phi_i(\xi) det(J)dV
+
+    To evaluate these integras Gaussian quadrature is used such that thi integal becomes:
+
+    .. math::
+        M = \sum_{q=0}^{N_q} \phi_j(\xi_q) \phi_i(\xi_q) det(J) w_q
+
     Parameters
     ----------
     phi_xq : array_like(float), shape((dofe, num_q))
@@ -59,16 +74,31 @@ def element_mass(phi_xq, wq_detJ):
 
 
 @nb.jit(nopython=True)
-def element_transport(phi_xq, dphi_xq, wq_detJ):
+def element_transport(phi_xq, invJ_dphi_xq, wq_detJ):
     r"""
-    Compute the elmement mass matrix.
+    Compute the elmement transport matrix.
+
+    This matrix is defined as:
+
+    .. math::
+        T = \int_{\Omega} \partial_x\phi_j(x) \phi_i(x) dV
+
+    when integrated in reference element coordinates, :math:`\xi` this is:
+
+    .. math::
+        T = \int_0^1 J^{-1}\partial_{\xi}\phi_j(\xi) \phi_i(\xi) det(J)dV
+
+    To evaluate these integras Gaussian quadrature is used such that thi integal becomes:
+
+    .. math::
+        T = \sum_{q=0}^{N_q} J^{-1}\partial_{\xi}\phi_j(\xi_q) \phi_i(\xi_q) det(J) w_q
 
     Parameters
     ----------
     phi_xq : array_like(float), shape((dofe, num_q))
         For each shape function the value at the quadrature points.
-    dphi_xq : array_like(float), shape((dofe, num_q))
-        For each shape function the derivative at the quadrature points.
+    invJ_dphi_xq : array_like(float), shape((dofs, num_q))
+        For each shape function its derivative value at the quadrature points times the inverse Jacobian.
     wq_detJ : array_like(float), shape((dofe, num_q))
         Integration weight including the mapping from local to global coordinates.
 
@@ -86,19 +116,34 @@ def element_transport(phi_xq, dphi_xq, wq_detJ):
     for i in range(dofe):
         # Loop over all degrees of freedom and get matrix quantities.
         for j in range(dofe):
-            te[i, j] = np.sum(phi_xq[j] * dphi_xq[i] * wq_detJ)
+            te[i, j] = np.sum(invJ_dphi_xq[j] * phi_xq[i] * wq_detJ)
     return te
 
 
 @nb.jit(nopython=True)
-def element_stiffness(dphi_xq, wq_detJ):
+def element_stiffness(invJ_dphi_xq, wq_detJ):
     r"""
-    Compute the elmement mass matrix.
+    Compute the elmement stiffness matrix.
+
+    This matrix is defined as:
+
+    .. math::
+        S = \int_{\Omega} \partial_x\phi_j(x) \partial_x\phi_i(x) dV
+
+    when integrated in reference element coordinates, :math:`\xi` this is:
+
+    .. math::
+        S = \int_0^1 J^{-1}\partial_{\xi} \phi_j(\xi) J^{-1}\partial_{\xi}\phi_i(\xi) det(J)dV
+
+    To evaluate these integras Gaussian quadrature is used such that thi integal becomes:
+
+    .. math::
+        S = \sum_{q=0}^{N_q} J^{-1}\partial_{\xi} \phi_j(\xi_q) J^{-1}\partial_{\xi}\phi_i(\xi_q) det(J) w_q
 
     Parameters
     ----------
-    dphi_xq : array_like(float), shape((dofe, num_q))
-        For each shape function the derivative at the quadrature points.
+    invJ_dphi_xq : array_like(float), shape((dofs, num_q))
+        For each shape function its derivative value at the quadrature points times the inverse Jacobian.
     wq_detJ : array_like(float), shape((dofe, num_q))
         Integration weight including the mapping from local to global coordinates.
 
@@ -108,18 +153,18 @@ def element_stiffness(dphi_xq, wq_detJ):
         Element mass matrix.
     """
     # Create empty storage for element properties.
-    dofe = len(dphi_xq)
+    dofe = len(invJ_dphi_xq)
     se = np.zeros((dofe, dofe))
 
     # Quadrature summations handeled by numpy.sum().
     # Loop over all degrees of freedom and get:
     for i in range(dofe):
         # Matrix diagonal quantiy.
-        se[i, i] = np.sum(dphi_xq[i] * dphi_xq[i] * wq_detJ)
+        se[i, i] = np.sum(invJ_dphi_xq[i] * invJ_dphi_xq[i] * wq_detJ)
 
         # Loop over all degrees of freedom and get matrix quantities.
         for j in range(i+1, dofe):
-            me_ij = np.sum(dphi_xq[j] * dphi_xq[i] * wq_detJ)
+            me_ij = np.sum(invJ_dphi_xq[j] * invJ_dphi_xq[i] * wq_detJ)
             se[i, j] = me_ij
             se[j, i] = me_ij
     return se
@@ -230,7 +275,7 @@ def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=Fal
         # Obtain element properties
         dofe = c[ele]
         x_ele = x[dofe]
-        phi_xq, dphi_xq, f_xq, wq_detJ = get_element(num_q, x_ele, rhs, order=order)
+        phi_xq, invJ_dphi_xq, f_xq, wq_detJ = get_element(num_q, x_ele, rhs, order=order)
 
         # Perform integration and compute right hand side vector.
         if rhs != None:
@@ -247,7 +292,7 @@ def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=Fal
             m_j[ele] = je
 
         if transport == True:
-            me = element_transport(phi_xq, dphi_xq, wq_detJ)
+            me = element_transport(phi_xq, invJ_dphi_xq, wq_detJ)
             ie = np.repeat(dofe, len(dofe))
             je = ie.reshape((-1, len(dofe))).T.ravel()
             m_v[ele] = me.ravel()
@@ -255,7 +300,7 @@ def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=Fal
             m_j[ele] = je
 
         if stiffness == True:
-            me = element_stiffness(dphi_xq, wq_detJ)
+            me = element_stiffness(invJ_dphi_xq, wq_detJ)
             ie = np.repeat(dofe, len(dofe))
             je = ie.reshape((-1, len(dofe))).T.ravel()
             m_v[ele] = me.ravel()
