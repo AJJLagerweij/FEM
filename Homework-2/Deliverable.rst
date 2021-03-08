@@ -69,7 +69,7 @@ Consider two discrete spaces. For the velocity and pressure use continuous piece
 respectively.
 How many shape function do we have for each space in the reference element?
 Derive the shape functions for the reference element (hint: use tensor products).
-Plot these shape functions for both spaces.
+The code used to plot these two figures is available in `1 shape2D.py <https://github.com/AJJLagerweij/FEM/blob/main/Homework-2/1_shape2D.py>`_.
 
 .. figure:: ../../Homework-2/images/Linear_Quads.svg
     :name: Linear_Quads
@@ -150,7 +150,7 @@ Perform the projection through the following steps.
 5. Solve the system to obtain the DoF associated with the projection.
     Done, see :func:`solvers.solve`.
 6. Plot the projected functions considering :math:`N = 25, 50, 100` and :math:`200` cells.
-    Done, see images :numref:`Smooth_Linear_Elements` and :numref:`Smooth_Quadratic_Elements`.
+    Done, the main code, in `2 ProjectionFE.py <https://github.com/AJJLagerweij/FEM/blob/main/Homework-2/2_Projection_FE.py>`_, was used to create :numref:`Smooth_Linear_Elements` and :numref:`Smooth_Quadratic_Elements`.
 
 .. figure:: ../../Homework-2/images/Smooth_Linear_Elements.svg
     :name: Smooth_Linear_Elements
@@ -170,7 +170,7 @@ Perform the projection through the following steps.
 
 2.2 Evaluate Projection
 =======================
-For both projections compute the followin two errors
+For both projections compute the following two errors
 
 .. math::
    E_1 = \int_0^1 \| f(x) - f_h(x) \| \dd{x} \qand E_2 = \sqrt{\int_0^1 (f(x)- f_h(x))^2 \dd{x}}
@@ -265,6 +265,8 @@ Preform the same projection for the following non-smooth function:
 .. math::
    f(x) = \begin{cases} 1 & 0.35 \leq x \leq 0.65 \\ 0 & \text{otherwise} \end{cases}
 
+For which the the main code can be found in `3 ProjectionFE.py <https://github.com/AJJLagerweij/FEM/blob/main/Homework-2/3_Projection_FE.py>`_
+
 .. figure:: ../../Homework-2/images/NonSmooth_Linear_Elements.svg
     :name: NonSmooth_Linear_Elements
     :align: center
@@ -357,7 +359,7 @@ Preform the same projection for the following non-smooth function:
 Consider the one-dimensional advection diffusion equation:
 
 .. math::
-   u_t + u_x - \mu u_{xx} =0 \qquad \forall \quad x\in\Omega=[0,2\pi]
+   u_t + u_x - \mu u_{xx} =0 \qquad \forall \qquad x\in\Omega=[0,2\pi]
 
 where :math:`\mu>0` is a coefficient.
 Consider periodic boundary conditions and the following initial conditions:
@@ -381,7 +383,7 @@ Solve this problem using a FEM implementation with the following steps:
 3. Identify the different matrices associated with the finite element discretization.
     For these functions the Mass (fem.element_mass), Transport (fem.element_transport) and Stiffness (fem.element_stiffness) matrices need to be obtained.
 4. Implement and solve the equation via finite elements up to :math:`t = 2\pi`.
-    Done, the results in :numref:`AdvectionDiffusion_16`, :numref:`AdvectionDiffusion_32`, :numref:`AdvectionDiffusion_64` and :numref:`AdvectionDiffusion_128`.
+    Done, the code in Done, the main code, in `4_AdvectionDiffusion.py <https://github.com/AJJLagerweij/FEM/blob/main/Homework-2/4_AdvectionDiffusion.py>`_, produces :numref:`AdvectionDiffusion_16`, :numref:`AdvectionDiffusion_32`, :numref:`AdvectionDiffusion_64` and :numref:`AdvectionDiffusion_128`.
 
 .. figure:: ../../Homework-2/images/AdvectionDiffusion_16.svg
     :name: AdvectionDiffusion_16
