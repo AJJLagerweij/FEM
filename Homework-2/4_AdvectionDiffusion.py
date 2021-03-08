@@ -85,7 +85,7 @@ def exact(x, t, mu, c):
     array_like(float)
         The function :math:`f(x)` at points `x`.
     """
-    fun = 3/8 - 1/2 * np.exp(-4*mu*t) * np.cos(2*(x - c*t)) + 1/8 * np.exp(-10*mu*t) * np.cos(4*(x - c*t))
+    fun = 3/8 - 1/2 * np.exp(-4*mu*t) * np.cos(2*(x - c*t)) + 1/8 * np.exp(-16*mu*t) * np.cos(4*(x - c*t))
     return fun
 
 
@@ -120,11 +120,11 @@ if __name__ == '__main__':
     c = 1  # Advective term
 
     # Store error results.
-    N_list = 2 ** np.arange(2, 12)
-    e1_forw_df = []
-    e2_forw_df = []
-    e1_back_df = []
-    e2_back_df = []
+    N_list = 2 ** np.arange(1, 8)
+    e1_forw_fd = []
+    e2_forw_fd = []
+    e1_back_fd = []
+    e2_back_fd = []
     e1_forw_fe = []
     e2_forw_fe = []
     e1_back_fe = []
@@ -134,11 +134,11 @@ if __name__ == '__main__':
         # Because we are first order in time we need to refine time as well.
         # We scale spatially with: O(dx^2) and temporally with: O(dt^2).
         # Hence we set:
-        dt = 1e-3 * (1/N)**2
-        print(N, dt)
+        dt = 1e-2 * (1/N)**2
+        print(f'N={N}, h={1/N:1.2e}, dt={dt:1.2e}')
 
         # Solve using finite differences.
-        dof = N+1
+        dof = N + 1
         x_fd, dx = np.linspace(0, 2*np.pi, dof, retstep=True)
         t = np.arange(0, t_end + dt, step=dt)
 
@@ -147,10 +147,10 @@ if __name__ == '__main__':
         u_back_fd = backwardEuler(advectivediffusive_fd, u0(x_fd), dt, t_end, args=(dof, dx, mu, c))
 
         # Calculate errors.
-        e1_forw_df.append(E1(exact(x_fd, t_end, mu, c), u_forw_fd, x_fd))
-        e2_forw_df.append(E2(exact(x_fd, t_end, mu, c), u_back_fd, x_fd))
-        e1_back_df.append(E1(exact(x_fd, t_end, mu, c), u_forw_fd, x_fd))
-        e2_back_df.append(E2(exact(x_fd, t_end, mu, c), u_back_fd, x_fd))
+        e1_forw_fd.append(E1(exact(x_fd, t_end, mu, c), u_forw_fd, x_fd))
+        e2_forw_fd.append(E2(exact(x_fd, t_end, mu, c), u_forw_fd, x_fd))
+        e1_back_fd.append(E1(exact(x_fd, t_end, mu, c), u_back_fd, x_fd))
+        e2_back_fd.append(E2(exact(x_fd, t_end, mu, c), u_back_fd, x_fd))
 
         # Define mesh with linear elements.
         grid, connect = mesh(0, 2*np.pi, N, 1)
@@ -170,8 +170,8 @@ if __name__ == '__main__':
 
         # Calculate errors
         e1_forw_fe.append(E1(exact(x, t_end, mu, c), ux_forw_fe, x))
-        e2_forw_fe.append(E2(exact(x, t_end, mu, c), ux_back_fe, x))
-        e1_back_fe.append(E1(exact(x, t_end, mu, c), ux_forw_fe, x))
+        e2_forw_fe.append(E2(exact(x, t_end, mu, c), ux_forw_fe, x))
+        e1_back_fe.append(E1(exact(x, t_end, mu, c), ux_back_fe, x))
         e2_back_fe.append(E2(exact(x, t_end, mu, c), ux_back_fe, x))
 
         # Plot the distribution of the different methods.
@@ -192,13 +192,12 @@ if __name__ == '__main__':
 
     # Plotting with respect to the number of elements.
     plt.figure(num='E1 vs Elements')
-    plt.plot(N_list, e1_forw_df, 's', label='FD forward')
-    plt.plot(N_list, e1_back_df, 's', label='FD backward')
+    plt.plot(N_list, e1_forw_fd, 's', label='FD forward')
+    plt.plot(N_list, e1_back_fd, 's', label='FD backward')
     plt.plot(N_list, e1_forw_fe, 's', label='FE forward')
     plt.plot(N_list, e1_back_fe, 's', label='FE backward')
     plt.plot(N_list, 1 / N_list ** 1, ':', label='$N^{-1}$')
     plt.plot(N_list, 1 / N_list ** 2, ':', label='$N^{-2}$')
-    plt.plot(N_list, 1 / N_list ** 3, ':', label='$N^{-3}$')
     plt.yscale('log')
     plt.xscale('log')
     plt.ylabel('$E_2$')
@@ -207,13 +206,12 @@ if __name__ == '__main__':
     plt.tight_layout()
 
     plt.figure(num='E2 vs Elements')
-    plt.plot(N_list, e2_forw_df, 's', label='FD forward')
-    plt.plot(N_list, e2_back_df, 's', label='FD backward')
+    plt.plot(N_list, e2_forw_fd, 's', label='FD forward')
+    plt.plot(N_list, e2_back_fd, 's', label='FD backward')
     plt.plot(N_list, e2_forw_fe, 's', label='FE forward')
     plt.plot(N_list, e2_back_fe, 's', label='FE backward')
     plt.plot(N_list, 1 / N_list ** 1, ':', label='$N^{-1}$')
     plt.plot(N_list, 1 / N_list ** 2, ':', label='$N^{-2}$')
-    plt.plot(N_list, 1 / N_list ** 3, ':', label='$N^{-3}$')
     plt.yscale('log')
     plt.xscale('log')
     plt.ylabel('$E_2$')

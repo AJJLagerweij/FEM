@@ -63,7 +63,7 @@ Finaly, the updated divergence-free velocity is given by:
 Consider two discrete spaces. For the velocity and pressure use continuous piecewise bi-quadratic and bilinear polynomials (in 2D)
 
 .. math::
-   & p_1(x,y) = c_0 x + c_1 y + c_2 xy + c3\\
+   & p_1(x,y) = c_0 x + c_1 y + c_2 xy + c_3\\
    & p_2(x,y) = c_0 x^2 + c_1 x^2y + c_2 x^2y^2 + c_3 y^2 + c_4 xy^2 + c_5 x + c_6 y + c_7 xy + c_8
 
 respectively.
@@ -71,13 +71,62 @@ How many shape function do we have for each space in the reference element?
 Derive the shape functions for the reference element (hint: use tensor products).
 Plot these shape functions for both spaces.
 
+.. figure:: ../../Homework-2/images/Linear_Quads.svg
+    :name: Linear_Quads
+    :align: center
+    :width: 600
+
+    : Quadrilateral elements with linear shape functions.
+
+.. figure:: ../../Homework-2/images/Quadratic_Quads.svg
+    :name: Quadratic_Quads
+    :align: center
+    :width: 600
+
+    : Quadrilateral elements with quadratic shape functions.
+
 1.2 Weak form of Chorin's projection
 ====================================
 Consider the previously described NS-equations and the Chorin'n projection method and obtain:
 
-1. weak formulation
-2. discrete weak form
-3. the linear algabra representation of the problem.
+1. Weak formulation,
+    From what I understand the this approch goes in three steps:
+
+    1. Solve the following PDE,
+        .. math::
+            \frac{\vec{u}^*-\vec{u}^n}{\Delta t} + \grad{\vec{u}^n} \, \vdot \vec{u}^n - \mu \grad^2{\vec{u}^*} = \vec{f}
+    
+        where :math:`\vec{u}^*` is the unknown and all other variables are known.
+        This is PDE can be written into the following format:
+
+        .. math::
+            a \vec{u}^* - b \grad^2{\vec{u}^*} = \vec{b}
+
+        which is a difusion kind of equation, but vector valued, as :math:`\vec{u}` is a vector.
+    2. Update the pressure through:
+        .. math::
+            \Delta p^{n+1} = \frac{\rho}{\Delta t} \divergence{\vec{u}^*}
+    
+        where :math:`p` is the variable to be determined.
+        I'm not even sure if this is a PDE or not, is this equation simply saying:
+
+        .. math::
+            p^{n+1} = p^n + \frac{\rho}{\Delta t} \divergence{\vec{u}^*}
+        
+        if so then the pressure can be updated directly, otherwise the :math:`\Delta` will refer to the Laplacian
+        which would make this into a Poisson equation.
+    3. Obtain new primal :math:`\vec{u}` by ubtating it through:
+        .. math::
+            \vec{u}^{n+1} = \vec{u}^* - \frac{\Delta t}{\rho}\grad p^{n+1}
+        
+        This is simply an update, there is no PDE to be solved and everything on the right hand side is known.
+    
+2. Discrete weak form and,
+    I'll first need to find the answer to the previous question.
+3. The linear algabra representation of the problem.
+    I'll first need to find the answer to the previous question, nevertheless it is clear that we need at
+    least the mass and the stiffness matrix for the first PDE. The transport matrix is also
+    required to compute the right hand side in the first PDE.
 
 ***************************************
 2 Project a smooth function to FE space
@@ -175,11 +224,9 @@ Does this error behave different for the different spaces and norms?
 
 +--------+-----------------------------------------------------+-----------------------------------------------------+
 |        |                        Linear                       |                      Quadratic                      |
-+========+===========+===========+==============+==============+===========+===========+==============+==============+
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
 | N      | E1 p(1/N) | E2 p(1/N) | E1 p(1/DoFs) | E2 p(1/DoFs) | E1 p(1/N) | E2 p(1/N) | E1 p(1/DoFs) | E2 p(1/DoFs) |
-+--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
-| 2      |           |           |              |              |           |           |              |              |
-+--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
++========+===========+===========+==============+==============+===========+===========+==============+==============+
 | 4      | 1.93      | 1.90      | 2.61         | 2.57         | 1.98      | 1.93      | 2.33         | 2.28         |
 +--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
 | 8      | 1.17      | 1.16      | 1.38         | 1.37         | 2.09      | 2.02      | 2.28         | 2.20         |
@@ -221,6 +268,22 @@ Preform the same projection for the following non-smooth function:
 .. math::
    f(x) = \begin{cases} 1 & 0.35 \leq x \leq 0.65 \\ 0 & \text{otherwise} \end{cases}
 
+.. figure:: ../../Homework-2/images/NonSmooth_Linear_Elements.svg
+    :name: NonSmooth_Linear_Elements
+    :align: center
+    :width: 600
+
+    : Approximating the discrete function with a finite element projections with :math:`N` linear elements is not
+    improving with a refined mesh. The spikes around the step change keep the same height, although the width is
+    reducing.
+
+.. figure:: ../../Homework-2/images/NonSmooth_Quadratic_Elements.svg
+    :name: NonSmooth_Quadratic_Elements
+    :align: center
+    :width: 600
+
+    : Moving to quadratic elements make it even worse, the spikes at the step change get higher.
+
 .. figure:: ../../Homework-2/images/NonSmooth_E1_vs_Elements.svg
     :name: NonSmooth_E1_vs_Elements
     :align: center
@@ -255,11 +318,9 @@ Preform the same projection for the following non-smooth function:
 
 +--------+-----------------------------------------------------+-----------------------------------------------------+
 |        |                        Linear                       |                      Quadratic                      |
-+========+===========+===========+==============+==============+===========+===========+==============+==============+
++--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
 | N      | E1 p(1/N) | E2 p(1/N) | E1 p(1/DoFs) | E2 p(1/DoFs) | E1 p(1/N) | E2 p(1/N) | E1 p(1/DoFs) | E2 p(1/DoFs) |
-+--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
-| 2      |           |           |              |              |           |           |              |              |
-+--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
++========+===========+===========+==============+==============+===========+===========+==============+==============+
 | 4      | 0.95      | 0.53      | 1.29         | 0.72         | 0.72      | 0.37      | 0.85         | 0.44         |
 +--------+-----------+-----------+--------------+--------------+-----------+-----------+--------------+--------------+
 | 8      | 0.27      | 1.39      | 0.31         | 1.64         | 0.21      | 1.02      | 0.22         | 1.11         |
@@ -323,9 +384,70 @@ Solve this problem using a FEM implementation with the following steps:
 3. Identify the different matrices associated with the finite element discretization.
     For these functions the Mass (fem.element_mass), Transport (fem.element_transport) and Stiffness (fem.element_stiffness) matrices need to be obtained.
 4. Implement and solve the equation via finite elements up to :math:`t = 2\pi`.
-    Done, the result
+    Done, the results in :numref:`AdvectionDiffusion_16`, :numref:`AdvectionDiffusion_32`, :numref:`AdvectionDiffusion_64` and :numref:`AdvectionDiffusion_128`.
+
+.. figure:: ../../Homework-2/images/AdvectionDiffusion_16.svg
+    :name: AdvectionDiffusion_16
+    :align: center
+    :width: 600
+
+    : In this course grid large differences between the FD and FE methods can be observed.
+
+.. figure:: ../../Homework-2/images/AdvectionDiffusion_64.svg
+    :name: AdvectionDiffusion_32
+    :align: center
+    :width: 600
+
+    : aa.
+
+.. figure:: ../../Homework-2/images/AdvectionDiffusion_64.svg
+    :name: AdvectionDiffusion_64
+    :align: center
+    :width: 600
+
+    : aa.
+
+.. figure:: ../../Homework-2/images/AdvectionDiffusion_128.svg
+    :name: AdvectionDiffusion_128
+    :align: center
+    :width: 600
+
+    : At the finished mesh and time step the results become quite close to the exact solution.
 
 4.2 Compute the error
 =====================
 Compute the errors :math:`E_1` and :math:`E_2` and compare the results to those of previous weeks homework, in which the same PDE was solved using a Finite Difference approach.
 Preform a convergence test as described in :ref:`2.2 Projection`.
+
+.. figure:: ../../Homework-2/images/AdvectionDiffusion_E1.svg
+    :name: AdvectionDiffusion_E1
+    :align: center
+    :width: 600
+
+    : The finite element method seems to converge faster with respect to error 1. This must come from the change in mass matrix, as the stiffness and transport matrix don't differ from the FD method. There does not seem to be a difference between the forward
+    and backwards methods, because the time steps are small enough for the forward method to be stable.
+
+.. figure:: ../../Homework-2/images/AdvectionDiffusion_E2.svg
+    :name: AdvectionDiffusion_E2
+    :align: center
+    :width: 600
+
+    : The behaviour of :math:`E_2` is similar to that of :math:`E1`.
+
++-----+----------+---------------+---------------+---------------+---------------+
+|     |          |  FD forward   |  FD backward  |  FE forward   |  FE backward  |
++-----+----------+-------+-------+-------+-------+-------+-------+-------+-------+
+| N   | dt       | p E1  | p E2  | p E1  | p E2  | p E1  | p E2  | p E1  | p E2  |
++=====+==========+=======+=======+=======+=======+=======+=======+=======+=======+
+| 4   | 6.25E-04 | -1.65 | -1.87 | -1.65 | -1.87 |  4.41 |  4.36 |  4.41 |  4.36 |
++-----+----------+-------+-------+-------+-------+-------+-------+-------+-------+
+| 8   | 1.56E-04 | -2.06 | -1.86 | -2.06 | -1.85 | -1.55 | -1.66 | -1.55 | -1.66 |
++-----+----------+-------+-------+-------+-------+-------+-------+-------+-------+
+| 16  | 3.91E-05 |  0.56 |  0.35 |  0.56 |  0.35 |  2.08 |  2.19 |  2.08 |  2.19 |
++-----+----------+-------+-------+-------+-------+-------+-------+-------+-------+
+| 32  | 9.77E-06 |  1.66 |  1.61 |  1.66 |  1.61 |  3.52 |  3.40 |  3.50 |  3.39 |
++-----+----------+-------+-------+-------+-------+-------+-------+-------+-------+
+| 64  | 2.44E-06 |  1.90 |  1.84 |  1.90 |  1.84 |  2.33 |  2.29 |  2.33 |  2.28 |
++-----+----------+-------+-------+-------+-------+-------+-------+-------+-------+
+| 128 | 6.10E-07 |  1.99 |  1.99 |  1.99 |  1.99 |  2.02 |  2.02 |  2.02 |  2.02 |
++-----+----------+-------+-------+-------+-------+-------+-------+-------+-------+
