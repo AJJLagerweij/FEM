@@ -134,16 +134,20 @@ def diffusive(x, connect, mu, num_q, order):
     :math:`\int_\Omega dV`. Thus we can write:
 
     .. math::
-        \int_\Omega (\partial_t \sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV =
-        \sum_{j = 1}^N \partial_t \bar{u}_j \int_\Omega \phi_j(x) \phi_i(x) dV = M \bar{u}_j
+        \int_\Omega \tilde{u}_t dV
+        & = \int_\Omega (\partial_t \sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV \quad \forall \quad \phi_i \in V_h \\
+        & = \sum_{j = 1}^N \partial_t \bar{u}_j \int_\Omega \phi_j(x) \phi_i(x) dV \\
+        &\qquad \Rightarrow \qquad M \bar{u}
 
     where :math:`M` is the mass matrix which combines the integral for all different basis functions.
-    For the second term we apply integration by parts, while assuming that Diriclet boundary conditions:
+    For the second term we apply integration by parts, while assuming that Neumann boundary conditions:
 
     .. math::
-        \int_\Omega (\mu \partial_{xx}\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV =
-        \int_\Omega (\mu \partial_x\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \partial_x\phi_i(x) dV =
-        \mu \sum_{j=1}^N \bar{u}_j \int_\Omega \partial_x \phi_j(x) \partial_x\phi_i(x) dV = \mu S \bar{u}_j
+        \int_\Omega \tilde{u}_{xx} dV
+        &\quad = \int_\Omega (\partial_{xx}\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV   \quad \forall \quad \phi_i \in V_h  \\
+        &\quad = -\int_\Omega (\partial_x\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \partial_x\phi_i(x) dV \\
+        &\quad = \sum_{j=1}^N \bar{u}_j \int_\Omega -\partial_x \phi_j(x) \partial_x\phi_i(x) dV \\
+        &\quad \Rightarrow S \bar{u}
 
     where :math:`S` is the stiffness matrix, which can be computed independently from the actual unknowns.
     Now we can write our PDE in terms of linear algabra objects:
@@ -190,6 +194,7 @@ def diffusive(x, connect, mu, num_q, order):
     M[0, -2] = M[1, 0]
     M[-1, -1] = M[-2, -2]
     M[-1, 1] = M[-2, -1]
+
     K[0, 0] = K[1, 1]
     K[0, -2] = K[1, 0]
     K[-1, -1] = K[-2, -2]
@@ -226,25 +231,29 @@ def advective(x, connect, c, num_q, order):
     Which we split into different integrals:
 
     .. math::
-        \int_\Omega  (\partial_t \sum_{j = 1}^N \bar{u}_j \phi_j(x))\phi_i(x) dV +
-        \int_\Omega  (c\partial_x\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV =
-        0 \quad \forall \quad \phi_i \in V_h
+        &\int_\Omega \tilde{u}_t dV =
+        \int_\Omega (\partial_t \sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV =
+        \sum_{j = 1}^N \partial_t \bar{u}_j \int_\Omega \phi_j(x) \phi_i(x) dV \quad \forall \quad \phi_i \in V_h \\
+        &\qquad \Rightarrow \qquad M \bar{u}
 
     For the first integral we notice that the basis functions are constant through time, only the degrees of freedom
     :math:`\bar{u}_j` vary through time. Similarly these degrees of freedom does not affect the integral over space
     :math:`\int_\Omega dV`. Thus we can write:
 
     .. math::
-        \int_\Omega (\partial_t \sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV =
-        \sum_{j = 1}^N \partial_t \bar{u}_j \int_\Omega \phi_j(x) \phi_i(x) dV = M \bar{u}_j
+        \int_\Omega \tilde{u}_t dV
+        & = \int_\Omega (\partial_t \sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV \quad \forall \quad \phi_i \in V_h \\
+        & = \sum_{j = 1}^N \partial_t \bar{u}_j \int_\Omega \phi_j(x) \phi_i(x) dV \\
+        &\qquad \Rightarrow \qquad M \bar{u}
 
     where :math:`M` is the mass matrix which combines the integral for all different basis functions.
     For the second term we aknoledge that the degrees of freedom have no spatial and temporal effects thus
     we can take them out of the integral and derivatives.
 
     .. math::
-        \int_\Omega  (c\partial_x\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV =
-        c \sum_{j = 1}^N \bar{u}_j \int_\Omega \partial_x\phi_j(x) \phi_i(x) dV = c T \bar{u}
+        \int_\Omega u_x dV & = \int_\Omega (\partial_x\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV \quad \forall \quad \phi_i \in V_h \\
+        & = \sum_{j = 1}^N \bar{u}_j \int_\Omega \partial_x\phi_j(x) \phi_i(x) dV \\
+        & \Rightarrow \qquad T \bar{u}
 
     where :math:`T` is the socalled transport matrix, wich only depends on the basis functions.
 
@@ -277,7 +286,7 @@ def advective(x, connect, c, num_q, order):
         The mass matrix.
     K : matrix, (sparse csr format)
         The combination of stiffness and transport matrix matrix scaled with the approprate constants
-         :math:`K = - c T`.
+        :math:`K = - c T`.
     b : vector, (dense array)
         The right hand side, because we consider a homogeneous PDE with diriclet conditions it is a zero vector.
     """
@@ -340,24 +349,29 @@ def advectivediffusive(x, connect, c, mu, num_q, order):
     :math:`\int_\Omega dV`. Thus we can write:
 
     .. math::
-        \int_\Omega (\partial_t \sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV =
-        \sum_{j = 1}^N \partial_t \bar{u}_j \int_\Omega \phi_j(x) \phi_i(x) dV = M \bar{u}_j
+        \int_\Omega \tilde{u}_t dV
+        & = \int_\Omega (\partial_t \sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV \quad \forall \quad \phi_i \in V_h \\
+        & = \sum_{j = 1}^N \partial_t \bar{u}_j \int_\Omega \phi_j(x) \phi_i(x) dV \\
+        &\qquad \Rightarrow \qquad M \bar{u}
 
     where :math:`M` is the mass matrix which combines the integral for all different basis functions.
     For the second term we aknoledge that the degrees of freedom have no spatial and temporal effects thus
     we can take them out of the integral and derivatives.
 
     .. math::
-        \int_\Omega  (c\partial_x\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV =
-        c \sum_{j = 1}^N \bar{u}_j \int_\Omega \partial_x\phi_j(x) \phi_i(x) dV = c T \bar{u}
+        \int_\Omega u_x dV & = \int_\Omega (\partial_x\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV \quad \forall \quad \phi_i \in V_h \\
+        & = \sum_{j = 1}^N \bar{u}_j \int_\Omega \partial_x\phi_j(x) \phi_i(x) dV \\
+        & \Rightarrow \qquad T \bar{u}
 
     where :math:`T` is the socalled transport matrix, wich only depends on the basis functions.
-    For the thrird part we apply integration by parts, while assuming that Diriclet boundary conditions:
+    For the thrird part we apply integration by parts, while assuming that Neumann boundary conditions:
 
     .. math::
-        \int_\Omega (\mu \partial_{xx}\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV =
-        \int_\Omega (\mu \partial_x\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \partial_x\phi_i(x) dV =
-        \mu \sum_{j=1}^N \bar{u}_j \int_\Omega \partial_x \phi_j(x) \partial_x\phi_i(x) dV = \mu S \bar{u}_j
+        \int_\Omega \tilde{u}_{xx} dV
+        &\quad = \int_\Omega (\partial_{xx}\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \phi_i(x) dV   \quad \forall \quad \phi_i \in V_h  \\
+        &\quad = -\int_\Omega (\partial_x\sum_{j = 1}^N \bar{u}_j \phi_j(x)) \partial_x\phi_i(x) dV \\
+        &\quad = \sum_{j=1}^N \bar{u}_j \int_\Omega -\partial_x \phi_j(x) \partial_x\phi_i(x) dV \\
+        &\quad \Rightarrow S \bar{u}
 
     where :math:`S` is the stiffness matrix, which can be computed independently from the actual unknowns.
     Now we can write our PDE in terms of linear algabra objects:
@@ -391,7 +405,7 @@ def advectivediffusive(x, connect, c, mu, num_q, order):
         The mass matrix.
     K : matrix, (sparse csr format)
         The combination of stiffness and transport matrix matrix scaled with the approprate constants
-         :math:`K = \mu S - c T`.
+        :math:`K = \mu S - c T`.
     b : vector, (dense array)
         The right hand side, because we consider a homogeneous PDE with diriclet conditions it is a zero vector.
     """

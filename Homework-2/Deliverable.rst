@@ -90,40 +90,37 @@ Plot these shape functions for both spaces.
 Consider the previously described NS-equations and the Chorin'n projection method and obtain:
 
 1. Weak formulation,
-    From what I understand the this approch goes in three steps:
+    From what I understand the this approach goes in three steps:
 
-    1. Solve the following PDE,
+    1. Solve PDE 1,
         .. math::
-            \frac{\vec{u}^*-\vec{u}^n}{\Delta t} + \grad{\vec{u}^n} \, \vdot \vec{u}^n - \mu \grad^2{\vec{u}^*} = \vec{f}
+            \frac{\vec{u}^*-\vec{u}^n}{\Delta t} + \grad{\vec{u}^n} \,\vdot\, \vec{u}^n - \mu \grad^2{\vec{u}^*} = \vec{f}
     
         where :math:`\vec{u}^*` is the unknown and all other variables are known.
         This is PDE can be written into the following format:
 
         .. math::
-            a \vec{u}^* - b \grad^2{\vec{u}^*} = \vec{b}
+            \alpha \vec{u}^* - \beta \grad^2{\vec{u}^*} = \vec{b}_1
 
-        which is a difusion kind of equation, but vector valued, as :math:`\vec{u}` is a vector.
-    2. Update the pressure through:
+        which is a non-homogeneous diffusion equation, but vector valued, as :math:`\vec{u}` is a vector.
+    2. Solve PDE 2:
         .. math::
-            \Delta p^{n+1} = \frac{\rho}{\Delta t} \divergence{\vec{u}^*}
+            \grad^2 {p^{n+1}} = \frac{\rho}{\Delta t} \divergence{\,\vec{u}^*}
     
-        where :math:`p` is the variable to be determined.
-        I'm not even sure if this is a PDE or not, is this equation simply saying:
+        where :math:`p` is the variable to be determined, through the a Poisson equation.
 
         .. math::
-            p^{n+1} = p^n + \frac{\rho}{\Delta t} \divergence{\vec{u}^*}
-        
-        if so then the pressure can be updated directly, otherwise the :math:`\Delta` will refer to the Laplacian
-        which would make this into a Poisson equation.
-    3. Obtain new primal :math:`\vec{u}` by ubtating it through:
+            \grad^2 {p^{n+1}} = \vec{b}_2
+
+    3. Obtain new primal :math:`\vec{u}` by updating it through:
         .. math::
             \vec{u}^{n+1} = \vec{u}^* - \frac{\Delta t}{\rho}\grad p^{n+1}
         
         This is simply an update, there is no PDE to be solved and everything on the right hand side is known.
     
 2. Discrete weak form and,
-    I'll first need to find the answer to the previous question.
-3. The linear algabra representation of the problem.
+    Incomplete.
+3. The linear algebra representation of the problem.
     I'll first need to find the answer to the previous question, nevertheless it is clear that we need at
     least the mass and the stiffness matrix for the first PDE. The transport matrix is also
     required to compute the right hand side in the first PDE.
@@ -391,21 +388,22 @@ Solve this problem using a FEM implementation with the following steps:
     :align: center
     :width: 600
 
-    : In this course grid large differences between the FD and FE methods can be observed.
+    : In this course grid large differences between the FD and FE methods can be observed. The forward and backward
+    scheme preform nearly the same.
 
-.. figure:: ../../Homework-2/images/AdvectionDiffusion_64.svg
+.. figure:: ../../Homework-2/images/AdvectionDiffusion_32.svg
     :name: AdvectionDiffusion_32
     :align: center
     :width: 600
 
-    : aa.
+    : With a finer grid and time step the differences become smaller.
 
 .. figure:: ../../Homework-2/images/AdvectionDiffusion_64.svg
     :name: AdvectionDiffusion_64
     :align: center
     :width: 600
 
-    : aa.
+    : And smaller.
 
 .. figure:: ../../Homework-2/images/AdvectionDiffusion_128.svg
     :name: AdvectionDiffusion_128

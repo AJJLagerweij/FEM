@@ -21,15 +21,17 @@ def shape1d(x, order):
 
     Parameters
     ----------
-    x : array_like (float)
+    x : array_like(float)
         Location where the shape functions are sampled.
     order : int
         The order of the polynomial used.
 
     Returns
     -------
-    array_like
-        The array with the values of the shape funcions at `x`.
+    phi : array_like(float)
+        The array with the values of the each of the shape funcions at `x`.
+    dphi : array_like(float)
+        The derivatives of each of the shape functions at locations `x`.
 
     Raises
     ------

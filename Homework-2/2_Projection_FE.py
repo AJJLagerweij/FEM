@@ -90,7 +90,7 @@ if __name__ == '__main__':
     x = np.linspace(0, 1, len_x)
 
     # Store error results.
-    N_list = 2**np.arange(1, 18)
+    N_list = 2**np.arange(1, 2)
     e1_linear = []
     e2_linear = []
     e1_quadratic = []

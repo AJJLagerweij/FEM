@@ -91,7 +91,7 @@ def E2(fun, fun_h, x):
     Calculate the :math:`E_2` error.
 
     .. math::
-        E_2 := \sqrt(\int_\Omega \big(f(x) - f_h(x)\big)^2 dx)
+        E_2 := \sqrt{\int_\Omega \big(f(x) - f_h(x)\big)^2 dx}
 
     Parameters
     ----------

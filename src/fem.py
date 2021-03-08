@@ -31,8 +31,12 @@ def element_mass(phi_xq, wq_detJ):
     This matrix is defined as:
 
     .. math::
-        M = \int_{\Omega} \phi_j(x) \phi_i(x) dV
+        M &= \int_{\Omega} \phi_j(x) \,\, \phi_i(x) \,\, dV  \quad \forall \quad \phi_i, \phi_j \in V_h \\
+        &= \sum_{e=0}^N \int_{\Omega_e} \phi_j(x) \,\, \phi_i(x) \, dV \quad \forall \quad \phi_i, \phi_j \in V^e_h \\
+        &= \sum_{e=0}^N M_e
 
+    but here we only compute the portion contributed by our current element.
+    Hence we only need to consider the trial functions within each elements.
     when integrated in reference element coordinates, :math:`\xi` this is:
 
     .. math::
@@ -81,17 +85,21 @@ def element_transport(phi_xq, invJ_dphi_xq, wq_detJ):
     This matrix is defined as:
 
     .. math::
-        T = \int_{\Omega} \partial_x\phi_j(x) \phi_i(x) dV
+        T &= \int_{\Omega} \partial_x\phi_j(x) \,\, \phi_i(x) \,\, dV  \quad \forall \quad \phi_i, \phi_j \in V_h \\
+        &= \sum_{e=0}^N \int_{\Omega_e} \partial_x\phi_j(x) \,\, \phi_i(x) \, dV \quad \forall \quad \phi_i, \phi_j \in V^e_h \\
+        &= \sum_{e=0}^N T_e
 
+    but here we only compute the portion contributed by our current element.
+    Hence we only need to consider the trial functions within each elements.
     when integrated in reference element coordinates, :math:`\xi` this is:
 
     .. math::
-        T = \int_0^1 J^{-1}\partial_{\xi}\phi_j(\xi) \phi_i(\xi) det(J)dV
+        T_e = \int_0^1 J^{-1}\,\partial_{\xi}\phi_j(\xi) \,\, \phi_i(\xi) \,\, det(J)dV
 
     To evaluate these integras Gaussian quadrature is used such that thi integal becomes:
 
     .. math::
-        T = \sum_{q=0}^{N_q} J^{-1}\partial_{\xi}\phi_j(\xi_q) \phi_i(\xi_q) det(J) w_q
+        T_e = \sum_{q=0}^{N_q} J^{-1}\,\partial_{\xi}\phi_j(\xi_q) \,\, \phi_i(\xi_q) \,\,det(J) w_q
 
     Parameters
     ----------
@@ -104,7 +112,7 @@ def element_transport(phi_xq, invJ_dphi_xq, wq_detJ):
 
     Returns
     -------
-    te : array_like(float), shape((dofe, dofe))
+    Te : array_like(float), shape((dofe, dofe))
         Element mass matrix.
     """
     # Create empty storage for element properties.
@@ -128,17 +136,21 @@ def element_stiffness(invJ_dphi_xq, wq_detJ):
     This matrix is defined as:
 
     .. math::
-        S = \int_{\Omega} \partial_x\phi_j(x) \partial_x\phi_i(x) dV
+        S &= \int_{\Omega} -\partial_x\phi_j(x) \,\, \partial_x\phi_i(x) \,\, dV \quad \forall \quad \phi_i, \phi_j \in V_h \\
+        &= \sum_{e=0}^N \int_{\Omega_e} -\partial_x\phi_j(x) \,\, \partial_x\phi_i(x) \,\, dV \quad \forall \quad \phi_i, \phi_j \in V^e_h \\
+        &= \sum_{e=0}^N S_e
 
-    when integrated in reference element coordinates, :math:`\xi` this is:
+    but here we only compute the portion contributed by our current element.
+    Hence we only need to consider the trial functions within each elements.
+    When integrated in reference element coordinates, :math:`\xi` this is:
 
     .. math::
-        S = \int_0^1 J^{-1}\partial_{\xi} \phi_j(\xi) J^{-1}\partial_{\xi}\phi_i(\xi) det(J)dV
+        S_e = \int_0^1 J^{-1}\, \partial_{\xi} \phi_j(\xi) \,\, J^{-1}\,\partial_{\xi}\phi_i(\xi) \,\,det(J)dV
 
     To evaluate these integras Gaussian quadrature is used such that thi integal becomes:
 
     .. math::
-        S = \sum_{q=0}^{N_q} J^{-1}\partial_{\xi} \phi_j(\xi_q) J^{-1}\partial_{\xi}\phi_i(\xi_q) det(J) w_q
+        S_e = \sum_{q=0}^{N_q} J^{-1}\, \partial_{\xi} \phi_j(\xi_q) \,\, J^{-1}\,\partial_{\xi}\phi_i(\xi_q) \,\,det(J) w_q
 
     Parameters
     ----------
@@ -149,7 +161,7 @@ def element_stiffness(invJ_dphi_xq, wq_detJ):
 
     Returns
     -------
-    se : array_like(float), shape((dofe, dofe))
+    Se : array_like(float), shape((dofe, dofe))
         Element mass matrix.
     """
     # Create empty storage for element properties.
@@ -160,11 +172,11 @@ def element_stiffness(invJ_dphi_xq, wq_detJ):
     # Loop over all degrees of freedom and get:
     for i in range(dofe):
         # Matrix diagonal quantiy.
-        se[i, i] = np.sum(invJ_dphi_xq[i] * invJ_dphi_xq[i] * wq_detJ)
+        se[i, i] = -np.sum(invJ_dphi_xq[i] * invJ_dphi_xq[i] * wq_detJ)
 
         # Loop over all degrees of freedom and get matrix quantities.
         for j in range(i+1, dofe):
-            se_ij = np.sum(invJ_dphi_xq[j] * invJ_dphi_xq[i] * wq_detJ)
+            se_ij = -np.sum(invJ_dphi_xq[j] * invJ_dphi_xq[i] * wq_detJ)
             se[i, j] = se_ij
             se[j, i] = se_ij
     return se
