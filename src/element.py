@@ -115,7 +115,7 @@ def triangle2d(x, order):
 @nb.jit(nopython=False)
 def interpolate(u, x, c, x_inter, order):
     r"""
-    Obtain the field :math`u(x)` any points `x_inter` following the FE interpolation.
+    Obtain the field :math:`u(x)` any points `x_inter` following the FE interpolation.
 
     Parameters
     ----------

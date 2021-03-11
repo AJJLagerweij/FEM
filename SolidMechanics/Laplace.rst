@@ -19,9 +19,13 @@ Poisson Equation
    Bram Lagerweij |br|
    11 Feb 2020
 
-****************
-Laplace Equation
-****************
+.. contents:: Table of Contents
+    :local:
+    :depth: 2
+
+******************
+1 Laplace Equation
+******************
 The most basic description of the Laplace equation is given by:
 
 .. math::
@@ -44,9 +48,9 @@ The following images summarizes this.
 
    A domain :math:`\Omega` subjected to the Laplace equation with combined boundary conditions.
 
-****************
-Poisson equation
-****************
+******************
+2 Poisson equation
+******************
 In case of non-homogeneous formulations the Laplace equations is called the Poisson equation.
 
 .. math::

@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="62.354576mm"
-   height="12.78783mm"
-   viewBox="0 0 62.354576 12.78783"
+   width="62.962143mm"
+   height="13.290756mm"
+   viewBox="0 0 62.962143 13.290756"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
@@ -88,15 +88,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="11.313708"
-     inkscape:cx="32.656301"
-     inkscape:cy="6.33768"
+     inkscape:zoom="2.828427"
+     inkscape:cx="166.42927"
+     inkscape:cy="12.758635"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="2560"
-     inkscape:window-height="1386"
-     inkscape:window-x="1920"
+     inkscape:window-width="1920"
+     inkscape:window-height="1026"
+     inkscape:window-x="0"
      inkscape:window-y="25"
      inkscape:window-maximized="1" />
   <metadata
@@ -107,7 +107,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -115,53 +115,57 @@
      inkscape:label="Laag 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-13.449631,-22.395395)">
-    <path
-       sodipodi:nodetypes="cc"
-       inkscape:connector-curvature="0"
-       id="path1038"
-       d="M 15.154472,30.957512 H 74.975835"
-       style="fill:none;stroke:#000000;stroke-width:0.39687502;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <text
-       id="text1083"
-       y="22.475376"
-       x="81.174934"
-       style="font-style:normal;font-weight:normal;font-stretch:normal;font-size:4.42558146px;font-family:'DejaVu Sans';text-anchor:middle;stroke-width:0.35277778;stroke-linecap:butt;stroke-linejoin:round"
-       transform="scale(0.93467063,1.0698956)">
-      <tspan
-         style="font-size:2.11666656px;text-align:end;text-anchor:end"
-         id="tspan903">P</tspan>
-    </text>
+     transform="translate(-13.550857,-22.051739)">
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26500002;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3.03904247;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect892"
+       height="13.290756"
+       x="13.550857"
+       y="22.051739"
+       rx="0"
+       ry="0"
+       width="62.962143" />
     <g
-       id="g3098"
-       transform="translate(0,2.1166667)">
+       id="g945">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.39687502;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 15.154472,30.957512 H 74.975835"
+         id="path1038"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <text
+         transform="scale(0.93467063,1.0698956)"
+         style="font-style:normal;font-weight:normal;font-stretch:normal;font-size:4.42558146px;font-family:'DejaVu Sans';text-anchor:middle;stroke-width:0.35277778;stroke-linecap:butt;stroke-linejoin:round"
+         x="81.174934"
+         y="22.475376"
+         id="text1083">
+        <tspan
+           id="tspan903"
+           style="font-size:2.11666656px;text-align:end;text-anchor:end">P</tspan>
+      </text>
       <path
          sodipodi:nodetypes="cc"
          inkscape:connector-curvature="0"
          id="path1098"
          style="fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-start:url(#Arrow2Mstart);marker-end:url(#marker1152)"
-         d="M 74.654599,26.048716 15.442056,26.048539" />
+         d="M 74.654599,28.165383 15.442056,28.165206" />
       <text
          transform="scale(0.93467063,1.0698956)"
          id="text1106"
-         y="23.925549"
+         y="25.903934"
          x="48.157475"
          style="font-style:normal;font-weight:normal;font-stretch:normal;font-size:4.42558146px;font-family:'DejaVu Sans';text-anchor:middle;stroke-width:0.35277778;stroke-linecap:butt;stroke-linejoin:round">
         <tspan
            id="tspan1372"
            style="font-size:2.11666656px">1000 mm</tspan>
       </text>
-    </g>
-    <path
-       inkscape:connector-curvature="0"
-       id="path1077"
-       style="fill:none;stroke:#000000;stroke-width:0.26458332;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#marker1310)"
-       d="m 74.975834,24.687584 q 0,2.91652 0,5.584312" />
-    <g
-       id="g1070"
-       transform="translate(0.33570548)">
+      <path
+         d="m 74.975834,24.687584 q 0,2.91652 0,5.584312"
+         style="fill:none;stroke:#000000;stroke-width:0.26458332;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#marker1310)"
+         id="path1077"
+         inkscape:connector-curvature="0" />
       <g
-         transform="translate(0,-0.3549425)"
+         transform="translate(0.33570548,-0.3549425)"
          id="g1051">
         <path
            inkscape:connector-curvature="0"
@@ -232,7 +236,7 @@
       <path
          inkscape:connector-curvature="0"
          id="path1053"
-         d="m 14.625304,27.558369 2e-6,7.306082"
+         d="m 14.961009,27.558369 2e-6,7.306082"
          style="fill:none;stroke:#000000;stroke-width:0.26499999;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
   </g>

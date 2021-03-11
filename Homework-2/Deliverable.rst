@@ -59,7 +59,7 @@ Finaly, the updated divergence-free velocity is given by:
    \vec{u}^{n+1} = \vec{u}^* - \frac{\Delta t}{\rho}\grad p^{n+1}
 
 1.1 The shape functions
-=======================
+#######################
 Consider two discrete spaces. For the velocity and pressure use continuous piecewise bi-quadratic and bilinear polynomials (in 2D)
 
 .. math::
@@ -86,7 +86,7 @@ The code used to plot these two figures is available in `1 shape2D.py <https://g
     : Quadrilateral elements with quadratic shape functions.
 
 1.2 Weak form of Chorin's projection
-====================================
+####################################
 Consider the previously described NS-equations and the Chorin'n projection method and obtain:
 
 1. Weak formulation,
@@ -136,7 +136,7 @@ From HW1 we consider the following function again:
 and project it on the finite element space.
 
 2.1 Projection
-==============
+##############
 Perform the projection through the following steps.
 
 1. Consider piecewise linear and quadratic continuous polynomials.
@@ -169,7 +169,7 @@ Perform the projection through the following steps.
 .. _2.2 Projection:
 
 2.2 Evaluate Projection
-=======================
+#######################
 For both projections compute the following two errors
 
 .. math::
@@ -373,7 +373,7 @@ The exact solution to this equation is given by:
    u(x,t) = \frac{3}{8} - \frac{1}{2} \exp^{-4\mu t} \cos(2(x-t)) + \frac{1}{8} \exp^{-16\mu t}\cos(4(x-t))
 
 4.1 Solve through FEM
-=====================
+#####################
 Solve this problem using a FEM implementation with the following steps:
 
 1. Consider continuous piecewise linear polynomials and interpolatory basis functions.
@@ -415,7 +415,7 @@ Solve this problem using a FEM implementation with the following steps:
     : At the finished mesh and time step the results become quite close to the exact solution.
 
 4.2 Compute the error
-=====================
+#####################
 Compute the errors :math:`E_1` and :math:`E_2` and compare the results to those of previous weeks homework, in which the same PDE was solved using a Finite Difference approach.
 Preform a convergence test as described in :ref:`2.2 Projection`.
 
