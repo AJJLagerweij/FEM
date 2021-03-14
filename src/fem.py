@@ -220,9 +220,9 @@ def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=Fal
 
     Parameters
     ----------
-    x : array_like(float)
-        Global coordinates of all degrees of freedom.
-    c : array_like(int), shape((num_ele, dofe/ele))
+    x : array_like(float), shape(num_ele, dofe/ele)
+        For each degree of freemdom in each alement the global coordinates.
+    c : array_like(int), shape(num_ele, dofe/ele)
         Element to degree of freedom connectivety map.
     rhs : callable
         Function that acts as our right hand side (nonhomogeneous term), set equal to `None` if the rhs is zero valued.
@@ -286,7 +286,7 @@ def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=Fal
     for ele in range(num_ele):
         # Obtain element properties
         dofe = c[ele]
-        x_ele = x[dofe]
+        x_ele = x[ele]
         phi_xq, invJ_dphi_xq, f_xq, wq_detJ = get_element(num_q, x_ele, rhs, order=order)
 
         # Perform integration and compute right hand side vector.

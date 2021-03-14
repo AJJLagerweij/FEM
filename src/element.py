@@ -145,7 +145,7 @@ def interpolate(u, x, c, x_inter, order):
     for ele in range(num_ele):
         # Obtain element properties
         dofe = c[ele]
-        x_ele = x[dofe]
+        x_ele = x[ele]
 
         # Find which values of x are within our element.
         ind = np.where((x_ele.min() <= x_inter) & (x_inter <= x_ele.max()))

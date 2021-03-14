@@ -50,16 +50,20 @@ def mesh(x_start, x_end, n, order):
 
     Returns
     -------
-    nodes : array_like(float)
-        Coordinates of all the nodal points.
-    connectivity array_like(int), shape((n+1, order+1))
+    nodes : array_like(float), shape(n+1, order+1)
+        For each node in each element the coordinates.
+    connectivity array_like(int), shape(n+1, order+1)
         Elements to node connectivity array.
     """
     ele, dof = np.indices((n, order+1))
     connectivity = order*ele + dof
     ndofs = connectivity.max()+1
-    nodes = np.linspace(x_start, x_end, ndofs)
-    return nodes, connectivity
+    nodes_x = np.linspace(x_start, x_end, ndofs)
+    nodes_x = nodes_x[connectivity]
+
+    # Now make it a periodic mesh by setting the last dof of the last element to 0.
+    connectivity[-1, -1] = 0
+    return nodes_x, connectivity
 
 
 def exact(x, t, mu, c):
@@ -120,7 +124,7 @@ if __name__ == '__main__':
     c = 1  # Advective term
 
     # Store error results.
-    N_list = 2 ** np.arange(1, 8)
+    N_list = 2 ** np.arange(2, 8)
     e1_forw_fd = []
     e2_forw_fd = []
     e1_back_fd = []
