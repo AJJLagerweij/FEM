@@ -17,13 +17,13 @@
     --navbar-background-color-hover: #2880c6;
     --navbar-background-color-active: #2575b5;
     --navbar-current-background-color: #fcfcfc;
-    --navbar-current-background-color-hover: #c6c6c6;
-    --navbar-current-background-color-active: #d7d7d7;
+    --navbar-current-background-color-hover: #2880c6;
+    --navbar-current-background-color-active: #2575b5;
     --navbar-level-1-color: #ffffff;
     --navbar-level-2-color: #202327;
     --navbar-level-3-color: #202327;
     --navbar-level-current-color: #202327;
-    --navbar-heading-color: #ff7381;
+    --navbar-heading-color: #337fbd;
 
     --link-color: #2980b9;
     --link-color-hover: #3091d1;
@@ -99,17 +99,17 @@
         --logo-opacity: 0.85;
         --navbar-background-title-color: #337fbd;
         --navbar-background-color: #202327;
-        --navbar-background-color-hover: #303336;
-        --navbar-background-color-active: #282b2d;
+        --navbar-background-color-hover: #2880c6;
+        --navbar-background-color-active: #2575b5;
         --navbar-current-background-color: #303336;
         --navbar-current-level-2-background-color: #3c4044;
-        --navbar-current-background-color-hover: #46494b;
-        --navbar-current-background-color-active: #222528;
+        --navbar-current-background-color-hover: #2880c6;
+        --navbar-current-background-color-active: #2575b5;
         --navbar-level-1-color: #ddd;
         --navbar-level-2-color: #ccc;
         --navbar-level-3-color: #bbb;
         --navbar-level-current-color: #ccc;
-        --navbar-heading-color: #ee7381;
+        --navbar-heading-color: #337fbd;
 
         --link-color: #8cf;
         --link-color-hover: #9df;
@@ -560,6 +560,11 @@ code,
     color: var(--code-literal-color);
 }
 
+
+.rst-content code.xref, .rst-content tt.xref, a .rst-content code, a .rst-content tt {
+    color: var(--code-literal-color);
+}
+
 .rst-content div[class^="highlight"] {
     border-color: var(--code-border-color);
 }
@@ -917,7 +922,7 @@ kbd, .kbd {
 .wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a:hover,
 .wy-menu-vertical li.toctree-l3.current li.toctree-l4 > a:hover {
     background-color: var(--navbar-current-background-color-hover);
-    color: var(--navbar-level-current-color);
+    color: var(--navbar-level-1-color)
 }
 
 .wy-menu-vertical li.current a:active,
@@ -925,7 +930,7 @@ kbd, .kbd {
 .wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a:active,
 .wy-menu-vertical li.toctree-l3.current li.toctree-l4 > a:active {
     background-color: var(--navbar-current-background-color-active);
-    color: var(--navbar-level-current-color);
+    color: var(--navbar-level-1-color)
 }
 
 .wy-menu-vertical a {
