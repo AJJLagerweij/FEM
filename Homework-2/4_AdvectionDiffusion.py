@@ -121,12 +121,12 @@ if __name__ == '__main__':
     # Define properties.
     num_q = 4  # number of quadrature points
     dt = 1e-4  # time step
-    t_end = 0.3* 2*np.pi  # final time.
+    t_end = 2*np.pi  # final time.
     mu = 0.01  # Diffusive term
     c = 1  # Advective term
 
     # Store error results.
-    N_list = 2 * np.arange(1, 8)**2
+    N_list = 2**np.arange(1, 8)
     e1_forw_fd = []
     e2_forw_fd = []
     e1_back_fd = []
@@ -140,7 +140,7 @@ if __name__ == '__main__':
         # Because we are first order in time we need to refine time as well.
         # We scale spatially with: O(dx^2) and temporally with: O(dt^2).
         # Hence we set:
-        dt = 1e-3 * (1/N)**2
+        dt = 1e-2 * (1/N)**2
         print(f'N={N}, h={1/N:1.2e}, dt={dt:1.2e}')
 
         # Solve using finite differences.
@@ -194,8 +194,6 @@ if __name__ == '__main__':
         plt.plot(x_fd, u_back_fd, ':', label='FD backward')
         plt.plot(x, ux_forw_fe, ':', label='FE forward')
         plt.plot(x, ux_back_fe, ':', label='FE backward')
-        plt.plot(x, u0(x), label='exact 0')
-        plt.plot(x, ux, ':', label='u0')
         plt.legend(loc=1)
         plt.show()
 

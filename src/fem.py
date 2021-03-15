@@ -252,9 +252,9 @@ def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=Fal
         Global stiffness matrix, ready to be converted to COO. Repeating indices do exist.
         Only 'stiffness == True`, `None` otherwise.
     """
-    num_ele = len(c)
-    num_dofs = np.max(c) + 1
-    num_dofe = len(c[0])  # number of element dofe
+    num_ele = len(c)  # Number of elements.
+    num_dofs = np.max(c) + 1   # Total number of degrees of freedom.
+    num_dofe = len(c[0])  # Number of degrees of freedom per element.
 
     # Initialize right hand side vector (dense).
     f = np.zeros(num_dofs)
@@ -283,6 +283,7 @@ def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=Fal
     else:
         s_v, s_i, s_j = None, None, None
 
+    # This is the main loop
     for ele in range(num_ele):
         # Obtain element properties
         dofe = c[ele]
