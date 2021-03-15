@@ -71,7 +71,8 @@ def exact(x, t, mu, c):
     The exact solution to the pde:
 
     .. math::
-        u(x, t) = \frac{3}{8} - \frac{1}{2} e^{-4\mu t} \cos(2(x-t)) + \frac{1}{8} e^{-16\mu t}\cos(4(x-t)
+        u(x, t) = \frac{3}{8} - \frac{1}{2} e^{-4\mu t} \cos(2(x-t))
+                  + \frac{1}{8} e^{-16\mu t}\cos(4(x-t)
 
     Parameters
     ----------
@@ -89,7 +90,8 @@ def exact(x, t, mu, c):
     array_like(float)
         The function :math:`f(x)` at points `x`.
     """
-    fun = 3/8 - 1/2 * np.exp(-4*mu*t) * np.cos(2*(x - c*t)) + 1/8 * np.exp(-16*mu*t) * np.cos(4*(x - c*t))
+    fun = 3/8 - 1/2 * np.exp(-4*mu*t) * np.cos(2*(x - c*t)) +\
+          1/8 * np.exp(-16*mu*t) * np.cos(4*(x - c*t))
     return fun
 
 
@@ -119,12 +121,12 @@ if __name__ == '__main__':
     # Define properties.
     num_q = 4  # number of quadrature points
     dt = 1e-4  # time step
-    t_end = 2 * np.pi  # final time.
+    t_end = 0.3* 2*np.pi  # final time.
     mu = 0.01  # Diffusive term
     c = 1  # Advective term
 
     # Store error results.
-    N_list = 2 ** np.arange(2, 8)
+    N_list = 2 * np.arange(1, 8)**2
     e1_forw_fd = []
     e2_forw_fd = []
     e1_back_fd = []
@@ -138,7 +140,7 @@ if __name__ == '__main__':
         # Because we are first order in time we need to refine time as well.
         # We scale spatially with: O(dx^2) and temporally with: O(dt^2).
         # Hence we set:
-        dt = 1e-2 * (1/N)**2
+        dt = 1e-3 * (1/N)**2
         print(f'N={N}, h={1/N:1.2e}, dt={dt:1.2e}')
 
         # Solve using finite differences.
@@ -164,13 +166,14 @@ if __name__ == '__main__':
         u = solve(projection, args=(grid, connect, u0, num_q, 1))
 
         # Solve the problem using method of lines.
-        u_forw_fe = forwardEuler(advectivediffusive, u, dt, t_end, args=(grid, connect, c, -mu, num_q, 1))
-        u_back_fe = backwardEuler(advectivediffusive, u, dt, t_end, args=(grid, connect, c, -mu, num_q, 1))
+        u_forw_fe = forwardEuler(advectivediffusive, u, dt, t_end, args=(grid, connect, c, mu, num_q, 1))
+        u_back_fe = backwardEuler(advectivediffusive, u, dt, t_end, args=(grid, connect, c, mu, num_q, 1))
 
         # Interpolate the solutions at points x for plotting.
         x = np.linspace(0, 2 * np.pi, 10001)
         ux_forw_fe = interpolate(u_forw_fe, grid, connect, x, 1)
         ux_back_fe = interpolate(u_back_fe, grid, connect, x, 1)
+        ux = interpolate(u, grid, connect, x, 1)
 
         # Calculate errors
         e1_forw_fe.append(E1(exact(x, t_end, mu, c), ux_forw_fe, x))
@@ -191,10 +194,12 @@ if __name__ == '__main__':
         plt.plot(x_fd, u_back_fd, ':', label='FD backward')
         plt.plot(x, ux_forw_fe, ':', label='FE forward')
         plt.plot(x, ux_back_fe, ':', label='FE backward')
+        plt.plot(x, u0(x), label='exact 0')
+        plt.plot(x, ux, ':', label='u0')
         plt.legend(loc=1)
         plt.show()
 
-    # Plotting with respect to the number of elements.
+    # Plot E1 with respect to the number of elements.
     plt.figure(num='E1 vs Elements')
     plt.plot(N_list, e1_forw_fd, 's', label='FD forward')
     plt.plot(N_list, e1_back_fd, 's', label='FD backward')
@@ -209,6 +214,7 @@ if __name__ == '__main__':
     plt.legend(loc=3)
     plt.tight_layout()
 
+    # Plot E2 with respect to the number of elements.
     plt.figure(num='E2 vs Elements')
     plt.plot(N_list, e2_forw_fd, 's', label='FD forward')
     plt.plot(N_list, e2_back_fd, 's', label='FD backward')
