@@ -59,11 +59,11 @@ def mesh(x_start, x_end, n, order):
     connectivity = order*ele + dof
     ndofs = connectivity.max()+1
     nodes_x = np.linspace(x_start, x_end, ndofs)
-    nodes_x = nodes_x[connectivity]
+    nodes = nodes_x[connectivity]
 
     # Now make it a periodic mesh by setting the last dof of the last element to 0.
     connectivity[-1, -1] = 0
-    return nodes_x, connectivity
+    return nodes, connectivity
 
 
 def exact(x, t, mu, c):

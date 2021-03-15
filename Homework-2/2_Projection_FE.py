@@ -50,15 +50,16 @@ def mesh(x_start, x_end, n, order):
 
     Returns
     -------
-    nodes : array_like(float)
-        Coordinates of all the nodal points.
-    connectivity array_like(int), shape((n+1, order+1))
+    nodes : array_like(float), shape(n+1, order+1)
+        For each node in each element the coordinates.
+    connectivity array_like(int), shape(n+1, order+1)
         Elements to node connectivity array.
     """
     ele, dof = np.indices((n, order+1))
     connectivity = order*ele + dof
     ndofs = connectivity.max()+1
-    nodes = np.linspace(x_start, x_end, ndofs)
+    nodes_x = np.linspace(x_start, x_end, ndofs)
+    nodes = nodes_x[connectivity]
     return nodes, connectivity
 
 
