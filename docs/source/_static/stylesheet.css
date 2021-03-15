@@ -192,7 +192,11 @@ textarea,
 legend,
 .btn,
 .rst-content .toctree-wrapper p.caption,
-.rst-versions {
+.rst-versions
+.rst-content div.figure p.caption,
+.rst-content table.docutils caption,
+.rst-content table.field-list caption,
+.wy-table caption {
     /* Use a system font stack for better performance (no Web fonts required) */
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
@@ -209,11 +213,16 @@ legend,
     font-weight: 500;
 }
 
-.rst-content div.figure p.caption {
+.rst-content div.figure p.caption,
+.rst-content table.docutils caption,
+.rst-content table.field-list caption,
+.wy-table caption {
     /* Tweak caption styling to be closer to typical captions */
+    color: var(--body-color);
     text-align: center;
     margin-top: 8px;
     opacity: 0.75;
+    font-size: 100%;
 }
 
 /*.rst-content div.figure img {*/
