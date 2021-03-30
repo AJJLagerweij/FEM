@@ -22,45 +22,18 @@ COHMAS Mechanical Engineering KAUST
 
 # Importing modules.
 import sys
-import numba as nb
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import numba as nb
+nb.NUMBA_DISABLE_JIT = 0  # Turn JIT on (0) and off (1)
 
 # Importing my own modules
 sys.path.insert(1, '../src')
 from pde import projection
 from solvers import solve
-from element import interpolate
+from element import Mesh1D
+from fem import interpolate
 from helper import E1, E2
-
-def mesh(x_start, x_end, n, order):
-    """
-    Meshing the 1D domain into `n` evenly spaced elements.
-
-    Parameters
-    ----------
-    x_start : float
-        Starting coordinate of the domain.
-    x_end : float
-        End coordinate of the domain.
-    n : int
-        Number of elements used to discretized the domain.
-    order : int
-        Order of the interpolation functions.
-
-    Returns
-    -------
-    nodes : array_like(float), shape(n+1, order+1)
-        For each node in each element the coordinates.
-    connectivity array_like(int), shape(n+1, order+1)
-        Elements to node connectivity array.
-    """
-    ele, dof = np.indices((n, order+1))
-    connectivity = order*ele + dof
-    ndofs = connectivity.max()+1
-    nodes_x = np.linspace(x_start, x_end, ndofs)
-    nodes = nodes_x[connectivity]
-    return nodes, connectivity
 
 
 @nb.jit(nopython=True)
@@ -88,16 +61,15 @@ def exact(x):
 if __name__ == '__main__':
     # Setup grid to measure exact results and errors.
     len_x = int(1e6)
-    x = np.linspace(0, 1, len_x)
+    x = np.linspace(0.0, 1.0, len_x)
 
     # Store error results.
-    N_list = 2**np.arange(1, 2)
+    N_list = 2**np.arange(2, 10)
     e1_linear = []
     e2_linear = []
     e1_quadratic = []
     e2_quadratic = []
     num_q = 4
-
 
     # Compute and compare Linear elements.
     lin_plot = plt.figure(num='Linear Elements')
@@ -107,10 +79,11 @@ if __name__ == '__main__':
     print("Linear")
     for N in N_list:
         print(f'{N} Elements')
-        grid, connect = mesh(0, 1, N, 1)
-        u = solve(projection, args=(grid, connect, exact, num_q, 1))
-        u_x = interpolate(u, grid, connect, x, 1)
+        mesh_lin = Mesh1D(0.0, 1.0, N, 1, num_q)  # Setup
+        pde = projection(mesh_lin, exact)  # Assemble
+        u = solve(*pde)  # Solve
 
+        u_x = interpolate(mesh_lin, u, x)
         lin_ax.plot(x, u_x, ':', label=f'{N} elements')
         e1_linear.append(E1(exact(x), u_x, x))
         e2_linear.append(E2(exact(x), u_x, x))
@@ -122,7 +95,6 @@ if __name__ == '__main__':
     lin_ax.legend(loc=1)
     lin_plot.tight_layout()
 
-
     # Compute and compare Quadratic elements.
     qua_plot = plt.figure(num='Quadratic Elements')
     qua_ax = plt.gca()
@@ -131,10 +103,11 @@ if __name__ == '__main__':
     print("Quadratic")
     for N in N_list:
         print(f'{N} Elements')
-        grid, connect = mesh(0, 1, N, 2)
-        u = solve(projection, args=(grid, connect, exact, num_q, 2))
-        u_x = interpolate(u, grid, connect, x, 2)
+        mesh_qua = Mesh1D(0.0, 1.0, N, 2, num_q)  # Setup
+        pde = projection(mesh_qua, exact)  # Assemble
+        u = solve(*pde)  # Solve
 
+        u_x = interpolate(mesh_qua, u, x)
         qua_ax.plot(x, u_x, ':', label=f'{N} elements')
         e1_quadratic.append(E1(exact(x), u_x, x))
         e2_quadratic.append(E2(exact(x), u_x, x))
@@ -145,7 +118,6 @@ if __name__ == '__main__':
     qua_ax.set_xlabel('$x$')
     qua_ax.legend(loc=1)
     qua_plot.tight_layout()
-
 
     # Plotting the errors vs number of elements.
     plt.figure(num='E1 vs Elements')

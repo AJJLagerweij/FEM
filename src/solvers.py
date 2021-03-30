@@ -12,7 +12,7 @@ from scipy.sparse import identity
 from scipy.sparse.linalg import spsolve
 
 
-def forwardEuler(func, u, dt, t_end, args=()):
+def forwardEuler(pde, u, dt, t_end):
     r"""
     Itterate a through time with the forward Eurler method.
 
@@ -63,27 +63,26 @@ def forwardEuler(func, u, dt, t_end, args=()):
 
     Parameters
     ----------
-    func : callable
-        The time derivative of the pde to be solved such that :math:`M\,u_t = K\,u + b`.
+    pde : tuple
+        The linear algabra objects of the pde :math:`M\,u_t = K\,u + b`.
     u : array_like
         The field at the start :math:`u(t=0)`.
     dt : float
         The size of the step.
     t_end : float
         Time at termination.
-    args : tuple, optional
-        The parameters into the PDE approximation. Defealts to an empty tuple.
 
     Returns
     -------
     array_like
         The function for all time steps.
     """
+    # Calculate number of timesteps
     max_iter = int(t_end / dt)
 
     # The t derivative matrix is constant, as it is expensive to
     # build these kind of matrices we make it only once.
-    M, K, b = func(*args)
+    M, K, b = pde
 
     # Check if M is an identity matrix
     eye = identity(M.shape[0], format='csr')
@@ -97,10 +96,11 @@ def forwardEuler(func, u, dt, t_end, args=()):
         for n in range(max_iter):
             rhs = M * u + dt * (K * u + b)
             u = spsolve(M, rhs)
+
     return u
 
 
-def backwardEuler(func, u, dt, t_end, args=()):
+def backwardEuler(pde, u, dt, t_end):
     r"""
     Itterate a through time with the backward Eurler method.
 
@@ -145,36 +145,37 @@ def backwardEuler(func, u, dt, t_end, args=()):
 
     Parameters
     ----------
-    func : callable
-        The time derivative of the pde to be solved such that :math:`M\,u_t = K\,u + b`.
+    pde : tuple
+        The linear algabra objects of the pde :math:`M\,u_t = K\,u + b`.
     u : array_like
         The field at the start :math:`u(t=0)`.
     dt : float
         The size of the time step.
     t_end : float
         Time at termination.
-    args : tuple, optional
-        The parameters into the PDE approximation. Defealts to an empty tuple.
 
     Returns
     -------
     array_like
         The function for all time steps.
     """
+    # Calculate number of timesteps.
+    max_iter = int(t_end / dt)
+
     # The t derivative matrix is constant, as it is expensive to build these
     # kind of matrices we make it only once.
-    M, K, b = func(*args)
+    M, K, b = pde
     A = M - dt*K
 
     # Update the timesteps with the implicit scheme.
-    max_iter = int(t_end / dt)
     for n in range(max_iter):
         rhs = M*u + dt*b
         u = spsolve(A, rhs)
+
     return u
 
 
-def solve(func, args=()):
+def solve(K, b):
     r"""
     Solve a time independed problem.
 
@@ -190,9 +191,6 @@ def solve(func, args=()):
     array_like
         The vector containing :math:`u`.
     """
-    # Obtain pde linear algabra objects.
-    K, b = func(*args)
-
     # Solvet the system of equations.
     u = spsolve(K, b)
     return u
