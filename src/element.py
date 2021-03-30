@@ -50,8 +50,6 @@ class Mesh(object):
     ----------
     num_ele : int
         Number of elements in the entire mesh.
-    order : int
-        Order of the polynomaial approximation.
     num_dofe : int
         Number of degrees of freedom per element.
     num_dofs : int
@@ -79,7 +77,6 @@ class Mesh(object):
         self.num_dofs = None
 
         # Initialize element properties.
-        self.order = None
         self.num_dofe = None
 
     def get_element(self, ele, rhs=None):
