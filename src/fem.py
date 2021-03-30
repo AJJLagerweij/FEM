@@ -19,9 +19,6 @@ COHMAS Mechanical Engineering KAUST
 import numpy as np
 import numba as nb
 
-# From my own scripts import
-from element import get_element
-
 
 @nb.jit(nopython=True)
 def element_mass(phi_xq, wq_detJ):
@@ -214,22 +211,16 @@ def element_rhs(phi_xq, wq_detJ, f_xq):
 
 
 @nb.jit(nopython=True)
-def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=False):
+def kernel1d(mesh, rhs=None, mass=False, transport=False, stiffness=False):
     r"""
     Create the global FEM system by looping over the elements.
 
     Parameters
     ----------
-    x : array_like(float), shape(num_ele, dofe/ele)
-        For each degree of freemdom in each alement the global coordinates.
-    c : array_like(int), shape(num_ele, dofe/ele)
-        Element to degree of freedom connectivety map.
+    mesh : Mesh
+        The mesh class specifying all discretization.
     rhs : callable
         Function that acts as our right hand side (nonhomogeneous term), set equal to `None` if the rhs is zero valued.
-    num_q : int
-        Number of Gausian quadrature points.
-    order : int
-        Order of the polynomial used by our element.
     mass : bool, optional
         Return a mass matrix. Default is `False`.
     transport : bool, optional
@@ -252,43 +243,41 @@ def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=Fal
         Global stiffness matrix, ready to be converted to COO. Repeating indices do exist.
         Only 'stiffness == True`, `None` otherwise.
     """
-    num_ele = len(c)  # Number of elements.
-    num_dofs = np.max(c) + 1   # Total number of degrees of freedom.
-    num_dofe = len(c[0])  # Number of degrees of freedom per element.
+    # num_ele = mlen(c)  # Number of elements.
+    # num_dofs = np.max(c) + 1   # Total number of degrees of freedom.
+    # num_dofe = len(c[0])  # Number of degrees of freedom per element.
 
     # Initialize right hand side vector (dense).
-    f = np.zeros(num_dofs)
+    f = np.zeros(mesh.num_dofs, dtype=np.float64)
 
     # Initialize mass matrix (sparse coo format).
     if mass is True:
-        m_v = np.zeros((num_ele, num_dofe ** 2))  # Value list
-        m_i = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Row list
-        m_j = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Column list
+        m_v = np.zeros((mesh.num_ele, mesh.num_dofe ** 2), dtype=np.float64)  # Value list
+        m_i = np.zeros((mesh.num_ele, mesh.num_dofe ** 2), dtype=np.uintc)  # Row list
+        m_j = np.zeros((mesh.num_ele, mesh.num_dofe ** 2), dtype=np.uintc)  # Column list
     else:
         m_v, m_i, m_j = None, None, None
 
     # Initialize transport matrix (sparse coo format).
     if transport is True:
-        t_v = np.zeros((num_ele, num_dofe ** 2))  # Value list
-        t_i = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Row list
-        t_j = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Column list
+        t_v = np.zeros((mesh.num_ele, mesh.num_dofe ** 2), dtype=np.float64)  # Value list
+        t_i = np.zeros((mesh.num_ele, mesh.num_dofe ** 2), dtype=np.uintc)  # Row list
+        t_j = np.zeros((mesh.num_ele, mesh.num_dofe ** 2), dtype=np.uintc)  # Column list
     else:
         t_v, t_i, t_j = None, None, None
 
     # Initialize stiffness matrix (sparse coo format).
     if stiffness is True:
-        s_v = np.zeros((num_ele, num_dofe ** 2))  # Value list
-        s_i = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Row list
-        s_j = np.zeros((num_ele, num_dofe ** 2), dtype=nb.types.uint)  # Column list
+        s_v = np.zeros((mesh.num_ele, mesh.num_dofe ** 2), dtype=np.float64)  # Value list
+        s_i = np.zeros((mesh.num_ele, mesh.num_dofe ** 2), dtype=np.uintc)  # Row list
+        s_j = np.zeros((mesh.num_ele, mesh.num_dofe ** 2), dtype=np.uintc)  # Column list
     else:
         s_v, s_i, s_j = None, None, None
 
     # This is the main loop
-    for ele in range(num_ele):
+    for ele in range(mesh.num_ele):
         # Obtain element properties
-        dofe = c[ele]
-        x_ele = x[ele]
-        phi_xq, invJ_dphi_xq, f_xq, wq_detJ = get_element(num_q, x_ele, rhs, order=order)
+        dofe, phi_xq, invJ_dphi_xq, f_xq, wq_detJ = mesh.get_element(ele, rhs=rhs)
 
         # Perform integration and compute right hand side vector.
         if rhs != None:
@@ -337,3 +326,41 @@ def kernel1d(x, c, rhs, num_q, order, mass=False, transport=False, stiffness=Fal
         S = None
 
     return M, T, S, f
+
+
+@nb.jit(nopython=True)
+def interpolate(mesh, u, x_inter):
+    r"""
+    Obtain the field :math:`u(x)` any points `x_inter` following the FE interpolation.
+
+    Parameters
+    ----------
+    mesh : Mesh
+        The mesh class specifying all discretization.
+    u : array_like(float), shape(dofs)
+        The field `u` at the degrees of freedom.
+    x_inter : array_like(float)
+        The location where we want to obtain our interpolated field.
+
+    Returns
+    -------
+    array_like(float)
+        The field `u` at the interpolation points `x_inter`.
+    """
+    # Initialize storage for our interpolated field.
+    u_inter = np.zeros_like(x_inter, dtype=np.float64)
+
+    # Loop over all elements and interpolate the inside.
+    for ele in range(mesh.num_ele):
+        # Obtain element properties
+        dofe = mesh.connectivity[ele]
+        x_ele = mesh.nodes[ele]
+
+        # Find which values of x are within our element.
+        ind = np.where((x_ele[0] <= x_inter) & (x_inter <= x_ele[1]))
+
+        # Obtain the element coordinates and calculate the field.
+        xi = mesh.x_to_xi(ele, x_inter[ind])
+        u_inter[ind] = np.sum(u[dofe] * mesh.shape(xi).T, axis=1)
+
+    return u_inter

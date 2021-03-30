@@ -36,7 +36,7 @@ import scipy.sparse as sparse
 from fem import kernel1d
 
 
-def projection(x, connect, fun, num_q, order):
+def projection(mesh, fun):
     r"""
     Projecting a 1D function :math:`f(x)` on a finite element basis.
 
@@ -73,16 +73,10 @@ def projection(x, connect, fun, num_q, order):
 
     Parameters
     ----------
-    x : array_like(float)
-        Global coordinates of all degrees of freedom.
-    connect : array_like(int), shape((num_ele, dofe/ele))
-        Element to degree of freedom connectivety map.
+    mesh : Mesh
+        The mesh object which specifies all discretization.
     fun : callable
         Function that acts as our right hand side (nonhomogeneous term).
-    num_q : int
-        Number of Gausian quadrature points.
-    order : int
-        Order of the polynomial used by our element.
 
     Returns
     -------
@@ -92,7 +86,7 @@ def projection(x, connect, fun, num_q, order):
         The right hand side, caused by the non-homogeneous behavior.
     """
     # Obtain matrix elements from main FEM kernel.
-    M, T, S, b = kernel1d(x, connect, fun, num_q, order, mass=True)
+    M, T, S, b = kernel1d(mesh, rhs=fun, mass=True)
 
     # Convert matrix objects to sparse counterparts.
     M = sparse.coo_matrix(M).tocsr()
@@ -183,7 +177,7 @@ def diffusive(x, connect, mu, num_q, order):
         The right hand side, because we consider a homogeneous PDE with diriclet conditions it is a zero vector.
     """
     # Obtain matrix elements from main FEM kernel.
-    M, T, S, b = kernel1d(x, connect, None, num_q, order, mass=True, stiffness=True)
+    M, T, S, b = kernel1d(mesh, mass=True, stiffness=True)
 
     # Convert matrix objects to sparse counterparts.
     M = sparse.coo_matrix(M).tocsr()
@@ -281,7 +275,7 @@ def advective(x, connect, c, num_q, order):
         The right hand side, because we consider a homogeneous PDE with diriclet conditions it is a zero vector.
     """
     # Obtain matrix elements from main FEM kernel.
-    M, T, S, b = kernel1d(x, connect, None, num_q, order, mass=True, transport=True)
+    M, T, S, b = kernel1d(mesh, mass=True, transport=True)
 
     # Convert matrix objects to sparse counterparts.
     M = sparse.coo_matrix(M).tocsr()
@@ -290,7 +284,7 @@ def advective(x, connect, c, num_q, order):
     return M, K, b
 
 
-def advectivediffusive(x, connect, c, mu, num_q, order):
+def advectivediffusive(mesh, c, mu):
     r"""
     Time derivative of the PDE for advective diffusive problems.
 
@@ -391,7 +385,7 @@ def advectivediffusive(x, connect, c, mu, num_q, order):
         The right hand side, because we consider a homogeneous PDE with diriclet conditions it is a zero vector.
     """
     # Obtain matrix elements from main FEM kernel.
-    M, T, S, b = kernel1d(x, connect, None, num_q, order, mass=True, transport=True, stiffness=True)
+    M, T, S, b = kernel1d(mesh, mass=True, transport=True, stiffness=True)
 
     # Convert matrix objects to sparse counterparts.
     M = sparse.coo_matrix(M).tocsr()
