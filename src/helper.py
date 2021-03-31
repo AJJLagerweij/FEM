@@ -19,7 +19,7 @@ def gauss(num):
 
     Computes the sample points and weights for Gauss-Legendre quadrature.
     These sample points and weights will correctly integrate polynomials of
-    degree :math:`2*deg - 1` or less over the interval :math:`[0, 1]` with
+    degree :math:`2\cdot num - 1` or less over the interval :math:`[0, 1]` with
     the weight function :math:`f(x) = 1`.
 
     Parameters
