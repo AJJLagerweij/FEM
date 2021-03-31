@@ -22,7 +22,7 @@ import numba as nb
 import numpy as np
 
 # Import my own scripts.
-from helper import gauss
+from helper import gaussquad, gauss_tri
 
 
 # Defince type specification of the class attributies.
@@ -301,7 +301,7 @@ class Mesh1D(Mesh):
         dofe = self.connectivity[ele]
 
         # Get the Quadrature weights.
-        xq, wq = gauss(self.num_q)
+        xq, wq = gauss_tri(self.num_q)
 
         # Get information on element coordinate transformation.
         jac, invJ, detJ = self.jacobian(ele)
@@ -442,6 +442,217 @@ class Mesh1D(Mesh):
             dphi[1] = 4 - 8 * xi
         else:
             raise NotImplementedError("This order of shape function is not implemented.")
+
+        return dphi
+
+
+@nb.experimental.jitclass(spec)
+class Mesh2Dtri(Mesh):
+    r"""
+    Specify a 2D mesh of triagular elements, and it's behaviour.
+
+    This is a 1D mesh object with Lagransian basis functions.
+
+    Parameters
+    ----------
+    x_start : float
+        Start coordinate of the domain.
+    x_end : float
+        End coordinate of the domain.
+    num_ele : int
+        Number of elements in the mesh.
+    order : int
+        Polynomial order of the Lagransian basis functions.
+    num_q : int
+        Number of quadrature points per element.
+    periodic : bool, optional
+        Whether the domain is periodic, default is `False`.
+
+    Attributes
+    ----------
+    num_ele : int
+        Number of elements in the entire mesh.
+    order : int
+        Order of the polynomaial approximation.
+    num_dofe : int
+        Number of degrees of freedom per element.
+    num_dofs : int
+        Number of degrees of freedom in the problem, this property
+        depends on the element type and the mesh.
+    num_q : int
+        Number of quadrature point in integration approximations.
+    nodes : array_like(float), shape(n+1, order+1)
+        For each node in each element the coordinates.
+    connectivity : array_like(int), shape(n+1, order+1)
+        Elements to node connectivity array.
+    """
+
+    def __init__(self, deva, num_q):
+        # Determine basic nodal properties.
+
+
+        # Make mesh periodic if this is required.
+        if periodic is True:
+            connectivity[-1, -1] = 0
+
+        # Create actual mesh.
+        self.num_ele = num_ele
+        self.nodes = nodes  # nodes
+        self.connectivity = connectivity  # connectivity
+        self.num_dofs = int(connectivity.max() + 1)
+
+        # Initialize element properties.
+        self.order = order
+        self.num_dofe = num_dofe
+        self.num_q = num_q
+
+    def get_element(self, ele, rhs=None):
+        r"""
+        Get the element properties of element `ele`.
+
+        Parameters
+        ----------
+        ele : int
+            Number of the element of which the properties should be obtained.
+        rhs : callable(float), optional
+            The righthandside function of the pde in terms of global coordinates.
+
+        Returns
+        -------
+        dofe : array_like(int), shape(num_dofe)
+            The degrees of freedom that belong to this element.
+        phi_xq : array_like(float), shape((dofs, num_q))
+            For each shape function the value at the quadrature points.
+        invJ_dphi_xq : array_like(float), shape((dofs, num_q))
+            For each shape function its derivative value at the quadrature points times the inverse Jacobian.
+        f_xq : array_like(float), shape(num_q)
+            The value of the right hand side equation evaluated at the quadrature points.
+        wq_detJ : array_like(float), shape((dofs, num_q))
+            For the local determinant times quadrature weight at each of the quadrature points.
+        """
+        # Obtain the global node numbers of this element.
+        dofe = self.connectivity[ele]
+
+        # Get the Quadrature weights.
+        xq, wq = gauss(self.num_q)
+
+        # Get information on element coordinate transformation.
+        jac, invJ, detJ = self.jacobian(ele)
+
+        # Get properties at quadrature points.
+        phi_xq = self.shape(xq)
+        dphi_xq = self.dshape(xq)
+        invJ_dphi_xq = invJ * dphi_xq
+        wq_detJ = wq * detJ
+
+        # Check if the right hand side is a function or not.
+        if rhs != None:
+            x_xq = self.xi_to_x(ele, xq)
+            f_xq = rhs(x_xq)
+        else:
+            f_xq = np.zeros_like(xq)
+        return dofe, phi_xq, invJ_dphi_xq, f_xq, wq_detJ
+
+    def x_to_xi(self, ele, x):
+        r"""
+        Converting local coordinates into global ones :math:`x \rightarrow \xi`.
+
+        Parameters
+        ----------
+        ele : int
+            Element in which the transformation has to take place.
+        x : array_like(float)
+            Global coordinates, these must be within the element.
+
+        Returns
+        -------
+        xi : array_like(float)
+            The local, element, coordinates.
+        """
+
+        return xi
+
+    def xi_to_x(self, ele, xi):
+        r"""
+        Converting local coordinates into global ones :math:`\xi \rightarrow x`.
+
+        Parameters
+        ----------
+        ele : int
+            Element in which the transformation has to take place.
+        xi : array_like(float)
+            Local coordinates within the element.
+
+        Returns
+        -------
+        x : array_like(float)
+            The global coordinates.
+        """
+
+        return x
+
+    def jacobian(self, ele):
+        r"""
+        The jacobian and mapping for the local to global coordinates system (:math:`\xi` to :math:`x`).
+
+        Because the jacobian is a constant for 1D meshes, the objectes that are returned are constant
+        floats instead of arrays.
+
+        Parameters
+        ----------
+        ele : int
+            Element for which the jacobian has to be calculated.
+
+        Returns
+        -------
+            jac : float
+                The Jacobian at :math:`\xi`.
+            invJ : float
+                The inverse Jacobian at :math:`\xi`.
+            detJ : float
+                The derivative of the Jacobian at :math:`\xi`.
+        """
+        x = self.nodes[ele]
+
+        return jac, invJ, detJ
+
+    def shape(self, xi):
+        r"""
+        Shape functions at locations :math:`\xi` in element coordinates system.
+
+        Parameters
+        ----------
+        xi : array_like(float)
+            Locations :math:`\xi` where the shape functions are evaluated.
+
+        Returns
+        -------
+        phi_xq : array_like(float)
+            Shape functions :math:`\phi_i` at locations :math:`\xi`.
+        """
+        phi = np.zeros((self.order + 1, len(xi)))
+
+
+
+        return phi
+
+    def dshape(self, xi):
+        r"""
+        Shape functions derivatives at locations :math:`\xi` in element coordinates system.
+
+        Parameters
+        ----------
+        xi : array_like(float)
+            Locations :math:`\xi` where the shape functions are evaluated.
+
+        Returns
+        -------
+        dphi_xq : array_like(float)
+            Shape functions derivatives :math:`\phi_i` at locations :math:`\xi`.
+        """
+        dphi = np.zeros((self.order + 1, len(xi)))
+
+
 
         return dphi
 
