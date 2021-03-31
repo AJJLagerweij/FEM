@@ -22,7 +22,7 @@ import numba as nb
 import numpy as np
 
 # Import my own scripts.
-from helper import gaussquad, gauss_tri
+from helper import gauss, quadtri
 
 
 # Defince type specification of the class attributies.
