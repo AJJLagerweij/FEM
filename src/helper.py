@@ -13,7 +13,7 @@ from scipy.integrate import simpson
 
 
 @nb.jit(nopython=True)
-def gaussquad(num):
+def gauss(num):
     """
     Gaussian integration points and weights for `num` sample points.
 
@@ -63,7 +63,7 @@ def quadtri(num):
     """
     Symetric quadrature points and weights for `num` sample points in a triangle.
 
-    Computes the sample points and weights.
+    Computes the sample points and weights through the Dunavant unnit trianglue rule [1]_.
     These sample points and weights will correctly integrate polynomials of:
 
     .. table:: : Quadrature with `num` points results in exact integrals for polynomial of order :math:`p`.
@@ -87,6 +87,11 @@ def quadtri(num):
         1D array containing the sample points in local coordinates.
     w : array_like(float)
         1D array containing the weights at the sample points.
+
+    References
+    ----------
+    .. [1] Dunavant, D.A. (1985), High degree efficient symmetrical Gaussian quadrature rules for the triangle.
+        Int. J. Numer. Meth. Engng., 21: 1129-1148. `DOI:10.1002/nme.1620210612 <https://doi.org/10.1002/nme.1620210612>`_
     """
     if num == 1:
         xi = np.array([0.5])
