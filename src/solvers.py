@@ -20,7 +20,7 @@ def forwardEuler(pde, u, dt, t_end):
     This time derivative can be represented through linear algabra as:
 
     .. math::
-        M u_t = K u + b \qquad \text{that is} \qquad u_t = M^{-1}(K u + b)
+        M \, u_t = K \, u + b \qquad \text{that is} \qquad u_t = M^{-1}(K u + b)
 
     where :math:`M` is the mass matrix, :math:`K` the siffness and transport matrix
     and vector :math:`b` the right hand side. these are obtained from approximations
@@ -108,7 +108,7 @@ def backwardEuler(pde, u, dt, t_end):
     This time derivative can be represented through linear algabra as:
 
     .. math::
-        M\,u_t = K,\u + b \qquad \text{that is} \qquad u_t = M^{-1}(K\,u + b)
+        M\,u_t = K\,u + b \qquad \text{that is} \qquad u_t = M^{-1}(K\,u + b)
 
     where :math:`M` is the mass matrix, :math:`K` the siffness and transport matrix
     and vector :math:`b` the right hand side. these are obtained from approximations
